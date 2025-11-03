@@ -1,4 +1,5 @@
 import Blob from './Blob';
+import { FaTools, FaBoxOpen, FaShip, FaInbox, FaChartBar } from 'react-icons/fa';
 
 export function ServicesSection() {
   return (
@@ -70,11 +71,11 @@ export function ServicesSection() {
 }
 
 const SVC_CARDS = [
-  { icon: '🛠️', title: 'customs clearance', desc: 'Turn raw data into actionable insights that smarter decisions and measurable growth.' },
-  { icon: '📦', title: 'Packaging', desc: 'Turn raw data into actionable insights that smarter decisions and measurable growth.' },
-  { icon: '🛳️', title: 'Sea freight', desc: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
-  { icon: '📥', title: 'Storage', desc: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
-  { icon: '📊', title: 'Compliance with specifications and quality', desc: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
+  { icon: <FaTools />, title: 'customs clearance', desc: 'Turn raw data into actionable insights that smarter decisions and measurable growth.' },
+  { icon: <FaBoxOpen />, title: 'Packaging', desc: 'Turn raw data into actionable insights that smarter decisions and measurable growth.' },
+  { icon: <FaShip />, title: 'Sea freight', desc: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
+  { icon: <FaInbox />, title: 'Storage', desc: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
+  { icon: <FaChartBar />, title: 'Compliance with specifications and quality', desc: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
 ];
 
 const SVC_CHIPS = [

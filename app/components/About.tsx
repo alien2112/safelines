@@ -1,4 +1,5 @@
 import Blob from './Blob';
+import { FaShip, FaTruck, FaCogs, FaPlane } from 'react-icons/fa';
 export function AboutSection() {
   return (
     <section id="about" className="section-about">
@@ -35,25 +36,25 @@ export function AboutSection() {
           <div className="about-cards-frame">
             <div className="about-cards">
             <div className="service-card">
-              <div className="card-icon" aria-hidden>🚢</div>
+              <div className="card-icon" aria-hidden><FaShip /></div>
               <h3>Sea freight</h3>
               <p>Shipping by sea is done by ships and steamers of different sizes. Goods are transported in containers, which are large boxes made of strong and weather-resistant materials</p>
               <div className="card-pill" />
             </div>
             <div className="service-card">
-              <div className="card-icon" aria-hidden>🚚</div>
+              <div className="card-icon" aria-hidden><FaTruck /></div>
               <h3>Land freight</h3>
               <p>The most important means of transportation between neighboring countries and within the country itself, as it is characterized by speed and efficiency in transporting large goods with heavy weights</p>
               <div className="card-pill" />
             </div>
             <div className="service-card">
-              <div className="card-icon" aria-hidden>⚙️</div>
+              <div className="card-icon" aria-hidden><FaCogs /></div>
               <h3>customs clearance</h3>
               <p>Customs clearance is the process of completing customs procedures related to imports of goods into or exports of goods</p>
               <div className="card-pill" />
             </div>
             <div className="service-card">
-              <div className="card-icon" aria-hidden>✈️</div>
+              <div className="card-icon" aria-hidden><FaPlane /></div>
               <h3>Air freight</h3>
               <p>Air freight is the process of transporting goods and merchandise using aircraft specialized for these purposes.</p>
               <div className="card-pill" />
