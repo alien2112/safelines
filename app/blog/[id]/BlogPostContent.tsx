@@ -290,15 +290,17 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
       </div>
 
       {/* Hero Section */}
-      <div ref={heroRef} className="blog-post-hero">
+      <div ref={heroRef} className="blog-post-hero" style={post.featuredImage ? {} : { background: 'linear-gradient(135deg, var(--color-primary) 0%, rgba(139, 92, 246, 0.8) 100%)' }}>
         {post.featuredImage && (
-          <div 
-            ref={imageRef}
-            className="blog-post-featured-image"
-            style={{ backgroundImage: `url(${post.featuredImage})` }}
-          />
+          <>
+            <div 
+              ref={imageRef}
+              className="blog-post-featured-image"
+              style={{ backgroundImage: `url(${post.featuredImage})` }}
+            />
+            <div className="blog-post-hero-overlay" />
+          </>
         )}
-        <div className="blog-post-hero-overlay" />
         <div className="container">
           <div className="blog-post-hero-content">
             {/* Breadcrumb */}
@@ -388,16 +390,6 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               </div>
             </div>
 
-            {/* Divider */}
-            <div className="blog-post-divider" />
-
-            {/* Comments Section - Placeholder */}
-            <div className="blog-post-comments">
-              <h3 className="blog-post-comments-title">Comments</h3>
-              <p className="blog-post-comments-placeholder">
-                Comments section coming soon. This will allow readers to engage with the content.
-              </p>
-            </div>
           </article>
 
           {/* Sidebar */}
