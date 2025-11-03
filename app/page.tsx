@@ -70,19 +70,20 @@ export default function HomePage() {
           '/safelines-logo.png',
         ]}
         blob={{
-          intensity: 0.85,
+          intensity: 0.60,
           colors: {
-            primary: 'rgba(236,72,153,0.75)',
-            mid: 'rgba(244,114,182,0.55)',
-            outer: 'rgba(253,164,175,0.38)',
+            primary: 'rgba(236,72,153,0.55)',
+            mid: 'rgba(244,114,182,0.35)',
+            outer: 'rgba(253,164,175,0.2)',
           },
         }}
       />
+      {/* Place questions (FAQ) and pricing directly under the customer section */}
+      <FAQSection />
+      <PricingShippingSection />
       <MakingEasySection />
       <StrategyContentSection />
       <CommunitySection />
-      <FAQSection />
-      <PricingShippingSection />
       <CTASection />
       <Footer />
     </main>

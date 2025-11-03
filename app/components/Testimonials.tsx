@@ -49,13 +49,13 @@ export function TestimonialsSection({
  top={250}
  left={50}
  translateXPercent={10}
- intensity={0.10}
+ intensity={0.06}
  blur={100}
  zIndex={0}
         colors={{
-          primary: blob?.colors?.primary ?? 'rgba(236, 72, 153, 0.40)', // pink-500
-          mid: blob?.colors?.mid ?? 'rgba(244, 114, 182, 0.35)', // pink-400
-          outer: blob?.colors?.outer ?? 'rgba(253, 164, 175, 0.10)', // rose-300
+          primary: blob?.colors?.primary ?? 'rgba(236, 72, 153, 0.25)', // pink-500
+          mid: blob?.colors?.mid ?? 'rgba(244, 114, 182, 0.20)', // pink-400
+          outer: blob?.colors?.outer ?? 'rgba(253, 164, 175, 0.08)', // rose-300
         }}
       />
 
