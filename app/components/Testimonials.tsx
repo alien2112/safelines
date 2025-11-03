@@ -74,10 +74,10 @@ export function TestimonialsSection({
           <span style={{ position: 'absolute', top: '50%', right: 0, width: 'clamp(120px, 20vw, 220px)', height: 2, background: 'rgba(0,0,0,0.25)', transform: 'translateY(-50%)', borderRadius: 1 }} />
         </div>
 
-        {/* Cards (side-by-side) */}
-        <div style={{ display: 'flex', gap: 28, alignItems: 'stretch', justifyContent: 'space-between', flexWrap: 'nowrap', overflowX: 'hidden' }}>
+        {/* Cards grid (responsive) */}
+        <div className="testi-grid">
           {testimonials.map((t, idx) => (
-            <div key={idx} style={{ background: 'rgba(255,255,255,0.80)', border: '1px solid rgba(226,232,240,0.8)', borderRadius: 20, boxShadow: '0 12px 30px rgba(2,8,23,0.08)', overflow: 'hidden', flex: '0 0 calc((100% - 56px) / 3)', maxWidth: 'calc((100% - 56px) / 3)' }}>
+            <div key={idx} className="testi-card">
               {/* header row: avatar left, source right */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>

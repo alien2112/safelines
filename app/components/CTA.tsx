@@ -6,7 +6,7 @@ export default function CTASection() {
     <section className="section-cta">
       <div className="container">
         <div className="cta-surface">
-          <VideoBackground src="/2025-11-03 18-45-55.mp4" scale={1.7} />
+          <VideoBackground src="/2025-11-03 18-45-55.mp4" scale={1.75} />
           <div className="cta-content">
             <h2 className="cta-title">What you still waiting!!</h2>
 

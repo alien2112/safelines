@@ -8,6 +8,13 @@ const playpen = Playpen_Sans({ subsets: ['latin'], weight: ['400','600','700'], 
 export const metadata: Metadata = {
   title: 'Safe Liens Customs Clearance',
   description: 'Modern logistics & freight services website',
+  icons: {
+    icon: [
+      { url: '/safelines-logo.png', type: 'image/png' },
+    ],
+    shortcut: ['/safelines-logo.png'],
+    apple: ['/safelines-logo.png'],
+  },
 };
 
 export default function RootLayout({
