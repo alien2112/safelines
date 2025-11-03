@@ -25,10 +25,7 @@ export default function HomePage() {
             </div>
 
             <h1 className="hero-headline">Unveiling a world of opportunities</h1>
-            <p className="hero-subheadline">
-              We provide distinguished customs clearance, sea, land, and air freight services with
-              a modern, trustworthy experience.
-            </p>
+            {/* subheadline removed per request */}
 
             <Link className="hero-cta" href="#contact">
               Book A Free Call Now

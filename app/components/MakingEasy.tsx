@@ -16,7 +16,9 @@ export default function MakingEasySection() {
         <div className="easy-grid">
           {/* Left: image from GridFS */}
           <div className="easy-card image">
-            <MakingEasyImage />
+            <div className="easy-surface">
+              <MakingEasyImage />
+            </div>
           </div>
           {/* Right: quote over background video */}
           <div className="easy-card quote">
