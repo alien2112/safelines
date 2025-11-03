@@ -8,6 +8,7 @@ import MakingEasySection from './components/MakingEasy';
 import StrategyContentSection from './components/StrategyContent';
 import CommunitySection from './components/Community';
 import FAQSection from './components/FAQ';
+import PricingShippingSection from './components/PricingShipping';
 import TestimonialsSection from './components/Testimonials';
 import Footer from './components/Footer';
 
@@ -84,6 +85,7 @@ export default function HomePage() {
       <StrategyContentSection />
       <CommunitySection />
       <FAQSection />
+      <PricingShippingSection />
       <CTASection />
       <Footer />
     </main>

@@ -15,6 +15,12 @@ type VideoBackgroundProps = {
   children?: React.ReactNode;
 };
 
+const CACHED_VIDEOS = [
+  'hero-animations.mp4',
+  '2025-11-03 18-45-55.mp4',
+  '2025-11-03 18-02-55.mp4',
+];
+
 export default function VideoBackground({
   src,
   mimeType = 'video/mp4',
@@ -29,6 +35,10 @@ export default function VideoBackground({
   zIndex,
   children,
 }: VideoBackgroundProps) {
+  const fileName = src.replace(/^\/+/, ''); // Remove leading slashes
+  const isCachedVideo = CACHED_VIDEOS.includes(fileName);
+  const videoSrc = isCachedVideo ? `/api/videos/${encodeURIComponent(fileName)}` : src;
+  
   const wrapperStyle: React.CSSProperties = fixed
     ? { position: 'fixed', inset: 0, zIndex }
     : undefined;
@@ -43,7 +53,7 @@ export default function VideoBackground({
         poster={poster}
         style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}
       >
-        <source src={src} type={mimeType} />
+        <source src={videoSrc} type={mimeType} />
       </video>
       {children}
     </div>
