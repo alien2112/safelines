@@ -198,27 +198,66 @@ export default function AboutPage() {
       }
     });
 
-    // Stats Counter Animation
-    const stats = document.querySelectorAll('.about-stat-number');
-    stats.forEach((stat) => {
-      const target = parseInt(stat.textContent || '0', 10);
-      gsap.set(stat, { textContent: '0' });
+    // Stats Counter Animation - wait for DOM to be ready
+    const initStatsAnimation = () => {
+      const stats = document.querySelectorAll('.about-stat-number');
+      if (stats.length === 0) {
+        setTimeout(initStatsAnimation, 50);
+        return;
+      }
 
-      ScrollTrigger.create({
-        trigger: stat,
-        start: 'top 85%',
-        onEnter: () => {
-          gsap.to(stat, {
-            textContent: target,
+      stats.forEach((stat) => {
+        // Get target values from data attributes
+        const targetNumber = parseInt(stat.getAttribute('data-target') || '0', 10);
+        const suffix = stat.getAttribute('data-suffix') || '';
+        
+        if (targetNumber === 0) return; // Skip if no valid target
+        
+        // Create a counter object for GSAP to animate
+        const counter = { value: 0 };
+        // Ensure initial value is set
+        stat.textContent = '0' + suffix;
+
+        const triggerElement = stat.closest('.about-stat') || stat;
+        
+        // Function to animate
+        const animateCounter = () => {
+          if (counter.value > 0) return; // Prevent duplicate animations
+          gsap.to(counter, {
+            value: targetNumber,
             duration: 2,
             ease: 'power2.out',
-            snap: { textContent: 1 },
-            stagger: 0.1,
+            snap: { value: 1 },
+            onUpdate: function() {
+              stat.textContent = Math.round(counter.value) + suffix;
+            },
           });
-        },
-        once: true,
+        };
+
+        // Check if already in view
+        ScrollTrigger.create({
+          trigger: triggerElement,
+          start: 'top 85%',
+          onEnter: animateCounter,
+          once: true,
+        });
+
+        // Also check immediately if already in viewport
+        setTimeout(() => {
+          const rect = triggerElement.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+          const triggerPoint = windowHeight * 0.85;
+          if (rect.top < triggerPoint && rect.bottom > 0) {
+            animateCounter();
+          }
+        }, 150);
       });
-    });
+      
+      // Refresh ScrollTrigger after all stats are set up
+      ScrollTrigger.refresh();
+    };
+
+    initStatsAnimation();
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -253,15 +292,15 @@ export default function AboutPage() {
             </p>
             <div className="about-mission-stats">
               <div className="about-stat">
-                <div className="about-stat-number">15+</div>
+                <div className="about-stat-number" data-target="15" data-suffix="+">0+</div>
                 <div className="about-stat-label" dir={isRTL ? 'rtl' : 'ltr'}>{t.about.stats.experience}</div>
               </div>
               <div className="about-stat">
-                <div className="about-stat-number">5000+</div>
+                <div className="about-stat-number" data-target="5000" data-suffix="+">0+</div>
                 <div className="about-stat-label" dir={isRTL ? 'rtl' : 'ltr'}>{t.about.stats.clients}</div>
               </div>
               <div className="about-stat">
-                <div className="about-stat-number">50+</div>
+                <div className="about-stat-number" data-target="50" data-suffix="+">0+</div>
                 <div className="about-stat-label" dir={isRTL ? 'rtl' : 'ltr'}>{t.about.stats.team}</div>
               </div>
             </div>

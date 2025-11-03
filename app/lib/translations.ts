@@ -131,10 +131,20 @@ export interface Translations {
     services: {
       title: string;
       bullets: string[];
-      cards: Array<{
+      transportation: {
         title: string;
-        description: string;
-      }>;
+        services: Array<{
+          title: string;
+          description: string;
+        }>;
+      };
+      customs: {
+        title: string;
+        services: Array<{
+          title: string;
+          description: string;
+        }>;
+      };
       chips: Array<{
         label: string;
       }>;
@@ -379,9 +389,9 @@ export const translations: Record<Language, Translations> = {
         cta: 'Book A Free Call Now',
       },
       projects: {
-        tag: 'PROJECTS',
-        title: 'Our Latest Projects',
-        subtitle: 'See how we turn bold ideas into automated AI solutions carefully crafted to optimize, scale, and deliver measurable results.',
+        tag: 'SERVICES',
+        title: 'Our Core Services',
+        subtitle: 'Comprehensive customs clearance and transportation solutions tailored to your business needs across the Kingdom.',
       },
       about: {
         tag: 'About us',
@@ -414,22 +424,67 @@ export const translations: Record<Language, Translations> = {
       services: {
         title: 'Services',
         bullets: [
-          'Compliance with specifications and quality',
-          'customs clearance',
+          'Customs Clearance',
+          'Transportation Services',
         ],
-        cards: [
-          { title: 'customs clearance', description: 'Turn raw data into actionable insights that smarter decisions and measurable growth.' },
-          { title: 'Packaging', description: 'Turn raw data into actionable insights that smarter decisions and measurable growth.' },
-          { title: 'Sea freight', description: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
-          { title: 'Storage', description: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
-          { title: 'Compliance with specifications and quality', description: 'Work smarter, not harder. Unlock faster results and lower costs with AI-powered efficiency.' },
-        ],
+        // Transportation Services
+        transportation: {
+          title: 'Transportation Services',
+          services: [
+            {
+              title: 'Transportation to customer warehouses throughout the Kingdom',
+              description: 'We provide integrated transportation services covering all sea ports, air and land entry points, and all types of containers and parcels, including refrigerated and regular transport, ensuring fast and safe delivery to customer warehouses throughout the Kingdom.',
+            },
+            {
+              title: 'Flexible distribution service',
+              description: 'We provide a flexible distribution service that meets customer needs, ensuring the delivery of shipments to multiple locations according to the customer\'s desire, which facilitates the delivery of goods at specified times and locations.',
+            },
+            {
+              title: 'Transportation and Storage to and from the Yard',
+              description: 'Providing comprehensive yard services including saving money and time, vast spaces and a safe environment for storage, increasing work efficiency and reducing the risks of floor accumulation, and accuracy and flexibility in the process of receiving shipments after storage.',
+            },
+          ],
+        },
+        // Customs Clearance Services
+        customs: {
+          title: 'Customs Clearance Service',
+          services: [
+            {
+              title: 'Customs Clearance for Exports and Imports',
+              description: 'We work to facilitate all customs procedures for your commercial and personal exports and imports, ensuring fast clearance of shipments and reducing unnecessary delays.',
+            },
+            {
+              title: 'SABER Certificate Issuance',
+              description: 'We provide a specialized service for issuing product conformity certificates from the Saudi Standards, Metrology and Quality Organization (SABER) to ensure their compliance with the quality standards approved in the Saudi market.',
+            },
+            {
+              title: 'SFDA Product Registration',
+              description: 'We provide a service for registering food and pharmaceutical products with the Saudi Food and Drug Authority (SFDA) and issuing import approvals to ensure compliance with regulatory requirements and their entry into the Saudi market.',
+            },
+            {
+              title: 'Follow-up and Tracking',
+              description: 'We provide a continuous follow-up service for all shipments and track the progress of procedures from the country of origin to the destination to ensure timely arrival of shipments.',
+            },
+            {
+              title: 'Avoiding Unnecessary Expenses',
+              description: 'We guide you in reducing unnecessary costs according to the requirements for each type of product to avoid errors and prevent demurrage by improving customs and logistics operations and increasing operational efficiency.',
+            },
+            {
+              title: '24/7 Customer Service',
+              description: 'Our team is available to serve customers according to official working hours to ensure continuous support and respond to inquiries.',
+            },
+            {
+              title: 'Customs and Logistics Consultations',
+              description: 'We provide our clients with the best solutions and information regarding customs laws and logistics procedures to achieve safe shipping and smooth operations.',
+            },
+          ],
+        },
         chips: [
-          { label: 'Data-Driven Decisions' },
-          { label: 'Personalized Experiences' },
-          { label: 'Automation' },
-          { label: 'Scalable Solutions' },
-          { label: 'Real-Time Insights' },
+          { label: 'Fast & Safe Delivery' },
+          { label: '24/7 Support' },
+          { label: 'Expert Team' },
+          { label: 'Comprehensive Services' },
+          { label: 'Cost Effective' },
         ],
       },
       cta: {
@@ -706,9 +761,9 @@ export const translations: Record<Language, Translations> = {
         cta: 'احجز مكالمة مجانية الآن',
       },
       projects: {
-        tag: 'المشاريع',
-        title: 'أحدث مشاريعنا',
-        subtitle: 'شاهد كيف نحول الأفكار الجريئة إلى حلول ذكية مصممة بعناية لتحسين وتوسيع وتقديم نتائج قابلة للقياس.',
+        tag: 'الخدمات',
+        title: 'خدماتنا الأساسية',
+        subtitle: 'حلول شاملة للتخليص الجمركي والنقل مصممة خصيصاً لاحتياجات عملك في جميع أنحاء المملكة.',
       },
       about: {
         tag: 'من نحن',
@@ -741,22 +796,67 @@ export const translations: Record<Language, Translations> = {
       services: {
         title: 'الخدمات',
         bullets: [
-          'الامتثال للمواصفات والجودة',
           'التخليص الجمركي',
+          'خدمات النقل',
         ],
-        cards: [
-          { title: 'التخليص الجمركي', description: 'تحويل البيانات الأولية إلى رؤى قابلة للتنفيذ لاتخاذ قرارات أكثر ذكاءً ونموًا قابلًا للقياس.' },
-          { title: 'التعبئة والتغليف', description: 'تحويل البيانات الأولية إلى رؤى قابلة للتنفيذ لاتخاذ قرارات أكثر ذكاءً ونموًا قابلًا للقياس.' },
-          { title: 'الشحن البحري', description: 'اعمل بذكاء، وليس بجهد أكبر. احصل على نتائج أسرع وتكاليف أقل مع كفاءة مدعومة بالذكاء الاصطناعي.' },
-          { title: 'التخزين', description: 'اعمل بذكاء، وليس بجهد أكبر. احصل على نتائج أسرع وتكاليف أقل مع كفاءة مدعومة بالذكاء الاصطناعي.' },
-          { title: 'الامتثال للمواصفات والجودة', description: 'اعمل بذكاء، وليس بجهد أكبر. احصل على نتائج أسرع وتكاليف أقل مع كفاءة مدعومة بالذكاء الاصطناعي.' },
-        ],
+        // Transportation Services
+        transportation: {
+          title: 'خدمات النقل',
+          services: [
+            {
+              title: 'النقل إلى مستودعات العميل في جميع أنحاء المملكة',
+              description: 'نقدم خدمات نقل متكاملة تشمل جميع الموانئ البحرية والمنافذ الجوية والبرية ونغطي جميع أنواع الحاويات والطرود، بما في ذلك النقل المبرد والنقل العادي مع ضمان توصيل سريع وآمن إلى مستودعات العملاء في مختلف أنحاء المملكة.',
+            },
+            {
+              title: 'نوفر خدمة توزيع مرنة تتوافق مع احتياجات العملاء',
+              description: 'حيث نضمن توصيل الشحنات إلى مواقع متعددة وفقا لرغبة العميل. مما يسهل توصيل البضائع في الوقت والمكان المحددين.',
+            },
+            {
+              title: 'نقل وتخزين من وإلى الساحة',
+              description: 'توفير المال والوقت، مساحات شاسعة وبيئة آمنة للتخزين، رفع كفاءة العمل وتقليل مخاطر تراكم الأرضيات، والدقة والمرونة في عملية استلام الشحنات ما بعد التخزين.',
+            },
+          ],
+        },
+        // Customs Clearance Services
+        customs: {
+          title: 'خدمة التخليص الجمركي',
+          services: [
+            {
+              title: 'تخليص جمركي للصادرات والواردات',
+              description: 'نعمل على تسهيل جميع الإجراءات الجمركية لصادراتكم ووارداتكم التجارية والشخصية، بما يضمن سرعة الفسح عن الشحنات وتقليل التأخير الغير الضروري.',
+            },
+            {
+              title: 'استخراج شهادة هيئة المواصفات والمقاييس السعودية ( سابر )',
+              description: 'نقدم خدمة متخصصة في استخراج شهادة المطابقة للمنتجات للتأكد من توافقها مع معايير الجودة المعتمدة في السوق السعودي.',
+            },
+            {
+              title: 'تسجيل المنتجات في الهيئة العامة للغذاء والدواء (SFDA)',
+              description: 'نوفر خدمة تسجيل المنتجات الغذائية والدوائية في الهيئة العامة للغذاء والدواء وإصدار الموافقة بالاستيراد لضمان الامتثال للمتطلبات التنظيمية ودخولها للسوق السعودي.',
+            },
+            {
+              title: 'المتابعة والتعقيب',
+              description: 'نوفر خدمة متابعة مستمرة لجميع الشحنات والتعقيب على سير الإجراءات من البلد المصدر إلى جهة الوصول لضمان وصول الشحنات في الوقت المناسب.',
+            },
+            {
+              title: 'تجنب النفقات غير الضرورية',
+              description: 'نرشدك في تقليل التكاليف الغير الضرورية حسب المتطلبات لكل نوع من المنتجات لتجنب الأخطاء وتفادياً للأرضيات من خلال تحسين العمليات الجمركية واللوجستية وزيادة الكفاءة التشغيلية.',
+            },
+            {
+              title: 'تقديم خدمات العملاء على مدار الساعة',
+              description: 'فريقنا متاح لخدمة العملاء وفقاً لأوقات العمل الرسمية لضمان تقديم الدعم المستمر والرد على الاستفسارات.',
+            },
+            {
+              title: 'الاستشارات الجمركية واللوجستية',
+              description: 'نزود عملاءنا بأفضل الحلول والمعلومات حول القوانين الجمركية والإجراءات اللوجستية لتحقيق شحن آمن وسلاسة في العمليات.',
+            },
+          ],
+        },
         chips: [
-          { label: 'قرارات مدعومة بالبيانات' },
-          { label: 'تجارب مخصصة' },
-          { label: 'الأتمتة' },
-          { label: 'حلول قابلة للتطوير' },
-          { label: 'رؤى في الوقت الفعلي' },
+          { label: 'توصيل سريع وآمن' },
+          { label: 'دعم على مدار الساعة' },
+          { label: 'فريق خبراء' },
+          { label: 'خدمات شاملة' },
+          { label: 'فعال من حيث التكلفة' },
         ],
       },
       cta: {

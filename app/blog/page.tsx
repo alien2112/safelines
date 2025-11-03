@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
@@ -21,74 +21,61 @@ type BlogPost = {
   readTime: string;
 };
 
-const BLOG_POSTS: BlogPost[] = [
-  {
-    id: '1',
-    title: 'The Future of Customs Clearance: Digital Transformation',
-    excerpt: 'Discover how digital technologies are revolutionizing the customs clearance process, making it faster, more efficient, and more transparent than ever before.',
-    author: 'Ahmed Al-Mansoori',
-    date: 'March 15, 2025',
-    category: 'Technology',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
-    readTime: '5 min read',
-  },
-  {
-    id: '2',
-    title: 'Streamlining Import-Export Documentation',
-    excerpt: 'Learn about the essential documents needed for smooth international trade and how to avoid common documentation pitfalls.',
-    author: 'Fatima Al-Zahra',
-    date: 'March 10, 2025',
-    category: 'Guidance',
-    image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1920&auto=format&fit=crop',
-    readTime: '7 min read',
-  },
-  {
-    id: '3',
-    title: 'Understanding Tariff Classification Systems',
-    excerpt: 'A comprehensive guide to understanding how goods are classified for customs purposes and why accurate classification matters.',
-    author: 'Mohammed Al-Shehhi',
-    date: 'March 5, 2025',
-    category: 'Education',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1920&auto=format&fit=crop',
-    readTime: '6 min read',
-  },
-  {
-    id: '4',
-    title: 'Best Practices for Freight Forwarding',
-    excerpt: 'Expert tips on selecting the right freight forwarder and ensuring your cargo arrives safely and on time.',
-    author: 'Sarah Al-Mazrouei',
-    date: 'February 28, 2025',
-    category: 'Best Practices',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop',
-    readTime: '8 min read',
-  },
-  {
-    id: '5',
-    title: 'Navigating Customs Regulations in the GCC',
-    excerpt: 'An overview of customs regulations across Gulf Cooperation Council countries and how to navigate them effectively.',
-    author: 'Khalid Al-Hashimi',
-    date: 'February 22, 2025',
-    category: 'Regulations',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1920&auto=format&fit=crop',
-    readTime: '9 min read',
-  },
-  {
-    id: '6',
-    title: 'Cost-Effective Shipping Solutions for SMEs',
-    excerpt: 'Strategies for small and medium enterprises to reduce shipping costs while maintaining quality service.',
-    author: 'Layla Al-Ali',
-    date: 'February 18, 2025',
-    category: 'Business',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1920&auto=format&fit=crop',
-    readTime: '6 min read',
-  },
-];
+// Get blog posts from admin dashboard (localStorage)
+function getBlogPosts(): BlogPost[] {
+  if (typeof window === 'undefined') return [];
+  
+  const saved = localStorage.getItem('admin_blog_posts');
+  if (!saved) return [];
+  
+  try {
+    const adminPosts = JSON.parse(saved);
+    // Convert admin post format to blog page format
+    return adminPosts
+      .filter((post: any) => post.published) // Only show published posts
+      .map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        author: 'Safe Lines Team', // Default author
+        date: new Date(post.createdAt).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }),
+        category: post.category,
+        image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
+        readTime: '5 min read', // Default read time
+      }))
+      .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date, newest first
+  } catch {
+    return [];
+  }
+}
 
 export default function BlogPage() {
   const { language, t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const isRTL = language === 'ar';
+  const [blogPosts, setBlogPosts] = React.useState<BlogPost[]>([]);
+
+  React.useEffect(() => {
+    setBlogPosts(getBlogPosts());
+    // Listen for storage changes to update blog posts in real-time
+    const handleStorageChange = () => {
+      setBlogPosts(getBlogPosts());
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Also check periodically for changes (since storage event only fires in other tabs)
+    const interval = setInterval(() => {
+      setBlogPosts(getBlogPosts());
+    }, 1000);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     // Split Text Animation for Hero
@@ -320,7 +307,12 @@ export default function BlogPage() {
       <section className="blog-posts-section">
         <div className="container">
           <div ref={cardsRef} className="blog-grid">
-            {BLOG_POSTS.map((post) => (
+            {blogPosts.length === 0 ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px' }}>
+                <p style={{ color: 'var(--gray-500)', fontSize: '18px' }}>No blog posts available yet.</p>
+              </div>
+            ) : (
+              blogPosts.map((post) => (
               <article key={post.id} className="blog-card">
                 <div className="blog-card-shadow" />
                 <div className="blog-card-image-wrapper">
@@ -339,7 +331,7 @@ export default function BlogPage() {
                   <p className="blog-card-excerpt">{post.excerpt}</p>
                   <div className="blog-card-footer">
                     <span className="blog-card-author">By {post.author}</span>
-                    <Link href={`/blog/${post.id}`} className="blog-card-link">
+                    <Link href={`/blog/${post.slug || post.id}`} className="blog-card-link">
                       {t.common.readMore}
                       <svg
                         viewBox="0 0 24 24"
@@ -355,7 +347,8 @@ export default function BlogPage() {
                   </div>
                 </div>
               </article>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>

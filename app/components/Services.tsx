@@ -1,12 +1,100 @@
 "use client";
 
+import React, { useState, useEffect } from 'react';
 import Blob from './Blob';
-import { FaTools, FaBoxOpen, FaShip, FaInbox, FaChartBar } from 'react-icons/fa';
+import { FaTruck, FaWarehouse, FaShippingFast, FaFileInvoice, FaCertificate, FaClipboardCheck, FaHeadset, FaChartLine, FaRoute, FaBoxes } from 'react-icons/fa';
 import { useLanguage } from '../contexts/LanguageContext';
+
+type AdminService = {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  visible: boolean;
+  order: number;
+};
+
+// Get services from admin dashboard (localStorage)
+function getServices(): AdminService[] {
+  if (typeof window === 'undefined') return [];
+  
+  const saved = localStorage.getItem('admin_services');
+  if (!saved) return [];
+  
+  try {
+    const services = JSON.parse(saved);
+    return services
+      .filter((service: AdminService) => service.visible)
+      .sort((a: AdminService, b: AdminService) => a.order - b.order);
+  } catch {
+    return [];
+  }
+}
 
 export function ServicesSection() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
+  const [adminServices, setAdminServices] = useState<AdminService[]>([]);
+  
+  useEffect(() => {
+    setAdminServices(getServices());
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      setAdminServices(getServices());
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Check periodically for changes
+    const interval = setInterval(() => {
+      setAdminServices(getServices());
+    }, 1000);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+  
+  // Icon mapping for services
+  const iconMap = [
+    <FaTruck key="truck" />,
+    <FaRoute key="route" />,
+    <FaWarehouse key="warehouse" />,
+    <FaFileInvoice key="invoice" />,
+    <FaCertificate key="cert" />,
+    <FaClipboardCheck key="clipboard" />,
+    <FaShippingFast key="tracking" />,
+    <FaChartLine key="chart" />,
+    <FaHeadset key="headset" />,
+    <FaBoxes key="consult" />,
+  ];
+  
+  // Use admin services if available, otherwise fallback to translations
+  const allServices = adminServices.length > 0 
+    ? adminServices.map((service, idx) => ({
+        title: service.title,
+        description: service.description,
+        category: idx < 3 ? 'transportation' : 'customs',
+        icon: iconMap[idx % iconMap.length],
+      }))
+    : [
+        // Fallback to translations
+        ...t.home.services.transportation.services.map((service, idx) => ({
+          ...service,
+          category: 'transportation',
+          icon: idx === 0 ? <FaTruck key="truck" /> : idx === 1 ? <FaRoute key="route" /> : <FaWarehouse key="warehouse" />,
+        })),
+        ...t.home.services.customs.services.map((service, idx) => ({
+          ...service,
+          category: 'customs',
+          icon: idx === 0 ? <FaFileInvoice key="invoice" /> : 
+                idx === 1 ? <FaCertificate key="cert" /> :
+                idx === 2 ? <FaClipboardCheck key="clipboard" /> :
+                idx === 3 ? <FaShippingFast key="tracking" /> :
+                idx === 4 ? <FaChartLine key="chart" /> :
+                idx === 5 ? <FaHeadset key="headset" /> :
+                <FaBoxes key="consult" />,
+        })),
+      ];
+
   return (
     <section id="services" className="section-services">
       <div className="container services-container">
@@ -53,16 +141,13 @@ export function ServicesSection() {
 
         <div className="services-cards-frame">
           <div className="services-grid">
-          {t.home.services.cards.map((card, index) => {
-            const icons = [<FaTools key="tools" />, <FaBoxOpen key="box" />, <FaShip key="ship" />, <FaInbox key="inbox" />, <FaChartBar key="chart" />];
-            return (
-              <article key={card.title} className="svc-card">
-                <div className="svc-icon" aria-hidden>{icons[index]}</div>
-                <h3 className="svc-title" dir={isRTL ? 'rtl' : 'ltr'}>{card.title}</h3>
-                <p className="svc-desc" dir={isRTL ? 'rtl' : 'ltr'}>{card.description}</p>
+          {allServices.map((service, index) => (
+              <article key={`${service.category}-${index}`} className="svc-card">
+                <div className="svc-icon" aria-hidden>{service.icon}</div>
+                <h3 className="svc-title" dir={isRTL ? 'rtl' : 'ltr'}>{service.title}</h3>
+                <p className="svc-desc" dir={isRTL ? 'rtl' : 'ltr'}>{service.description}</p>
               </article>
-            );
-          })}
+            ))}
           </div>
         </div>
 
@@ -70,28 +155,25 @@ export function ServicesSection() {
           {t.home.services.chips.map((chip, index) => {
             const chipIcons = [
               <svg key="0" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 17l4-4 4 3 4-7 4 5" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="4" cy="17" r="2" fill="#000000"/>
-                <circle cx="8" cy="13" r="2" fill="#000000"/>
-                <circle cx="12" cy="16" r="2" fill="#000000"/>
-                <circle cx="16" cy="9" r="2" fill="#000000"/>
-                <circle cx="20" cy="14" r="2" fill="#000000"/>
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>,
               <svg key="1" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 5a7 7 0 017 7c-1.8 3.2-4.6 5-7 5s-5.2-1.8-7-5a7 7 0 017-7z" stroke="#000000" strokeWidth="2"/>
-                <circle cx="12" cy="12" r="2.5" fill="#000000"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>,
               <svg key="2" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 6v12M6 12h12" stroke="#000000" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="12" cy="12" r="6" stroke="#000000" strokeWidth="2"/>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>,
               <svg key="3" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="#000000" strokeWidth="2"/>
-                <rect x="10" y="10" width="6" height="10" rx="1.5" stroke="#000000" strokeWidth="2"/>
-                <rect x="16" y="6" width="4" height="14" rx="1.2" stroke="#000000" strokeWidth="2"/>
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>,
               <svg key="4" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 12h6l3-6 3 10 3-5h3" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 2v20M2 12h20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
               </svg>,
             ];
             return (
