@@ -12,9 +12,10 @@ const VIDEO_MAP: Record<string, string> = {
 
 export async function GET(
 	_: NextRequest,
-	{ params }: { params: { video: string } }
+	{ params }: { params: Promise<{ video: string }> }
 ) {
-	const videoName = decodeURIComponent(params.video);
+	const { video } = await params;
+	const videoName = decodeURIComponent(video);
 	const fileName = VIDEO_MAP[videoName];
 
 	if (!fileName) {

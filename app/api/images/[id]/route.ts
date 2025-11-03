@@ -5,8 +5,8 @@ import { ObjectId } from "mongodb";
 export const runtime = "nodejs";
 
 // Stream image by id
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
-	const { id } = params;
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params;
 	const bucket = await getBucket();
     try {
         const fileId = new ObjectId(id);
@@ -34,8 +34,8 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 }
 
 // Delete image by id
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-	const { id } = params;
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params;
 	const bucket = await getBucket();
 	try {
 		await bucket.delete(new ObjectId(id));
