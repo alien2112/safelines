@@ -19,6 +19,7 @@ type BlogPost = {
   category: string;
   image: string;
   readTime: string;
+  slug?: string;
 };
 
 // Get blog posts from admin dashboard (localStorage)
@@ -46,6 +47,7 @@ function getBlogPosts(): BlogPost[] {
         category: post.category,
         image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
         readTime: '5 min read', // Default read time
+        slug: post.slug, // Include slug from admin post
       }))
       .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date, newest first
   } catch {

@@ -171,11 +171,12 @@ export default function AdminPage() {
 				setIsLoggingIn(false);
 				// Shake animation on error
 				if (loginFormRef.current) {
-					gsap.to(loginFormRef.current, {
-						x: [-10, 10, -10, 10, 0],
-						duration: 0.5,
-						ease: "power2.out",
-					});
+					const tl = gsap.timeline();
+					tl.to(loginFormRef.current, { x: -10, duration: 0.1, ease: "power2.out" })
+						.to(loginFormRef.current, { x: 10, duration: 0.1, ease: "power2.out" })
+						.to(loginFormRef.current, { x: -10, duration: 0.1, ease: "power2.out" })
+						.to(loginFormRef.current, { x: 10, duration: 0.1, ease: "power2.out" })
+						.to(loginFormRef.current, { x: 0, duration: 0.1, ease: "power2.out" });
 				}
 			}
 		}, 800);
