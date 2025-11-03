@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import VideoBackground from './components/VideoBackground';
 import { ProjectsSection } from './components/Projects';
@@ -11,24 +13,30 @@ import FAQSection from './components/FAQ';
 import PricingShippingSection from './components/PricingShipping';
 import TestimonialsSection from './components/Testimonials';
 import Footer from './components/Footer';
+import { GSAPAnimations } from './components/GSAPAnimations';
+import { useLanguage } from './contexts/LanguageContext';
 
 export default function HomePage() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
+
   return (
     <main>
+      <GSAPAnimations />
       <section className="hero">
         <VideoBackground src="/hero-animations.mp4" scale={1} />
         <div className="container hero-row">
           <div>
-            <div className="hero-tag" aria-label="tag">
+            <div className="hero-tag" aria-label="tag" dir={isRTL ? 'rtl' : 'ltr'}>
               <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
-              SAFE LIENS CUSTOMS CLEARANCE
+              {t.home.hero.tag}
             </div>
 
-            <h1 className="hero-headline">Unveiling a world of opportunities</h1>
+            <h1 className="hero-headline" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.hero.title}</h1>
             {/* subheadline removed per request */}
 
-            <Link className="hero-cta" href="#contact">
-              Book A Free Call Now
+            <Link className="hero-cta" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.home.hero.cta}
             </Link>
           </div>
 

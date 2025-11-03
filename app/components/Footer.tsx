@@ -1,18 +1,22 @@
+"use client";
+
 import Link from 'next/link';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Footer() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   return (
     <footer className="footer">
       <div className="container">
         {/* Top row: nav left, socials right */}
         <div className="footer-top">
-          <nav className="footer-links" aria-label="footer">
-            <Link href="#" className="footer-link">Product</Link>
-            <Link href="#" className="footer-link">Integrations</Link>
-            <Link href="#" className="footer-link">Success Stories</Link>
-            <Link href="#contact" className="footer-link">Contact Us</Link>
-            <Link href="#" className="footer-link">Pricing</Link>
-            <Link href="#" className="footer-link">Careers</Link>
+          <nav className="footer-links" aria-label="footer" dir={isRTL ? 'rtl' : 'ltr'}>
+            {t.home.footer.links.map((link) => (
+              <Link key={link.label} href={link.href} className="footer-link">
+                {link.label}
+              </Link>
+            ))}
           </nav>
           <div className="footer-social" aria-label="social links">
             <button className="footer-icon" aria-label="X">

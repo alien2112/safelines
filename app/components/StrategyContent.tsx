@@ -1,18 +1,29 @@
 "use client";
 
 import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
-type Metric = { label: string; color: "blue" | "teal" | "red"; before: number; after: number };
-
-const METRICS: Metric[] = [
-  { label: "Growth", color: "blue", before: 30, after: 85 },
-  { label: "Efficiency", color: "teal", before: 25, after: 70 },
-  { label: "Cost", color: "red", before: 80, after: 10 },
-];
+type Metric = { label: string; color: "blue" | "teal" | "red"; before: number; after: number; beforeLabel: string; afterLabel: string };
 
 export default function StrategyContentSection() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   const [showAfter, setShowAfter] = React.useState(true);
   const intervalRef = React.useRef<NodeJS.Timeout | null>(null);
+  
+  const metrics: Metric[] = t.home.strategy.metrics.map((m, index) => {
+    const colors: ("blue" | "teal" | "red")[] = ["blue", "teal", "red"];
+    const beforeValues = [30, 25, 80];
+    const afterValues = [85, 70, 10];
+    return {
+      label: m.label,
+      color: colors[index],
+      before: beforeValues[index],
+      after: afterValues[index],
+      beforeLabel: m.beforeLabel,
+      afterLabel: m.afterLabel,
+    };
+  });
 
   const startAuto = React.useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -29,7 +40,7 @@ export default function StrategyContentSection() {
       <div className="container">
         <div className="strategy-header">
           <span className="strategy-side left" />
-          <h2 className="strategy-title">Strategy & Content Creation</h2>
+          <h2 className="strategy-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.title}</h2>
           <span className="strategy-side right" />
         </div>
 
@@ -42,8 +53,9 @@ export default function StrategyContentSection() {
                 aria-selected={!showAfter}
                 className={`ab-tab ${!showAfter ? "active" : ""}`}
                 onClick={() => { setShowAfter(false); startAuto(); }}
+                dir={isRTL ? 'rtl' : 'ltr'}
               >
-                Before
+                {t.home.strategy.before}
               </button>
               <button
                 type="button"
@@ -51,37 +63,27 @@ export default function StrategyContentSection() {
                 aria-selected={showAfter}
                 className={`ab-tab ${showAfter ? "active" : ""}`}
                 onClick={() => { setShowAfter(true); startAuto(); }}
+                dir={isRTL ? 'rtl' : 'ltr'}
               >
-                After
+                {t.home.strategy.after}
               </button>
             </div>
             <div className="strategy-bars">
-              {METRICS.map((m, idx) => {
+              {metrics.map((m) => {
                 const width = showAfter ? m.after : m.before;
-                const valueLabel =
-                  m.label === "Cost"
-                    ? showAfter
-                      ? "-100%"
-                      : "+100%"
-                    : showAfter
-                    ? m.label === "Growth"
-                      ? "+250%"
-                      : "+200%"
-                    : m.label === "Growth"
-                    ? "+10%"
-                    : "-50%";
+                const valueLabel = showAfter ? m.afterLabel : m.beforeLabel;
                 return (
                   <div key={m.label} className="strategy-bar-row">
                     <div className={`strategy-bar ${m.color}`} style={{ width: `${width}%` }}>
-                      <span className="strategy-bar-label">{m.label} {valueLabel}</span>
+                      <span className="strategy-bar-label" dir={isRTL ? 'rtl' : 'ltr'}>{m.label} {valueLabel}</span>
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div className="ab-row">
-              <span className={`ab ab-after ${showAfter ? "active" : ""}`}>After</span>
-              <span className={`ab ab-before ${!showAfter ? "active" : ""}`}>Before</span>
+            <div className="ab-row" dir={isRTL ? 'rtl' : 'ltr'}>
+              <span className={`ab ab-after ${showAfter ? "active" : ""}`}>{t.home.strategy.after}</span>
+              <span className={`ab ab-before ${!showAfter ? "active" : ""}`}>{t.home.strategy.before}</span>
             </div>
           </div>
           <div className="strategy-card right">
@@ -90,8 +92,8 @@ export default function StrategyContentSection() {
         </div>
 
         <div className="strategy-actions">
-          <a className="cta-btn-secondary" href="#book">Book A Free Call Now</a>
-          <a className="faq-cta" href="#contact">Contact Sales Now</a>
+          <a className="cta-btn-secondary" href="#book" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.bookCall}</a>
+          <a className="faq-cta" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.contact}</a>
         </div>
       </div>
     </section>

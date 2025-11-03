@@ -2,8 +2,11 @@
 
 import React from 'react';
 import Blob from './Blob';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function CommunitySection() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   return (
     <section className="section-community">
       <Blob
@@ -25,9 +28,9 @@ export default function CommunitySection() {
         <div className="community-header">
           <span className="community-side left" />
           <div>
-            <div className="hero-tag" aria-label="tag">COMMUNITY</div>
-            <h2 className="community-title">Check our community</h2>
-            <p className="community-sub">Participate in our Discord group to network with other individuals. Here, you're invited to inquire, discuss, and open support requests.</p>
+            <div className="hero-tag" aria-label="tag" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.tag}</div>
+            <h2 className="community-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.title}</h2>
+            <p className="community-sub" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.subtitle}</p>
           </div>
           <span className="community-side right" />
         </div>
@@ -53,13 +56,13 @@ export default function CommunitySection() {
                     <circle cx="15" cy="13.5" r=".8" fill="#311081"/>
                   </svg>
                 </span>
-                <h3 className="comm-title">Discord</h3>
+                <h3 className="comm-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.discord.title}</h3>
               </div>
               <div className="comm-divider" />
-              <p className="comm-desc">Join our Discord and connect with social media creators, enthusiasts, share ideas, and grow together.</p>
-              <div className="comm-meta">
-                <span className="comm-badge">15k members</span>
-                <span className="comm-badge">Community</span>
+              <p className="comm-desc" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.discord.description}</p>
+              <div className="comm-meta" dir={isRTL ? 'rtl' : 'ltr'}>
+                <span className="comm-badge">{t.home.community.discord.members}</span>
+                <span className="comm-badge">{t.home.community.discord.community}</span>
               </div>
             </div>
           </a>
@@ -82,20 +85,20 @@ export default function CommunitySection() {
                     <path d="M18 5L6 19M6 5l12 14" stroke="#311081" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </span>
-                <h3 className="comm-title">Twitter</h3>
+                <h3 className="comm-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.twitter.title}</h3>
               </div>
               <div className="comm-divider" />
-              <p className="comm-desc">Join our Twitter, where we share our updates and also lot of guides, tips with guests who already excelled.</p>
-              <div className="comm-meta">
-                <span className="comm-badge">25k followers</span>
-                <span className="comm-badge">Community</span>
+              <p className="comm-desc" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.twitter.description}</p>
+              <div className="comm-meta" dir={isRTL ? 'rtl' : 'ltr'}>
+                <span className="comm-badge">{t.home.community.twitter.followers}</span>
+                <span className="comm-badge">{t.home.community.twitter.community}</span>
               </div>
             </div>
           </a>
         </div>
 
-        <div className="community-socials">
-          <span className="socials-label">Socials :</span>
+        <div className="community-socials" dir={isRTL ? 'rtl' : 'ltr'}>
+          <span className="socials-label">{t.home.community.socials}</span>
           <a className="social-pill" href="https://x.com/home" target="_blank" rel="noreferrer" aria-label="Twitter/X">
             <span className="social-icon">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden>

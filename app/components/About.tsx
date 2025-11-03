@@ -1,19 +1,23 @@
+"use client";
+
 import Blob from './Blob';
 import { FaShip, FaTruck, FaCogs, FaPlane } from 'react-icons/fa';
+import { useLanguage } from '../contexts/LanguageContext';
+
 export function AboutSection() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   return (
     <section id="about" className="section-about">
       <div className="container">
         <div className="about-header">
-          <div className="hero-tag" aria-label="tag" style={{ marginBottom: 16 }}>
+          <div className="hero-tag" aria-label="tag" style={{ marginBottom: 16 }} dir={isRTL ? 'rtl' : 'ltr'}>
             <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
-            About us
+            {t.home.about.tag}
           </div>
-          <h2 className="about-title">long experience in our field</h2>
-          <p className="about-subtext">
-            We have long experience in our field, so we can provide you with
-            <br />
-            distinguished services
+          <h2 className="about-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.about.title}</h2>
+          <p className="about-subtext" dir={isRTL ? 'rtl' : 'ltr'}>
+            {t.home.about.subtitle}
           </p>
         </div>
 
@@ -35,47 +39,36 @@ export function AboutSection() {
           />
           <div className="about-cards-frame">
             <div className="about-cards">
-            <div className="service-card">
-              <div className="card-icon" aria-hidden><FaShip /></div>
-              <h3>Sea freight</h3>
-              <p>Shipping by sea is done by ships and steamers of different sizes. Goods are transported in containers, which are large boxes made of strong and weather-resistant materials</p>
-              <div className="card-pill" />
-            </div>
-            <div className="service-card">
-              <div className="card-icon" aria-hidden><FaTruck /></div>
-              <h3>Land freight</h3>
-              <p>The most important means of transportation between neighboring countries and within the country itself, as it is characterized by speed and efficiency in transporting large goods with heavy weights</p>
-              <div className="card-pill" />
-            </div>
-            <div className="service-card">
-              <div className="card-icon" aria-hidden><FaCogs /></div>
-              <h3>customs clearance</h3>
-              <p>Customs clearance is the process of completing customs procedures related to imports of goods into or exports of goods</p>
-              <div className="card-pill" />
-            </div>
-            <div className="service-card">
-              <div className="card-icon" aria-hidden><FaPlane /></div>
-              <h3>Air freight</h3>
-              <p>Air freight is the process of transporting goods and merchandise using aircraft specialized for these purposes.</p>
-              <div className="card-pill" />
-            </div>
+            {t.home.about.cards.map((card, index) => {
+              const icons = [<FaShip key="ship" />, <FaTruck key="truck" />, <FaCogs key="cogs" />, <FaPlane key="plane" />];
+              return (
+                <div key={card.title} className="service-card">
+                  <div className="card-icon" aria-hidden>{icons[index]}</div>
+                  <h3 dir={isRTL ? 'rtl' : 'ltr'}>{card.title}</h3>
+                  <p dir={isRTL ? 'rtl' : 'ltr'}>{card.description}</p>
+                  <div className="card-pill" />
+                </div>
+              );
+            })}
             </div>
           </div>
         </div>
 
         <div className="about-stats">
-          <div className="stat">
-            <div className="stat-number">10<span>k+</span></div>
-            <div className="stat-label">Happy users</div>
-          </div>
-          <div className="stat">
-            <div className="stat-number">250<span>k+</span></div>
-            <div className="stat-label">Total hrs saved</div>
-          </div>
-          <div className="stat">
-            <div className="stat-number">4.8</div>
-            <div className="stat-label">Average Rating</div>
-          </div>
+          {t.home.about.stats.map((stat, index) => (
+            <div key={stat.label} className="stat">
+              <div className="stat-number">
+                {stat.number.includes('k+') ? (
+                  <>
+                    {stat.number.split('k+')[0]}<span>k+</span>
+                  </>
+                ) : (
+                  stat.number
+                )}
+              </div>
+              <div className="stat-label" dir={isRTL ? 'rtl' : 'ltr'}>{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

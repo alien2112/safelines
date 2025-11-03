@@ -2,13 +2,16 @@
 
 import React from 'react';
 import VideoBackground from './VideoBackground';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function MakingEasySection() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   return (
     <section className="section-easy">
       <div className="container">
         <div className="easy-header">
-          <h2 className="easy-title">Making future easy</h2>
+          <h2 className="easy-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.title}</h2>
           <span className="easy-side left" aria-hidden />
           <span className="easy-side right" aria-hidden />
         </div>
@@ -24,11 +27,9 @@ export default function MakingEasySection() {
           <div className="easy-card quote">
             <div className="easy-surface">
               <VideoBackground src="/2025-11-03 18-45-55.mp4" scale={1.8} />
-              <div className="easy-quote">
-                <p className="eq-line">“ We Know your problems. We know your</p>
-                <p className="eq-line">target audience and how you can grow rapidly</p>
-                <p className="eq-line">with the help of automation „</p>
-                <div className="eq-author">Co-founder at landerOS</div>
+              <div className="easy-quote" dir={isRTL ? 'rtl' : 'ltr'}>
+                <p className="eq-line">{t.home.makingEasy.quote}</p>
+                <div className="eq-author">{t.home.makingEasy.quoteAuthor}</div>
               </div>
             </div>
           </div>
@@ -64,7 +65,7 @@ export default function MakingEasySection() {
 
         {/* Actions row */}
         <div className="easy-actions">
-          <a className="cta-btn-secondary" href="#jobs">
+          <a className="cta-btn-secondary" href="#jobs" dir={isRTL ? 'rtl' : 'ltr'}>
             <span className="cta-badge icon-only" aria-hidden="true" style={{marginRight: 8}}>
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -73,9 +74,9 @@ export default function MakingEasySection() {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </span>
-            Check All Job Openings
+            {t.home.makingEasy.jobOpenings}
           </a>
-          <a className="faq-cta" href="#contact">Contact Sales Now</a>
+          <a className="faq-cta" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.contact}</a>
         </div>
       </div>
     </section>

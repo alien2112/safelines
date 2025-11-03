@@ -1,12 +1,14 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Navbar } from './components/Navbar';
+import { LoadingScreen } from './components/LoadingScreen';
 import { Playpen_Sans } from 'next/font/google';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 const playpen = Playpen_Sans({ subsets: ['latin'], weight: ['400','600','700'], variable: '--font-playpen' });
 
 export const metadata: Metadata = {
-  title: 'Safe Liens Customs Clearance',
+  title: 'Safe Lines Customs Clearance',
   description: 'Modern logistics & freight services website',
   icons: {
     icon: [
@@ -25,8 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={playpen.variable}>
       <body>
-        <Navbar />
-        {children}
+        <LoadingScreen />
+        <LanguageProvider>
+          <Navbar />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );
