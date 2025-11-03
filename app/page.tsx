@@ -16,7 +16,7 @@ export default function HomePage() {
   return (
     <main>
       <section className="hero">
-        <VideoBackground src="/hero-animations.mp4" scale={0.5} />
+        <VideoBackground src="/hero-animations.mp4" scale={1} />
         <div className="container hero-row">
           <div>
             <div className="hero-tag" aria-label="tag">
