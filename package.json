@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "seed": "tsx scripts/seed-db.ts"
+    "seed": "tsx scripts/seed-db.ts",
+    "create-indexes": "tsx scripts/create-indexes.ts"
   },
   "dependencies": {
     "gsap": "^3.13.0",
@@ -15,7 +16,8 @@
     "next": "14.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "^4.12.0"
+    "react-icons": "^4.12.0",
+    "swr": "^2.3.6"
   },
   "devDependencies": {
     "@types/node": "24.10.0",

@@ -42,6 +42,32 @@ type BlogPost = {
 	slug?: string;
 };
 
+type ProcessStep = {
+	number: number;
+	title: string;
+	titleAr: string;
+	description: string;
+	descriptionAr: string;
+};
+
+type Benefit = {
+	icon?: string; // Icon image URL
+	title: string;
+	titleAr: string;
+	description: string;
+	descriptionAr: string;
+};
+
+type Testimonial = {
+	name: string;
+	nameAr: string;
+	role: string;
+	roleAr: string;
+	rating: number;
+	text: string;
+	textAr: string;
+};
+
 type Service = {
 	id: string;
 	title: string;
@@ -49,8 +75,16 @@ type Service = {
 	description: string;
 	descriptionAr: string;
 	image?: string;
+	icon?: string; // Icon image URL for service card
 	visible: boolean;
+	featured?: boolean; // Feature on homepage
 	order: number;
+	slug?: string; // URL slug for detail page
+	detailedDescription?: string;
+	detailedDescriptionAr?: string;
+	processSteps?: ProcessStep[];
+	benefits?: Benefit[];
+	testimonials?: Testimonial[];
 };
 
 type ActivePanel = "images" | "blog" | "services" | "seo-config" | "link-mappings";
@@ -643,8 +677,13 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 AdminSidebar.displayName = "AdminSidebar";
 
 // Images Panel (existing functionality)
+type ImageSectionType = 
+	"making-easy" | "strategy-right" | "hero-home" | "hero-about" |
+	"about-milestone-1" | "about-milestone-2" | "about-milestone-3" | "about-milestone-4" |
+	"about-feature-1" | "about-feature-2" | "about-feature-3" | "about-feature-4";
+
 function ImagesPanel() {
-	const [activeSection, setActiveSection] = useState<"making-easy" | "strategy-right">("making-easy");
+	const [activeSection, setActiveSection] = useState<ImageSectionType>("making-easy");
 	const [files, setFiles] = useState<ImageFile[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const panelRef = useRef<HTMLDivElement>(null);
@@ -696,7 +735,7 @@ function ImagesPanel() {
 		<div className="admin-panel" ref={panelRef}>
 			<div className="admin-panel-header">
 				<h2>Images Management</h2>
-				<p>Manage homepage images per section. Latest upload is displayed.</p>
+				<p>Manage homepage images, hero banners, and about page images per section. Latest upload is displayed.</p>
 			</div>
 			<div className="admin-panel-grid">
 				<div className="admin-panel-card">
@@ -707,10 +746,24 @@ function ImagesPanel() {
 							<select 
 								className="admin-input"
 								value={activeSection} 
-								onChange={(e) => setActiveSection(e.target.value as "making-easy" | "strategy-right")} 
+								onChange={(e) => setActiveSection(e.target.value as ImageSectionType)} 
 							>
-								<option value="making-easy">Making future easy (left)</option>
-								<option value="strategy-right">Strategy & Content (right)</option>
+								<optgroup label="Home Page">
+									<option value="making-easy">Making future easy (left)</option>
+									<option value="strategy-right">Strategy & Content (right)</option>
+									<option value="hero-home">Hero Banner - Home Page</option>
+								</optgroup>
+								<optgroup label="About Page">
+									<option value="hero-about">Hero Banner - About Page</option>
+									<option value="about-milestone-1">Vision Timeline - Milestone 1</option>
+									<option value="about-milestone-2">Vision Timeline - Milestone 2</option>
+									<option value="about-milestone-3">Vision Timeline - Milestone 3</option>
+									<option value="about-milestone-4">Vision Timeline - Milestone 4</option>
+									<option value="about-feature-1">Why Choose Us - Feature 1</option>
+									<option value="about-feature-2">Why Choose Us - Feature 2</option>
+									<option value="about-feature-3">Why Choose Us - Feature 3</option>
+									<option value="about-feature-4">Why Choose Us - Feature 4</option>
+								</optgroup>
 							</select>
 						</label>
 						<input className="admin-input" type="file" accept="image/*" aria-label="Choose image file" />
@@ -762,7 +815,7 @@ function BlogPanel() {
 	useEffect(() => {
 		async function loadPosts() {
 			try {
-				const res = await fetch('/api/blogs', { cache: 'no-store' });
+				const res = await fetch('/api/blogs?includeUnpublished=true', { cache: 'no-store' });
 				if (res.ok) {
 					const data = await res.json();
 					if (data.length > 0) {
@@ -949,7 +1002,7 @@ function BlogPanel() {
 			
 			if (response.ok) {
 				// Reload posts from MongoDB
-				const res = await fetch('/api/blogs', { cache: 'no-store' });
+				const res = await fetch('/api/blogs?includeUnpublished=true', { cache: 'no-store' });
 				if (res.ok) {
 					const data = await res.json();
 					const postsWithId = data.map((p: any) => ({
@@ -979,7 +1032,7 @@ function BlogPanel() {
 			
 			if (response.ok) {
 				// Reload posts from MongoDB
-				const res = await fetch('/api/blogs', { cache: 'no-store' });
+				const res = await fetch('/api/blogs?includeUnpublished=true', { cache: 'no-store' });
 				if (res.ok) {
 					const data = await res.json();
 					const postsWithId = data.map((p: any) => ({
@@ -1086,7 +1139,7 @@ function BlogPanel() {
 							<p className="admin-blog-excerpt">{post.excerpt}</p>
 							<div className="admin-blog-meta">
 								<span className="admin-blog-category">{post.category}</span>
-								{post.tags.map(tag => (
+								{post.tags && Array.isArray(post.tags) && post.tags.map(tag => (
 									<span key={tag} className="admin-blog-tag">{tag}</span>
 								))}
 							</div>
@@ -1171,6 +1224,12 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 	const contentRef = useRef<HTMLFormElement>(null);
 	const previewRef = useRef<HTMLDivElement>(null);
 	const previousPreviewMode = useRef(previewMode);
+
+	// Helper function to normalize image URLs
+	const normalizeImageUrl = (id: string): string => {
+		const cleanId = String(id || '').trim().replace(/\/+$/, ''); // Remove trailing slashes and whitespace
+		return `/api/images/${cleanId}`;
+	};
 
 	// Enhanced modal opening animation
 	useEffect(() => {
@@ -1685,7 +1744,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								<div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
 									<input 
 										className="admin-input"
-										type="url"
+										type="text"
 										value={formData.featuredImage}
 										onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
 										placeholder="Enter image URL or upload from device"
@@ -1723,7 +1782,9 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 													
 													if (res.ok) {
 														const data = await res.json();
-														setFormData(prev => ({ ...prev, featuredImage: `/api/images/${data.id}` }));
+														// Normalize and set the featured image URL
+														const imageUrl = normalizeImageUrl(data.id);
+														setFormData(prev => ({ ...prev, featuredImage: imageUrl }));
 													} else {
 														alert('Failed to upload image');
 													}
@@ -1927,7 +1988,7 @@ function ServicesPanel() {
 	useEffect(() => {
 		async function loadServices() {
 			try {
-				const res = await fetch('/api/services', { cache: 'no-store' });
+				const res = await fetch('/api/services?includeUnpublished=true', { cache: 'no-store' });
 				if (res.ok) {
 					const data = await res.json();
 					if (data.length > 0) {
@@ -2098,8 +2159,8 @@ function ServicesPanel() {
 			
 			if (response.ok) {
 				const result = await response.json();
-				// Reload services from MongoDB
-				const res = await fetch('/api/services', { cache: 'no-store' });
+				// Reload services from MongoDB (include all services for admin, not just visible)
+				const res = await fetch('/api/services?includeUnpublished=true', { cache: 'no-store' });
 				if (res.ok) {
 					const data = await res.json();
 					const servicesWithId = data.map((s: any) => ({
@@ -2187,7 +2248,7 @@ function ServicesPanel() {
 		[updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
 		updated.forEach((s, i) => s.order = i);
 		
-		// Update all services with new order
+				// Update all services with new order
 		try {
 			for (const service of updated) {
 				await fetch('/api/services', {
@@ -2198,7 +2259,7 @@ function ServicesPanel() {
 			}
 			
 			// Reload services from MongoDB
-			const res = await fetch('/api/services', { cache: 'no-store' });
+			const res = await fetch('/api/services?includeUnpublished=true', { cache: 'no-store' });
 			if (res.ok) {
 				const data = await res.json();
 				const servicesWithId = data.map((s: any) => ({
@@ -2244,7 +2305,22 @@ function ServicesPanel() {
 							<img src={service.image} alt={service.title} className="admin-service-image" />
 						)}
 						<div className="admin-service-content">
-							<h3>{service.title}</h3>
+							<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+								<h3 style={{ margin: 0 }}>{service.title}</h3>
+								{service.featured && (
+									<span style={{ 
+										background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', 
+										color: 'white', 
+										padding: '2px 8px', 
+										borderRadius: '4px', 
+										fontSize: '11px', 
+										fontWeight: 600,
+										textTransform: 'uppercase'
+									}}>
+										Featured
+									</span>
+								)}
+							</div>
 							<p>{service.description}</p>
 							<div className="admin-service-actions">
 								<button 
@@ -2305,12 +2381,26 @@ function ServiceModal({ service, onSave, onClose }: {
 		description: service?.description || '',
 		descriptionAr: service?.descriptionAr || '',
 		image: service?.image || '',
+		icon: service?.icon || '',
 		visible: service?.visible ?? true,
+		featured: service?.featured ?? false,
 		order: service?.order ?? 0,
+		slug: service?.slug || '',
+		detailedDescription: service?.detailedDescription || '',
+		detailedDescriptionAr: service?.detailedDescriptionAr || '',
+		processSteps: service?.processSteps || [],
+		benefits: service?.benefits || [],
+		testimonials: service?.testimonials || [],
 	});
 	const modalRef = useRef<HTMLDivElement>(null);
 	const overlayRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLFormElement>(null);
+
+	// Helper function to normalize image URLs
+	const normalizeImageUrl = (id: string): string => {
+		const cleanId = String(id || '').trim().replace(/\/+$/, ''); // Remove trailing slashes and whitespace
+		return `/api/images/${cleanId}`;
+	};
 
 	// Enhanced modal opening animation
 	useEffect(() => {
@@ -2398,12 +2488,23 @@ function ServiceModal({ service, onSave, onClose }: {
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 		
+		// Auto-generate slug if not provided
+		const finalData = { ...formData };
+		if (!finalData.slug && finalData.title) {
+			finalData.slug = finalData.title.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+		}
+		
+		// Ensure featured defaults to false if not set
+		if (finalData.featured === undefined) {
+			finalData.featured = false;
+		}
+		
 		// Success animation before save
 		if (modalRef.current) {
 			const modal = modalRef.current;
 			const tl = gsap.timeline({
 				onComplete: () => {
-					onSave(formData as Service);
+					onSave(finalData as Service);
 				}
 			});
 			
@@ -2431,7 +2532,7 @@ function ServiceModal({ service, onSave, onClose }: {
 				});
 			}
 		} else {
-			onSave(formData as Service);
+			onSave(finalData as Service);
 		}
 	}
 
@@ -2520,22 +2621,542 @@ function ServiceModal({ service, onSave, onClose }: {
 						/>
 					</label>
 					<label className="admin-field">
-						<span className="admin-label">Image URL</span>
+						<span className="admin-label">Image</span>
+						{formData.image && (
+							<div style={{ marginBottom: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(226,232,240,0.9)' }}>
+								<img 
+									src={formData.image} 
+									alt="Service preview" 
+									style={{ width: '100%', height: 'auto', maxHeight: '200px', objectFit: 'cover' }}
+								/>
+							</div>
+						)}
+						<div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+							<input 
+								className="admin-input"
+								type="file"
+								accept="image/*"
+								id="service-image-upload"
+								onChange={async (e) => {
+									const file = e.target.files?.[0];
+									if (file) {
+										try {
+											const uploadFormData = new FormData();
+											uploadFormData.append('file', file);
+											uploadFormData.append('section', 'services');
+											const res = await fetch('/api/images', { method: 'POST', body: uploadFormData });
+											if (res.ok) {
+												const data = await res.json();
+												// Normalize and set the image URL
+												const imageUrl = normalizeImageUrl(data.id);
+												setFormData(prev => ({ ...prev, image: imageUrl }));
+												// Clear file input after successful upload
+												e.target.value = '';
+											} else {
+												alert('Failed to upload image');
+											}
+										} catch (error) {
+											console.error('Error uploading image:', error);
+											alert('Error uploading image');
+										}
+									}
+								}}
+								style={{ flex: 1 }}
+							/>
+							<button
+								type="button"
+								className="btn ghost"
+								onClick={() => {
+									setFormData({ ...formData, image: '' });
+									// Clear file input
+									const fileInput = document.getElementById('service-image-upload') as HTMLInputElement;
+									if (fileInput) fileInput.value = '';
+								}}
+								style={{ whiteSpace: 'nowrap' }}
+							>
+								Clear
+							</button>
+						</div>
 						<input 
 							className="admin-input"
-							type="url"
-							value={formData.image}
+							type="text"
+							placeholder="Image URL (auto-filled after upload)"
+							value={formData.image || ''}
 							onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+							style={{ marginTop: '8px' }}
 						/>
 					</label>
-					<label className="admin-field admin-checkbox-field">
+					{/* Icon Upload */}
+					<label className="admin-field">
+						<span className="admin-label">Icon (for service card)</span>
+						{formData.icon && (
+							<div style={{ marginBottom: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(226,232,240,0.9)', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+								<img 
+									src={formData.icon} 
+									alt="Icon preview" 
+									style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }}
+								/>
+							</div>
+						)}
+						<div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+							<input 
+								className="admin-input"
+								type="file"
+								accept="image/*"
+								id="service-icon-upload"
+								onChange={async (e) => {
+									const file = e.target.files?.[0];
+									if (file) {
+										try {
+											const uploadFormData = new FormData();
+											uploadFormData.append('file', file);
+											uploadFormData.append('section', 'services');
+											const res = await fetch('/api/images', { method: 'POST', body: uploadFormData });
+											if (res.ok) {
+												const data = await res.json();
+												// Normalize and set the icon URL
+												const iconUrl = normalizeImageUrl(data.id);
+												setFormData(prev => ({ ...prev, icon: iconUrl }));
+												// Clear file input after successful upload
+												e.target.value = '';
+											} else {
+												alert('Failed to upload icon');
+											}
+										} catch (error) {
+											console.error('Error uploading icon:', error);
+											alert('Error uploading icon');
+										}
+									}
+								}}
+								style={{ flex: 1 }}
+							/>
+							<button
+								type="button"
+								className="btn ghost"
+								onClick={() => {
+									setFormData({ ...formData, icon: '' });
+									// Clear file input
+									const fileInput = document.getElementById('service-icon-upload') as HTMLInputElement;
+									if (fileInput) fileInput.value = '';
+								}}
+								style={{ whiteSpace: 'nowrap' }}
+							>
+								Clear
+							</button>
+						</div>
 						<input 
-							type="checkbox"
-							checked={formData.visible}
-							onChange={(e) => setFormData({ ...formData, visible: e.target.checked })}
+							className="admin-input"
+							type="text"
+							placeholder="Icon URL (auto-filled after upload)"
+							value={formData.icon || ''}
+							onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+							style={{ marginTop: '8px' }}
 						/>
-						<span className="admin-label">Visible</span>
 					</label>
+
+					{/* Slug */}
+					<label className="admin-field">
+						<span className="admin-label">Slug (URL-friendly identifier, e.g., "customs-clearance")</span>
+						<input 
+							className="admin-input"
+							value={formData.slug || ''}
+							onChange={(e) => {
+								const slug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+								setFormData({ ...formData, slug });
+							}}
+							placeholder="Auto-generated from title if empty"
+						/>
+					</label>
+
+					{/* Detailed Description */}
+					<label className="admin-field">
+						<span className="admin-label">Detailed Description (English) - For service detail page</span>
+						<textarea 
+							className="admin-input"
+							value={formData.detailedDescription || ''}
+							onChange={(e) => setFormData({ ...formData, detailedDescription: e.target.value })}
+							rows={6}
+							placeholder="Extended description for the service detail page..."
+						/>
+					</label>
+					<label className="admin-field">
+						<span className="admin-label">Detailed Description (Arabic)</span>
+						<textarea 
+							className="admin-input"
+							value={formData.detailedDescriptionAr || ''}
+							onChange={(e) => setFormData({ ...formData, detailedDescriptionAr: e.target.value })}
+							rows={6}
+							placeholder="وصف مفصل للصفحة التفصيلية للخدمة..."
+						/>
+					</label>
+
+					{/* Featured & Visible Checkboxes */}
+					<div style={{ display: 'flex', gap: '24px' }}>
+						<label className="admin-field admin-checkbox-field">
+							<input 
+								type="checkbox"
+								checked={formData.visible ?? true}
+								onChange={(e) => setFormData({ ...formData, visible: e.target.checked })}
+							/>
+							<span className="admin-label">Visible on Services Page</span>
+						</label>
+						<label className="admin-field admin-checkbox-field">
+							<input 
+								type="checkbox"
+								checked={formData.featured ?? false}
+								onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+							/>
+							<span className="admin-label">Featured on Homepage</span>
+						</label>
+					</div>
+
+					{/* Process Steps Section */}
+					<div className="admin-field" style={{ border: '1px solid rgba(226,232,240,0.9)', borderRadius: '8px', padding: '16px', marginTop: '16px' }}>
+						<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+							<span className="admin-label" style={{ fontWeight: 600 }}>Process Steps</span>
+							<button
+								type="button"
+								className="btn ghost"
+								onClick={() => {
+									const newSteps = [...(formData.processSteps || [])];
+									newSteps.push({
+										number: newSteps.length + 1,
+										title: '',
+										titleAr: '',
+										description: '',
+										descriptionAr: '',
+									});
+									setFormData({ ...formData, processSteps: newSteps });
+								}}
+							>
+								+ Add Step
+							</button>
+						</div>
+						{(formData.processSteps || []).map((step, index) => (
+							<div key={index} style={{ marginBottom: '16px', padding: '12px', background: '#f8fafc', borderRadius: '6px' }}>
+								<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+									<span style={{ fontWeight: 600 }}>Step {step.number}</span>
+									<button
+										type="button"
+										className="btn ghost danger"
+										onClick={() => {
+											const newSteps = (formData.processSteps || []).filter((_, i) => i !== index);
+											// Renumber steps
+											newSteps.forEach((s, i) => s.number = i + 1);
+											setFormData({ ...formData, processSteps: newSteps });
+										}}
+									>
+										Remove
+									</button>
+								</div>
+								<input
+									className="admin-input"
+									placeholder="Step title (English)"
+									value={step.title}
+									onChange={(e) => {
+										const newSteps = [...(formData.processSteps || [])];
+										newSteps[index].title = e.target.value;
+										setFormData({ ...formData, processSteps: newSteps });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<input
+									className="admin-input"
+									placeholder="Step title (Arabic)"
+									value={step.titleAr}
+									onChange={(e) => {
+										const newSteps = [...(formData.processSteps || [])];
+										newSteps[index].titleAr = e.target.value;
+										setFormData({ ...formData, processSteps: newSteps });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<textarea
+									className="admin-input"
+									placeholder="Step description (English)"
+									value={step.description}
+									onChange={(e) => {
+										const newSteps = [...(formData.processSteps || [])];
+										newSteps[index].description = e.target.value;
+										setFormData({ ...formData, processSteps: newSteps });
+									}}
+									rows={2}
+									style={{ marginBottom: '8px' }}
+								/>
+								<textarea
+									className="admin-input"
+									placeholder="Step description (Arabic)"
+									value={step.descriptionAr}
+									onChange={(e) => {
+										const newSteps = [...(formData.processSteps || [])];
+										newSteps[index].descriptionAr = e.target.value;
+										setFormData({ ...formData, processSteps: newSteps });
+									}}
+									rows={2}
+								/>
+							</div>
+						))}
+					</div>
+
+					{/* Benefits Section */}
+					<div className="admin-field" style={{ border: '1px solid rgba(226,232,240,0.9)', borderRadius: '8px', padding: '16px', marginTop: '16px' }}>
+						<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+							<span className="admin-label" style={{ fontWeight: 600 }}>Benefits</span>
+							<button
+								type="button"
+								className="btn ghost"
+								onClick={() => {
+									const newBenefits = [...(formData.benefits || [])];
+									newBenefits.push({
+										title: '',
+										titleAr: '',
+										description: '',
+										descriptionAr: '',
+									});
+									setFormData({ ...formData, benefits: newBenefits });
+								}}
+							>
+								+ Add Benefit
+							</button>
+						</div>
+						{(formData.benefits || []).map((benefit, index) => (
+							<div key={index} style={{ marginBottom: '16px', padding: '12px', background: '#f8fafc', borderRadius: '6px' }}>
+								<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+									<span style={{ fontWeight: 600 }}>Benefit {index + 1}</span>
+									<button
+										type="button"
+										className="btn ghost danger"
+										onClick={() => {
+											const newBenefits = (formData.benefits || []).filter((_, i) => i !== index);
+											setFormData({ ...formData, benefits: newBenefits });
+										}}
+									>
+										Remove
+									</button>
+								</div>
+								{benefit.icon && (
+									<div style={{ marginBottom: '8px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(226,232,240,0.9)', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+										<img src={benefit.icon} alt="Benefit icon" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+									</div>
+								)}
+								<input
+									type="file"
+									accept="image/*"
+									onChange={async (e) => {
+										const file = e.target.files?.[0];
+										if (file) {
+											try {
+												const uploadFormData = new FormData();
+												uploadFormData.append('file', file);
+												uploadFormData.append('section', 'services');
+												const res = await fetch('/api/images', { method: 'POST', body: uploadFormData });
+												if (res.ok) {
+													const data = await res.json();
+													// Normalize and set the benefit icon URL
+													const iconUrl = normalizeImageUrl(data.id);
+													const newBenefits = [...(formData.benefits || [])];
+													newBenefits[index].icon = iconUrl;
+													setFormData({ ...formData, benefits: newBenefits });
+													// Clear file input after successful upload
+													e.target.value = '';
+												} else {
+													alert('Failed to upload benefit icon');
+												}
+											} catch (error) {
+												console.error('Error uploading icon:', error);
+												alert('Error uploading benefit icon');
+											}
+										}
+									}}
+									style={{ marginBottom: '8px', fontSize: '12px' }}
+								/>
+								{benefit.icon && (
+									<input
+										className="admin-input"
+										type="text"
+										placeholder="Benefit icon URL (auto-filled after upload)"
+										value={benefit.icon}
+										onChange={(e) => {
+											const newBenefits = [...(formData.benefits || [])];
+											newBenefits[index].icon = e.target.value;
+											setFormData({ ...formData, benefits: newBenefits });
+										}}
+										style={{ marginBottom: '8px', fontSize: '12px' }}
+									/>
+								)}
+								<input
+									className="admin-input"
+									placeholder="Benefit title (English)"
+									value={benefit.title}
+									onChange={(e) => {
+										const newBenefits = [...(formData.benefits || [])];
+										newBenefits[index].title = e.target.value;
+										setFormData({ ...formData, benefits: newBenefits });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<input
+									className="admin-input"
+									placeholder="Benefit title (Arabic)"
+									value={benefit.titleAr}
+									onChange={(e) => {
+										const newBenefits = [...(formData.benefits || [])];
+										newBenefits[index].titleAr = e.target.value;
+										setFormData({ ...formData, benefits: newBenefits });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<textarea
+									className="admin-input"
+									placeholder="Benefit description (English)"
+									value={benefit.description}
+									onChange={(e) => {
+										const newBenefits = [...(formData.benefits || [])];
+										newBenefits[index].description = e.target.value;
+										setFormData({ ...formData, benefits: newBenefits });
+									}}
+									rows={2}
+									style={{ marginBottom: '8px' }}
+								/>
+								<textarea
+									className="admin-input"
+									placeholder="Benefit description (Arabic)"
+									value={benefit.descriptionAr}
+									onChange={(e) => {
+										const newBenefits = [...(formData.benefits || [])];
+										newBenefits[index].descriptionAr = e.target.value;
+										setFormData({ ...formData, benefits: newBenefits });
+									}}
+									rows={2}
+								/>
+							</div>
+						))}
+					</div>
+
+					{/* Testimonials Section */}
+					<div className="admin-field" style={{ border: '1px solid rgba(226,232,240,0.9)', borderRadius: '8px', padding: '16px', marginTop: '16px' }}>
+						<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+							<span className="admin-label" style={{ fontWeight: 600 }}>Testimonials</span>
+							<button
+								type="button"
+								className="btn ghost"
+								onClick={() => {
+									const newTestimonials = [...(formData.testimonials || [])];
+									newTestimonials.push({
+										name: '',
+										nameAr: '',
+										role: '',
+										roleAr: '',
+										rating: 5,
+										text: '',
+										textAr: '',
+									});
+									setFormData({ ...formData, testimonials: newTestimonials });
+								}}
+							>
+								+ Add Testimonial
+							</button>
+						</div>
+						{(formData.testimonials || []).map((testimonial, index) => (
+							<div key={index} style={{ marginBottom: '16px', padding: '12px', background: '#f8fafc', borderRadius: '6px' }}>
+								<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+									<span style={{ fontWeight: 600 }}>Testimonial {index + 1}</span>
+									<button
+										type="button"
+										className="btn ghost danger"
+										onClick={() => {
+											const newTestimonials = (formData.testimonials || []).filter((_, i) => i !== index);
+											setFormData({ ...formData, testimonials: newTestimonials });
+										}}
+									>
+										Remove
+									</button>
+								</div>
+								<input
+									className="admin-input"
+									placeholder="Name (English)"
+									value={testimonial.name}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].name = e.target.value;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<input
+									className="admin-input"
+									placeholder="Name (Arabic)"
+									value={testimonial.nameAr}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].nameAr = e.target.value;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<input
+									className="admin-input"
+									placeholder="Role (English)"
+									value={testimonial.role}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].role = e.target.value;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<input
+									className="admin-input"
+									placeholder="Role (Arabic)"
+									value={testimonial.roleAr}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].roleAr = e.target.value;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<input
+									className="admin-input"
+									type="number"
+									min="1"
+									max="5"
+									placeholder="Rating (1-5)"
+									value={testimonial.rating}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].rating = parseInt(e.target.value) || 5;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									style={{ marginBottom: '8px' }}
+								/>
+								<textarea
+									className="admin-input"
+									placeholder="Testimonial text (English)"
+									value={testimonial.text}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].text = e.target.value;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									rows={3}
+									style={{ marginBottom: '8px' }}
+								/>
+								<textarea
+									className="admin-input"
+									placeholder="Testimonial text (Arabic)"
+									value={testimonial.textAr}
+									onChange={(e) => {
+										const newTestimonials = [...(formData.testimonials || [])];
+										newTestimonials[index].textAr = e.target.value;
+										setFormData({ ...formData, testimonials: newTestimonials });
+									}}
+									rows={3}
+								/>
+							</div>
+						))}
+					</div>
+
 					<div className="admin-modal-footer">
 						<button 
 							type="button" 

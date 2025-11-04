@@ -1,4 +1,7 @@
 import { getDb } from '../app/lib/mongodb';
+import { uploadImageToGridFS } from '../app/lib/gridfs';
+import fs from 'node:fs';
+import path from 'node:path';
 
 async function seedServices() {
 	const db = await getDb();
@@ -239,6 +242,8 @@ async function main() {
 		console.log('🌱 Starting database seed...');
 		await seedServices();
 		await seedBlogs();
+        await seedHeroBanners();
+		await seedAboutPageImages();
 		console.log('✅ Database seeding completed successfully!');
 		process.exit(0);
 	} catch (error) {
@@ -248,4 +253,93 @@ async function main() {
 }
 
 main();
+
+
+async function seedHeroBanners() {
+    const db = await getDb();
+    const filesCol = db.collection('images.files');
+
+    // Skip if we already have hero images present (by section)
+    const existingHome = await filesCol.findOne({ 'metadata.section': 'hero-home' });
+    const existingAbout = await filesCol.findOne({ 'metadata.section': 'hero-about' });
+    if (existingHome && existingAbout) {
+        console.log('Hero banners already exist in GridFS, skipping seed...');
+        return;
+    }
+
+    const publicDir = path.join(process.cwd(), 'public');
+    const homePath = path.join(publicDir, 'hero-banner.webp');
+    const aboutPath = path.join(publicDir, 'upscaled_image_high_quality.webp');
+
+    const tasks: Array<Promise<unknown>> = [];
+
+    if (!existingHome && fs.existsSync(homePath)) {
+        const buf = fs.readFileSync(homePath);
+        tasks.push(uploadImageToGridFS(buf, 'hero-banner.webp', 'hero-home', 'image/webp'));
+    }
+
+    if (!existingAbout && fs.existsSync(aboutPath)) {
+        const buf = fs.readFileSync(aboutPath);
+        tasks.push(uploadImageToGridFS(buf, 'upscaled_image_high_quality.webp', 'hero-about', 'image/webp'));
+    }
+
+    if (tasks.length === 0) {
+        console.warn('No hero image files found in /public to seed. Place hero-banner.webp and upscaled_image_high_quality.webp.');
+        return;
+    }
+
+    await Promise.all(tasks);
+    console.log('✅ Seeded hero banners to GridFS (hero-home, hero-about)');
+}
+
+async function downloadImage(url: string): Promise<Buffer> {
+	const response = await fetch(url);
+	if (!response.ok) {
+		throw new Error(`Failed to download image from ${url}: ${response.statusText}`);
+	}
+	const arrayBuffer = await response.arrayBuffer();
+	return Buffer.from(arrayBuffer);
+}
+
+async function seedAboutPageImages() {
+	const db = await getDb();
+	const filesCol = db.collection('images.files');
+
+	// Image mappings: section -> { url, filename, mimeType }
+	const imageMappings = [
+		{ section: 'about-milestone-1' as const, url: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop', filename: 'milestone-1.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-milestone-2' as const, url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop', filename: 'milestone-2.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-milestone-3' as const, url: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800&auto=format&fit=crop', filename: 'milestone-3.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-milestone-4' as const, url: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=800&auto=format&fit=crop', filename: 'milestone-4.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-feature-1' as const, url: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=400&auto=format&fit=crop', filename: 'feature-1.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-feature-2' as const, url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop', filename: 'feature-2.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-feature-3' as const, url: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=400&auto=format&fit=crop', filename: 'feature-3.jpg', mimeType: 'image/jpeg' },
+		{ section: 'about-feature-4' as const, url: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=400&auto=format&fit=crop', filename: 'feature-4.jpg', mimeType: 'image/jpeg' },
+	];
+
+	const tasks: Array<Promise<unknown>> = [];
+
+	for (const mapping of imageMappings) {
+		const existing = await filesCol.findOne({ 'metadata.section': mapping.section });
+		if (!existing) {
+			try {
+				console.log(`Downloading ${mapping.section}...`);
+				const buffer = await downloadImage(mapping.url);
+				tasks.push(uploadImageToGridFS(buffer, mapping.filename, mapping.section, mapping.mimeType));
+			} catch (error) {
+				console.error(`Failed to seed ${mapping.section}:`, error);
+			}
+		} else {
+			console.log(`${mapping.section} already exists, skipping...`);
+		}
+	}
+
+	if (tasks.length === 0) {
+		console.log('All about page images already exist in GridFS, skipping seed...');
+		return;
+	}
+
+	await Promise.all(tasks);
+	console.log(`✅ Seeded ${tasks.length} about page images to GridFS`);
+}
 

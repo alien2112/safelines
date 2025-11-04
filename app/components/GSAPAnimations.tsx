@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLanguage } from '../contexts/LanguageContext';
+import { debounce } from '../lib/debounce';
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -12,12 +13,15 @@ if (typeof window !== 'undefined') {
 
 export function GSAPAnimations() {
   const { language } = useLanguage();
+  const triggersRef = useRef<ScrollTrigger[]>([]);
 
   useEffect(() => {
+    // Clear only our own triggers first
+    triggersRef.current.forEach(trigger => trigger.kill());
+    triggersRef.current = [];
+    
     // Wait for layout to settle after language/RTL changes
     const initAnimations = () => {
-      // Kill existing triggers first
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       
       // Hero Section Animations
       const heroTag = document.querySelector('.hero-tag');
@@ -62,7 +66,7 @@ export function GSAPAnimations() {
       const wordsEl = el.querySelectorAll('.word');
       gsap.set(wordsEl, { opacity: 0, y: 30 });
       
-      ScrollTrigger.create({
+      const trigger = ScrollTrigger.create({
         trigger: el,
         start: 'top 80%',
         onEnter: () => {
@@ -76,13 +80,14 @@ export function GSAPAnimations() {
         },
         once: true
       });
+      triggersRef.current.push(trigger);
     });
 
     // Section Titles Animation
     const sectionTitles = document.querySelectorAll('h2.about-title, h2.projects-title, h2.services-title, h2.faq-title, h2.pricing-title, h2.easy-title, h2.strategy-title, h2.community-title, h2.cta-title, h2.contact-title');
     sectionTitles.forEach((title) => {
       gsap.set(title, { opacity: 0, y: 50 });
-      ScrollTrigger.create({
+      const trigger = ScrollTrigger.create({
         trigger: title,
         start: 'top 85%',
         onEnter: () => {
@@ -95,13 +100,14 @@ export function GSAPAnimations() {
         },
         once: true
       });
+      triggersRef.current.push(trigger);
     });
 
     // Paragraphs Animation
     const paragraphs = document.querySelectorAll('.about-subtext, .projects-subtext, .faq-subtext, .pricing-subtext, .hero-subheadline');
     paragraphs.forEach((p) => {
       gsap.set(p, { opacity: 0, y: 30 });
-      ScrollTrigger.create({
+      const trigger = ScrollTrigger.create({
         trigger: p,
         start: 'top 85%',
         onEnter: () => {
@@ -114,9 +120,10 @@ export function GSAPAnimations() {
         },
         once: true
       });
+      triggersRef.current.push(trigger);
     });
 
-    // Cards Staggered Animation
+    // Cards Staggered Animation - Using ScrollTrigger.batch for better performance
     const cardContainers = [
       { selector: '.service-card', stagger: 0.1 },
       { selector: '.svc-card', stagger: 0.08 },
@@ -138,22 +145,26 @@ export function GSAPAnimations() {
       if (cards.length > 0) {
         gsap.set(cards, { opacity: 0, y: 60, scale: 0.95 });
         
-        const parent = cards[0]?.parentElement || cards[0];
-        ScrollTrigger.create({
-          trigger: parent,
-          start: 'top 80%',
-          onEnter: () => {
-            gsap.to(cards, {
+        // Use batch for better performance with many elements
+        const batchTriggers = ScrollTrigger.batch(selector, {
+          onEnter: (batch) => {
+            gsap.to(batch, {
               opacity: 1,
               y: 0,
               scale: 1,
               duration: 0.8,
               stagger: stagger,
-              ease: 'power2.out'
+              ease: 'power2.out',
+              overwrite: 'auto'
             });
           },
-          once: true
+          once: true,
+          start: 'top 80%'
         });
+        // ScrollTrigger.batch returns an array of triggers
+        if (Array.isArray(batchTriggers)) {
+          triggersRef.current.push(...batchTriggers);
+        }
       }
     });
 
@@ -201,7 +212,7 @@ export function GSAPAnimations() {
     if (heroSection) {
       const heroElements = document.querySelectorAll('.hero-headline, .hero-tag, .hero-cta');
       heroElements.forEach((el) => {
-        ScrollTrigger.create({
+        const trigger = ScrollTrigger.create({
           trigger: heroSection,
           start: 'top top',
           end: 'bottom top',
@@ -214,6 +225,7 @@ export function GSAPAnimations() {
             });
           }
         });
+        triggersRef.current.push(trigger);
       });
     }
 
@@ -221,7 +233,7 @@ export function GSAPAnimations() {
     const ctaBadges = document.querySelectorAll('.cta-badge');
     ctaBadges.forEach((badge, index) => {
       gsap.set(badge, { opacity: 0, scale: 0.8, rotation: -10 });
-      ScrollTrigger.create({
+      const trigger = ScrollTrigger.create({
         trigger: badge,
         start: 'top 85%',
         onEnter: () => {
@@ -236,6 +248,7 @@ export function GSAPAnimations() {
         },
         once: true
       });
+      triggersRef.current.push(trigger);
     });
 
     // Buttons Hover Animation
@@ -290,7 +303,7 @@ export function GSAPAnimations() {
       const featureImage = projectFeature.querySelector('.feature-image img');
       if (featureImage) {
         gsap.set(featureImage, { scale: 1.1, opacity: 0 });
-        ScrollTrigger.create({
+        const trigger = ScrollTrigger.create({
           trigger: projectFeature,
           start: 'top 80%',
           onEnter: () => {
@@ -303,6 +316,7 @@ export function GSAPAnimations() {
           },
           once: true
         });
+        triggersRef.current.push(trigger);
       }
     }
 
@@ -329,10 +343,10 @@ export function GSAPAnimations() {
       });
     };
 
-    // Refresh on window resize as well
-    const handleResize = () => {
+    // Debounce resize handler for better performance
+    const handleResize = debounce(() => {
       ScrollTrigger.refresh();
-    };
+    }, 250);
 
     window.addEventListener('load', handleLoad);
     window.addEventListener('resize', handleResize);
@@ -342,7 +356,9 @@ export function GSAPAnimations() {
       clearTimeout(timeoutId);
       window.removeEventListener('load', handleLoad);
       window.removeEventListener('resize', handleResize);
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      // Only kill triggers created by this component
+      triggersRef.current.forEach(trigger => trigger.kill());
+      triggersRef.current = [];
     };
   }, [language]); // Re-run when language changes
 

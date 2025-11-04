@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Blob from './Blob';
 import { useLanguage } from '../contexts/LanguageContext';
+import { FaUser } from 'react-icons/fa';
 
 type Testimonial = {
   avatarSrc: string;
@@ -77,10 +78,8 @@ export function TestimonialsSection({
               {/* header row: avatar left, source right */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 72, height: 72, borderRadius: 14, overflow: 'hidden', background: '#F1F5F9', flex: '0 0 auto' }}>
-                    {/* Using next/image for perf; falling back to img if external */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={t.avatarSrc} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div className="author-icon" style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+                    <FaUser />
                   </div>
                   <div>
                     <div style={{ color: 'var(--gray-900)', fontWeight: 700 }}>{t.name}</div>
@@ -101,9 +100,8 @@ export function TestimonialsSection({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 28 }}>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {reviewUsers.slice(0, 5).map((src, i) => (
-              <span key={i} style={{ width: 28, height: 28, borderRadius: '50%', overflow: 'hidden', border: '2px solid #fff', boxShadow: '0 4px 10px rgba(2,8,23,0.10)', marginLeft: i === 0 ? 0 : -8, background: '#E2E8F0' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt="user" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <span key={i} className="author-icon" style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #fff', boxShadow: '0 4px 10px rgba(70, 4, 66, 0.1)', marginLeft: i === 0 ? 0 : -8, background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, flexShrink: 0 }}>
+                <FaUser />
               </span>
             ))}
           </div>

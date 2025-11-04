@@ -1,20 +1,62 @@
 "use client";
 
 import Link from 'next/link';
-import VideoBackground from './components/VideoBackground';
-import { ProjectsSection } from './components/Projects';
-import { AboutSection } from './components/About';
-import { ServicesSection } from './components/Services';
-import CTASection from './components/CTA';
-import MakingEasySection from './components/MakingEasy';
-import StrategyContentSection from './components/StrategyContent';
-import CommunitySection from './components/Community';
-import FAQSection from './components/FAQ';
-import PricingShippingSection from './components/PricingShipping';
-import TestimonialsSection from './components/Testimonials';
-import Footer from './components/Footer';
-import { GSAPAnimations } from './components/GSAPAnimations';
+import dynamic from 'next/dynamic';
 import { useLanguage } from './contexts/LanguageContext';
+
+// Critical components loaded immediately
+import HeroBanner from './components/HeroBanner';
+import VideoBackground from './components/VideoBackground';
+
+// Lazy load heavy components for better initial load
+const ProjectsSection = dynamic(() => import('./components/Projects').then(mod => ({ default: mod.ProjectsSection })), {
+  loading: () => <div style={{ minHeight: '400px' }} />
+});
+
+const AboutSection = dynamic(() => import('./components/About').then(mod => ({ default: mod.AboutSection })), {
+  loading: () => <div style={{ minHeight: '400px' }} />
+});
+
+const ServicesSection = dynamic(() => import('./components/Services').then(mod => ({ default: mod.ServicesSection })), {
+  loading: () => <div style={{ minHeight: '400px' }} />
+});
+
+const TestimonialsSection = dynamic(() => import('./components/Testimonials'), {
+  loading: () => <div style={{ minHeight: '300px' }} />
+});
+
+const FAQSection = dynamic(() => import('./components/FAQ'), {
+  loading: () => <div style={{ minHeight: '300px' }} />
+});
+
+const PricingShippingSection = dynamic(() => import('./components/PricingShipping'), {
+  loading: () => <div style={{ minHeight: '300px' }} />
+});
+
+const MakingEasySection = dynamic(() => import('./components/MakingEasy'), {
+  loading: () => <div style={{ minHeight: '300px' }} />
+});
+
+const StrategyContentSection = dynamic(() => import('./components/StrategyContent'), {
+  loading: () => <div style={{ minHeight: '300px' }} />
+});
+
+const CommunitySection = dynamic(() => import('./components/Community'), {
+  loading: () => <div style={{ minHeight: '300px' }} />
+});
+
+const CTASection = dynamic(() => import('./components/CTA'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
+
+const Footer = dynamic(() => import('./components/Footer'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
+
+// GSAP animations loaded without SSR
+const GSAPAnimations = dynamic(() => import('./components/GSAPAnimations').then(mod => ({ default: mod.GSAPAnimations })), {
+  ssr: false
+});
 
 export default function HomePage() {
   const { language, t } = useLanguage();
@@ -23,10 +65,19 @@ export default function HomePage() {
   return (
     <main>
       <GSAPAnimations />
+      <HeroBanner section="hero-home" alt="Hero Banner" objectPosition="50% 66%">
+        <div className="banner-card" dir={isRTL ? 'rtl' : 'ltr'}>
+          <p>we have your trust</p>
+        </div>
+      </HeroBanner>
+      <div className="section-separator" aria-hidden="true">
+        <div className="separator-wave-layer separator-wave-1"></div>
+        <div className="separator-wave-layer separator-wave-2"></div>
+      </div>
       <section className="hero">
         <VideoBackground src="/hero-animations.mp4" scale={1} />
         <div className="container hero-row">
-          <div>
+          <div style={{ marginTop: 80 }}>
             <div className="hero-tag" aria-label="tag" dir={isRTL ? 'rtl' : 'ltr'}>
               <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
               {t.home.hero.tag}

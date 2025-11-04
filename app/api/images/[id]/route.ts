@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
 import { getBucket } from "../../../lib/gridfs";
 import { ObjectId } from "mongodb";
+import crypto from "crypto";
 
 export const runtime = "nodejs";
 
 // Stream image by id
-export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	const bucket = await getBucket();
     try {
@@ -13,6 +14,24 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
         const cursor = bucket.find({ _id: fileId });
         const file = await cursor.next();
         if (!file) return new Response("Not found", { status: 404 });
+        
+        // Generate ETag from uploadDate for cache busting
+        const uploadDate = file.uploadDate?.toISOString() || new Date().toISOString();
+        const etag = `"${crypto.createHash('md5').update(`${id}-${uploadDate}`).digest('hex')}"`;
+        
+        // Check If-None-Match header for cache validation
+        const ifNoneMatch = req.headers.get('if-none-match');
+        if (ifNoneMatch === etag) {
+            return new Response(null, {
+                status: 304,
+                headers: {
+                    'ETag': etag,
+                    'Cache-Control': 'public, max-age=1800, s-maxage=1800, must-revalidate',
+                    'Last-Modified': file.uploadDate?.toUTCString() || new Date().toUTCString(),
+                },
+            });
+        }
+        
         const stream = bucket.openDownloadStream(fileId);
 		const readableStream = stream as unknown as NodeJS.ReadableStream;
 		const body = new ReadableStream({
@@ -25,7 +44,9 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 		return new Response(body, {
 			headers: {
 				"content-type": file.contentType || "application/octet-stream",
-				"cache-control": "public, max-age=3600",
+				"cache-control": "public, max-age=1800, s-maxage=1800, must-revalidate",
+				"ETag": etag,
+				"Last-Modified": file.uploadDate?.toUTCString() || new Date().toUTCString(),
 			},
 		});
 	} catch {

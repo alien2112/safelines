@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 
 type VideoBackgroundProps = {
@@ -21,7 +23,7 @@ const CACHED_VIDEOS = [
   '2025-11-03 18-02-55.mp4',
 ];
 
-export default function VideoBackground({
+const VideoBackground = React.memo(function VideoBackground({
   src,
   mimeType = 'video/mp4',
   poster = '',
@@ -38,6 +40,29 @@ export default function VideoBackground({
   const fileName = src.replace(/^\/+/, ''); // Remove leading slashes
   const isCachedVideo = CACHED_VIDEOS.includes(fileName);
   const videoSrc = isCachedVideo ? `/api/videos/${encodeURIComponent(fileName)}` : src;
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const [isVisible, setIsVisible] = React.useState(false);
+  
+  // Lazy load video when in viewport
+  React.useEffect(() => {
+    if (!videoRef.current) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '50px' }
+    );
+    
+    observer.observe(videoRef.current);
+    
+    return () => observer.disconnect();
+  }, []);
   
   const wrapperStyle: React.CSSProperties = fixed
     ? { position: 'fixed', inset: 0, zIndex }
@@ -45,19 +70,29 @@ export default function VideoBackground({
   return (
     <div className={["hero-bg", className].filter(Boolean).join(' ')} style={wrapperStyle}>
       <video
-        autoPlay={autoPlay}
+        ref={videoRef}
+        autoPlay={autoPlay && isVisible}
         muted={muted}
         loop={loop}
         playsInline={playsInline}
-        preload="auto"
+        preload={isVisible ? "auto" : "none"}
         poster={poster}
+        controls={false}
+        controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
+        disablePictureInPicture
+        onContextMenu={(e) => e.preventDefault()}
+        tabIndex={-1}
+        aria-hidden="true"
+        draggable={false}
         style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}
       >
-        <source src={videoSrc} type={mimeType} />
+        {isVisible && <source src={videoSrc} type={mimeType} />}
       </video>
       {children}
     </div>
   );
-}
+});
+
+export default VideoBackground;
 
 

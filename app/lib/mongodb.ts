@@ -13,7 +13,12 @@ export function getMongoUri(): string {
 export function getMongoClient(): Promise<MongoClient> {
 	if (!clientPromise) {
 		const uri = getMongoUri();
-		const client = new MongoClient(uri);
+		const client = new MongoClient(uri, {
+			tls: true,
+			tlsAllowInvalidCertificates: false,
+			serverSelectionTimeoutMS: 5000,
+			connectTimeoutMS: 10000,
+		});
 		clientPromise = client.connect();
 	}
 	return clientPromise;

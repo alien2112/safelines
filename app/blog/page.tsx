@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useBlogs } from '../lib/swr-config';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -24,70 +25,40 @@ type BlogPost = {
   slug?: string;
 };
 
-// Get blog posts from MongoDB via API
-async function getBlogPosts(): Promise<BlogPost[]> {
-  if (typeof window === 'undefined') return [];
-  
-  try {
-    const res = await fetch('/api/blogs', { cache: 'no-store' });
-    if (res.ok) {
-      const adminPosts = await res.json();
-      // Convert admin post format to blog page format
-      // Note: Language selection will be handled in the component
-      return adminPosts
-        .filter((post: any) => post.published) // Only show published posts
-        .map((post: any) => ({
-          id: post._id?.toString() || post.id,
-          title: post.title || '',
-          titleAr: post.titleAr || post.title || '',
-          excerpt: post.excerpt || '',
-          excerptAr: post.excerptAr || post.excerpt || '',
-          author: 'Safe Lines Team', // Default author
-          date: new Date(post.createdAt).toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          }),
-          category: post.category,
-          image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
-          readTime: '5 min read', // Default read time
-          slug: post.slug, // Include slug from admin post
-        }))
-        .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date, newest first
-    }
-    return [];
-  } catch {
-    return [];
-  }
-}
 
 export default function BlogPage() {
   const { language, t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const isRTL = language === 'ar';
-  const [blogPosts, setBlogPosts] = React.useState<BlogPost[]>([]);
+  
+  // Use SWR for data fetching
+  const { data: adminPosts } = useBlogs();
 
-  React.useEffect(() => {
-    async function loadPosts() {
-      const posts = await getBlogPosts();
-      // Update posts with current language
-      const updatedPosts = posts.map(post => ({
-        ...post,
-        title: language === 'ar' ? (post.titleAr || post.title) : post.title,
-        excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
-      }));
-      setBlogPosts(updatedPosts);
-    }
-    loadPosts();
-    // Check periodically for changes
-    const interval = setInterval(() => {
-      loadPosts();
-    }, 5000); // Check every 5 seconds
-    return () => {
-      clearInterval(interval);
-    };
-  }, [language]);
+  // Transform and memoize blog posts
+  const blogPosts = useMemo(() => {
+    if (!adminPosts) return [];
+    
+    return adminPosts
+      .map((post: any) => ({
+        id: post._id?.toString() || post.id,
+        title: language === 'ar' ? (post.titleAr || post.title) : (post.title || ''),
+        titleAr: post.titleAr || post.title || '',
+        excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : (post.excerpt || ''),
+        excerptAr: post.excerptAr || post.excerpt || '',
+        author: 'Safe Lines Team',
+        date: new Date(post.createdAt).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }),
+        category: post.category,
+        image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
+        readTime: '5 min read',
+        slug: post.slug,
+      }))
+      .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [adminPosts, language]);
 
   useEffect(() => {
     // Split Text Animation for Hero

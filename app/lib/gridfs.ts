@@ -6,7 +6,9 @@ export async function getBucket() {
 	return new GridFSBucket(db, { bucketName: "images" });
 }
 
-export type ImageSection = "making-easy" | "strategy-right" | "blog";
+export type ImageSection = "making-easy" | "strategy-right" | "blog" | "hero-home" | "hero-about" | 
+	"about-milestone-1" | "about-milestone-2" | "about-milestone-3" | "about-milestone-4" |
+	"about-feature-1" | "about-feature-2" | "about-feature-3" | "about-feature-4" | "services";
 
 export async function uploadImageToGridFS(
 	buffer: Buffer,

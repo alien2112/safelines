@@ -4,21 +4,13 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLanguage } from '../contexts/LanguageContext';
+import HeroBanner from '../components/HeroBanner';
+import DynamicImage from '../components/DynamicImage';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const IMAGES = {
-  feature1: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=400&auto=format&fit=crop',
-  feature2: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop',
-  feature3: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=400&auto=format&fit=crop',
-  feature4: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=400&auto=format&fit=crop',
-  milestone1: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop',
-  milestone2: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
-  milestone3: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800&auto=format&fit=crop',
-  milestone4: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=800&auto=format&fit=crop',
-};
 
 export default function AboutPage() {
   const { language, t } = useLanguage();
@@ -266,6 +258,8 @@ export default function AboutPage() {
 
   return (
     <main className="about-page">
+      {/* Banner Section */}
+      <HeroBanner section="hero-about" alt="About Us Banner" objectPosition="50% 50%" />
       {/* Hero Section */}
       <section className="about-hero">
         <div className="about-parallax-shape about-shape-1" />
@@ -320,9 +314,9 @@ export default function AboutPage() {
                   <h3 className="about-story-item-title">{milestone.title}</h3>
                   <p className="about-story-item-text">{milestone.description}</p>
                 </div>
-                <div
+                <DynamicImage
+                  section={`about-milestone-${index + 1}`}
                   className="about-story-image"
-                  style={{ backgroundImage: `url(${IMAGES[`milestone${index + 1}` as keyof typeof IMAGES]})` }}
                 />
               </div>
             ))}
@@ -341,9 +335,9 @@ export default function AboutPage() {
             {t.about.whyChoose.features.map((feature, index) => (
               <div key={feature.name} className="about-team-card">
                 <div className="about-team-card-image-wrapper">
-                  <div
+                  <DynamicImage
+                    section={`about-feature-${index + 1}`}
                     className="about-team-card-image"
-                    style={{ backgroundImage: `url(${IMAGES[`feature${index + 1}` as keyof typeof IMAGES]})` }}
                   />
                 </div>
                 <div className="about-team-card-content" dir={isRTL ? 'rtl' : 'ltr'}>

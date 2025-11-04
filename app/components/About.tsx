@@ -15,10 +15,12 @@ export function AboutSection() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const statsRef = useRef<HTMLDivElement>(null);
+  const triggersRef = useRef<ScrollTrigger[]>([]);
 
   useEffect(() => {
-    // Kill all existing ScrollTriggers first
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    // Clear any existing triggers from this component
+    triggersRef.current.forEach(trigger => trigger.kill());
+    triggersRef.current = [];
     
     // Stats Counter Animation - wait for DOM to be ready
     const initStatsAnimation = () => {
@@ -114,13 +116,14 @@ export function AboutSection() {
           });
         };
 
-        // Create ScrollTrigger
-        ScrollTrigger.create({
+        // Create ScrollTrigger and store reference
+        const trigger = ScrollTrigger.create({
           trigger: triggerElement,
           start: 'top 85%',
           onEnter: animateCounter,
           once: true,
         });
+        triggersRef.current.push(trigger);
 
         // Check immediately if already in viewport (after a delay to ensure DOM is ready)
         const checkVisibility = () => {
@@ -157,7 +160,9 @@ export function AboutSection() {
 
     return () => {
       clearTimeout(timeoutId);
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      // Only kill triggers created by this component
+      triggersRef.current.forEach((trigger) => trigger.kill());
+      triggersRef.current = [];
     };
   }, [t.home.about.stats, language]); // Re-run when language changes
 

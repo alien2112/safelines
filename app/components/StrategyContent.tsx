@@ -1,7 +1,9 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useImages } from '../lib/swr-config';
 
 type Metric = { label: string; color: "blue" | "teal" | "red"; before: number; after: number; beforeLabel: string; afterLabel: string };
 
@@ -45,7 +47,7 @@ export default function StrategyContentSection() {
         </div>
 
         <div className="strategy-grid">
-          <div className="strategy-card left">
+          <div className="strategy-card left" style={{ position: 'relative' }}>
             <div className="ab-toggle" role="tablist" aria-label="Before After toggle">
               <button
                 type="button"
@@ -101,31 +103,26 @@ export default function StrategyContentSection() {
 }
 
 
-function StrategyRightImage() {
-  const [imageId, setImageId] = React.useState<string | null>(null);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/api/images?section=strategy-right', { cache: 'no-store' });
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setImageId(data[0]._id);
-        }
-      } catch {
-        // ignore
-      }
-    })();
-  }, []);
+const StrategyRightImage = React.memo(function StrategyRightImage() {
+  const { data: imagesData } = useImages('strategy-right');
+  
+  const imageId = React.useMemo(() => {
+    if (!imagesData || !Array.isArray(imagesData) || imagesData.length === 0) return null;
+    return imagesData[0]._id;
+  }, [imagesData]);
+  
   if (!imageId) {
     return null;
   }
   return (
-    <img
+    <Image
       src={`/api/images/${imageId}`}
       alt="Strategy & Content"
-      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }}
+      fill
+      style={{ objectFit: 'cover', borderRadius: 12 }}
+      sizes="(max-width: 768px) 100vw, 50vw"
     />
   );
-}
+});
 
 

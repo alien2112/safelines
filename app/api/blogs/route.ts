@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { getDb } from "../../lib/mongodb";
 import { ObjectId } from "mongodb";
+import crypto from "crypto";
 
 export const runtime = "nodejs";
 
@@ -9,13 +10,75 @@ export async function GET(req: NextRequest) {
 	try {
 		const db = await getDb();
 		const blogs = db.collection("blogs");
-		const results = await blogs
-			.find({})
-			.sort({ createdAt: -1 })
-			.toArray();
+		
+		// Check if this is an admin request (for unpublished posts)
+		const { searchParams } = new URL(req.url);
+		const includeUnpublished = searchParams.get('includeUnpublished') === 'true';
+		
+		// Use aggregation pipeline for optimized query
+		const pipeline = [
+			// Filter published blogs in database (unless admin request)
+			...(includeUnpublished ? [] : [{ $match: { published: true } }]),
+			// Sort by createdAt descending
+			{ $sort: { createdAt: -1 } },
+			// Project only needed fields
+			{
+				$project: {
+					_id: 1,
+					title: 1,
+					titleAr: 1,
+					excerpt: 1,
+					excerptAr: 1,
+					content: 1,
+					contentAr: 1,
+					featuredImage: 1,
+					category: 1,
+					slug: 1,
+					published: 1,
+					tags: 1,
+					createdAt: 1,
+					updatedAt: 1,
+				},
+			},
+			// Add latest update timestamp for cache busting
+			{
+				$facet: {
+					blogs: [{ $match: {} }],
+					metadata: [
+						{ $group: { _id: null, maxUpdatedAt: { $max: "$updatedAt" } } },
+					],
+				},
+			},
+		];
+		
+		const [result] = await blogs.aggregate(pipeline).toArray();
+		const results = result?.blogs || [];
+		const maxUpdatedAt = result?.metadata?.[0]?.maxUpdatedAt || new Date().toISOString();
+		
+		// Generate ETag from the latest updatedAt
+		const etag = `"${crypto.createHash('md5').update(String(maxUpdatedAt)).digest('hex').slice(0, 16)}"`;
+		
+		// Check If-None-Match header for cache validation
+		const ifNoneMatch = req.headers.get('if-none-match');
+		if (ifNoneMatch === etag) {
+			return new Response(null, {
+				status: 304,
+				headers: {
+					'ETag': etag,
+					'Cache-Control': 'public, max-age=300, s-maxage=600, stale-while-revalidate=1800',
+					'Last-Modified': new Date(maxUpdatedAt).toUTCString(),
+				},
+			});
+		}
+		
 		return new Response(JSON.stringify(results), {
 			status: 200,
-			headers: { "content-type": "application/json" },
+			headers: {
+				"content-type": "application/json",
+				'Cache-Control': 'public, max-age=300, s-maxage=600, stale-while-revalidate=1800',
+				'ETag': etag,
+				'Last-Modified': new Date(maxUpdatedAt).toUTCString(),
+			},
 		});
 	} catch (error: any) {
 		return new Response(JSON.stringify({ error: error.message }), {

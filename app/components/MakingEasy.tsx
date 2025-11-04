@@ -1,8 +1,10 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import VideoBackground from './VideoBackground';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useImages } from '../lib/swr-config';
 
 export default function MakingEasySection() {
   const { language, t } = useLanguage();
@@ -11,15 +13,15 @@ export default function MakingEasySection() {
     <section className="section-easy">
       <div className="container">
         <div className="easy-header">
-          <h2 className="easy-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.title}</h2>
           <span className="easy-side left" aria-hidden />
+          <h2 className="easy-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.title}</h2>
           <span className="easy-side right" aria-hidden />
         </div>
 
         <div className="easy-grid">
           {/* Left: image from GridFS */}
           <div className="easy-card image">
-            <div className="easy-surface">
+            <div className="easy-surface" style={{ position: 'relative' }}>
               <MakingEasyImage />
             </div>
           </div>
@@ -84,31 +86,26 @@ export default function MakingEasySection() {
 }
 
 
-function MakingEasyImage() {
-  const [imageId, setImageId] = React.useState<string | null>(null);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/api/images?section=making-easy', { cache: 'no-store' });
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setImageId(data[0]._id);
-        }
-      } catch {
-        // ignore
-      }
-    })();
-  }, []);
+const MakingEasyImage = React.memo(function MakingEasyImage() {
+  const { data: imagesData } = useImages('making-easy');
+  
+  const imageId = React.useMemo(() => {
+    if (!imagesData || !Array.isArray(imagesData) || imagesData.length === 0) return null;
+    return imagesData[0]._id;
+  }, [imagesData]);
+  
   if (!imageId) {
     return <div className="easy-image" aria-label="image placeholder" />;
   }
   return (
-    <img
+    <Image
       src={`/api/images/${imageId}`}
       alt="Making future easy"
-      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }}
+      fill
+      style={{ objectFit: 'cover', borderRadius: 12 }}
+      sizes="(max-width: 768px) 100vw, 50vw"
     />
   );
-}
+});
 
 

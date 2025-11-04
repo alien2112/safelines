@@ -53,7 +53,7 @@ export function Navbar() {
         <ul className="nav-links" role="menubar">
           <li role="none"><Link role="menuitem" href="/" className="nav-link">{currentNavLinks.home}</Link></li>
           <li role="none"><Link role="menuitem" href="/about" className="nav-link">{currentNavLinks.about}</Link></li>
-          <li role="none"><Link role="menuitem" href="#services" className="nav-link">{currentNavLinks.services}</Link></li>
+          <li role="none"><Link role="menuitem" href="/services" className="nav-link">{currentNavLinks.services}</Link></li>
           <li role="none"><Link role="menuitem" href="/blog" className="nav-link">{currentNavLinks.blog}</Link></li>
         </ul>
         <div className="nav-right">
@@ -91,7 +91,7 @@ export function Navbar() {
             <nav className="nav-mobile-links">
               <Link href="/" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.home}</Link>
               <Link href="/about" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.about}</Link>
-              <Link href="#services" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.services}</Link>
+              <Link href="/services" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.services}</Link>
               <Link href="/blog" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.blog}</Link>
             </nav>
             <div className="nav-mobile-actions">
