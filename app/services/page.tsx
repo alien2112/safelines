@@ -52,10 +52,10 @@ export default function ServicesPage() {
   const cardsRef = useRef<HTMLDivElement | null>(null);
 
   const CATEGORIES = [
-    { key: "all", label: t.services.page.categories.all },
-    { key: "transportation", label: t.services.page.categories.transportation },
-    { key: "customs", label: t.services.page.categories.customs },
-    { key: "support", label: t.services.page.categories.support },
+    { key: "all", label: t.home.services.page.categories.all },
+    { key: "transportation", label: t.home.services.page.categories.transportation },
+    { key: "customs", label: t.home.services.page.categories.customs },
+    { key: "support", label: t.home.services.page.categories.support },
   ];
 
   useEffect(() => {
@@ -106,17 +106,17 @@ export default function ServicesPage() {
       <section ref={heroRef} className="srv-hero">
         <div className="srv-hero-inner">
           <p data-hero className="srv-hero-badge" dir={isRTL ? 'rtl' : 'ltr'}>
-            {t.services.page.hero.badge}
+            {t.home.services.page.hero.badge}
           </p>
           <h1 data-hero className="srv-hero-title" dir={isRTL ? 'rtl' : 'ltr'}>
-            {t.services.page.hero.title}
+            {t.home.services.page.hero.title}
           </h1>
           <p data-hero className="srv-hero-sub" dir={isRTL ? 'rtl' : 'ltr'}>
-            {t.services.page.hero.subtitle}
+            {t.home.services.page.hero.subtitle}
           </p>
           <div data-hero style={{ marginTop: 24 }}>
             <a href="#catalog" className="srv-cta" dir={isRTL ? 'rtl' : 'ltr'}>
-              {t.services.page.hero.cta} <FaArrowRight />
+              {t.home.services.page.hero.cta} <FaArrowRight />
             </a>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function ServicesPage() {
             })}
           </div>
           <a href="#track" className="srv-track-link" dir={isRTL ? 'rtl' : 'ltr'}>
-            {t.services.page.track.link} <FaArrowRight />
+            {t.home.services.page.track.link} <FaArrowRight />
           </a>
         </div>
 
@@ -152,7 +152,7 @@ export default function ServicesPage() {
         <div ref={cardsRef} className="srv-grid">
           {filtered.length === 0 && (
             <div style={{ color: '#475569' }} dir={isRTL ? 'rtl' : 'ltr'}>
-              {t.services.page.noServices}
+              {t.home.services.page.noServices}
             </div>
           )}
           {filtered.map((svc) => (
@@ -188,7 +188,7 @@ export default function ServicesPage() {
                   className="srv-card-btn"
                   dir={isRTL ? 'rtl' : 'ltr'}
                 >
-                  {t.services.page.learnMore} <FaArrowRight />
+                  {t.home.services.page.learnMore} <FaArrowRight />
                 </button>
               </div>
             </article>
@@ -206,15 +206,15 @@ export default function ServicesPage() {
               </div>
               <div>
                 <h3 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
-                  {t.services.page.track.title}
+                  {t.home.services.page.track.title}
                 </h3>
                 <p style={{ fontSize: 14, color: '#475569', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
-                  {t.services.page.track.subtitle}
+                  {t.home.services.page.track.subtitle}
                 </p>
               </div>
             </div>
             <a href="/contact" className="srv-track-cta" dir={isRTL ? 'rtl' : 'ltr'}>
-              {t.services.page.track.cta} <FaArrowRight />
+              {t.home.services.page.track.cta} <FaArrowRight />
             </a>
           </div>
         </div>
@@ -386,9 +386,9 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
 
             <div className="srv-modal-tabs">
               {[
-                { key: "overview", label: t.services.page.modal.tabs.overview },
-                { key: "process", label: t.services.page.modal.tabs.process },
-                { key: "pricing", label: t.services.page.modal.tabs.pricing },
+                { key: "overview", label: t.home.services.page.modal.tabs.overview },
+                { key: "process", label: t.home.services.page.modal.tabs.process },
+                { key: "pricing", label: t.home.services.page.modal.tabs.pricing },
               ].map((tabItem) => {
                 const active = tabItem.key === tab;
                 return (
@@ -407,12 +407,12 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
             <div data-tab className="srv-modal-content">
               {tab === "overview" && (
                 <p dir={isRTL ? 'rtl' : 'ltr'}>
-                  {t.services.page.modal.overview}
+                  {t.home.services.page.modal.overview}
                 </p>
               )}
               {tab === "process" && (
                 <div ref={processStepsRef} className="process-steps" style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginTop: '16px', flexWrap: 'wrap' }}>
-                  {t.services.page.modal.processSteps.map((step, index) => (
+                  {t.home.services.page.modal.processSteps.map((step, index) => (
                     <div key={index} className="process-step" style={{ position: 'relative', padding: '20px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%)', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)', flex: '1 1 0', minWidth: '140px', maxWidth: '180px' }}>
                       <div className="process-step-number" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 800, marginBottom: '12px' }}>
                         {index + 1}
@@ -425,7 +425,7 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
                           {step.description}
                         </p>
                       </div>
-                      {index < t.services.page.modal.processSteps.length - 1 && (
+                      {index < t.home.services.page.modal.processSteps.length - 1 && (
                         <div className="process-step-connector" style={{ position: 'absolute', top: '50%', right: isRTL ? 'auto' : '-8px', left: isRTL ? '-8px' : 'auto', transform: 'translateY(-50%)', color: 'var(--brand-gold)', fontSize: '16px', zIndex: 1 }}>
                           <FaArrowRight style={{ transform: isRTL ? 'scaleX(-1)' : 'none' }} />
                         </div>
@@ -436,20 +436,20 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
               )}
               {tab === "pricing" && (
                 <p dir={isRTL ? 'rtl' : 'ltr'}>
-                  {t.services.page.modal.pricing}
+                  {t.home.services.page.modal.pricing}
                 </p>
               )}
             </div>
 
             <div className="srv-modal-actions">
               <a href="/contact" className="srv-modal-cta" dir={isRTL ? 'rtl' : 'ltr'}>
-                {t.services.page.modal.actions.request} <FaArrowRight />
+                {t.home.services.page.modal.actions.request} <FaArrowRight />
               </a>
               <Link href={`/services/${service.id}`} className="srv-modal-close" onClick={handleCloseWithAnimation} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }} dir={isRTL ? 'rtl' : 'ltr'}>
-                {t.services.page.modal.actions.viewDetails} <FaArrowRight />
+                {t.home.services.page.modal.actions.viewDetails} <FaArrowRight />
               </Link>
               <button onClick={handleCloseWithAnimation} className="srv-modal-close" dir={isRTL ? 'rtl' : 'ltr'}>
-                {t.services.page.modal.actions.close}
+                {t.home.services.page.modal.actions.close}
               </button>
             </div>
           </div>
