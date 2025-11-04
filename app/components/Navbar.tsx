@@ -184,9 +184,12 @@ export function Navbar() {
               <button
                 type="button"
                 className="nav-mobile-lang-toggle"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   setLanguage(language === 'ar' ? 'en' : 'ar');
-                  setOpen(false);
+                  // Delay closing to ensure language change takes effect
+                  setTimeout(() => setOpen(false), 100);
                 }}
                 aria-label="Toggle language"
               >
@@ -195,7 +198,12 @@ export function Navbar() {
               <button
                 type="button"
                 className="nav-mobile-cta-primary"
-                onClick={(e) => handleMobileLinkClick(e, '/contact')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setOpen(false);
+                  router.push('/contact');
+                }}
                 dir={language === 'ar' ? 'rtl' : 'ltr'}
                 style={{
                   display: 'inline-flex',
