@@ -68,7 +68,7 @@ export default function MakingEasySection() {
 
         {/* Actions row */}
         <div className="easy-actions">
-          <a className="cta-btn-secondary" href="#jobs" dir={isRTL ? 'rtl' : 'ltr'}>
+          <Link className="cta-btn-secondary" href="/jobs" dir={isRTL ? 'rtl' : 'ltr'}>
             <span className="cta-badge icon-only" aria-hidden="true" style={{marginRight: 8}}>
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -78,7 +78,7 @@ export default function MakingEasySection() {
               </svg>
             </span>
             {t.home.makingEasy.jobOpenings}
-          </a>
+          </Link>
           <Link className="faq-cta" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.contact}</Link>
         </div>
       </div>

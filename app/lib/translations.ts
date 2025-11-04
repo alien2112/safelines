@@ -103,6 +103,40 @@ export interface Translations {
     };
   };
 
+  // Jobs Page
+  jobs: {
+    hero: {
+      title: string;
+      subtitle: string;
+    };
+    noJobs: {
+      title: string;
+      subtitle: string;
+      description: string;
+    };
+    card: {
+      apply: string;
+      viewDetails: string;
+    };
+    admin: {
+      title: string;
+      subtitle: string;
+      form: {
+        title: string;
+        titleAr: string;
+        description: string;
+        descriptionAr: string;
+        image: string;
+        published: string;
+        submit: string;
+        cancel: string;
+        delete: string;
+        edit: string;
+        createNew: string;
+      };
+    };
+  };
+
   // Home Page
   home: {
     hero: {
@@ -225,6 +259,26 @@ export interface Translations {
       footer: string;
     };
     footer: {
+      brand: {
+        tagline: string;
+        description: string;
+      };
+      quickLinks: {
+        title: string;
+      };
+      jobs: {
+        title: string;
+        subtitle: string;
+        cta: string;
+        hiring: string;
+      };
+      social: {
+        title: string;
+      };
+      copyright: {
+        text: string;
+        rights: string;
+      };
       links: Array<{
         label: string;
         href: string;
@@ -426,6 +480,38 @@ export const translations: Record<Language, Translations> = {
         text: 'Get the latest articles and insights delivered to your inbox.',
         emailPlaceholder: 'Enter your email',
         subscribe: 'Subscribe',
+      },
+    },
+    jobs: {
+      hero: {
+        title: 'Join Our Team',
+        subtitle: 'Explore exciting career opportunities with Safe Lines Customs Clearance. We\'re looking for talented individuals to help us grow and excel.',
+      },
+      noJobs: {
+        title: 'No Job Openings Available',
+        subtitle: 'We\'re not hiring at the moment',
+        description: 'Thank you for your interest in joining our team. Currently, we don\'t have any open positions, but we\'re always looking for exceptional talent. Please check back soon or contact us directly.',
+      },
+      card: {
+        apply: 'Apply Now',
+        viewDetails: 'View Details',
+      },
+      admin: {
+        title: 'Jobs Management',
+        subtitle: 'Create, edit, and manage job postings',
+        form: {
+          title: 'Job Title (English)',
+          titleAr: 'Job Title (Arabic)',
+          description: 'Job Description (English)',
+          descriptionAr: 'Job Description (Arabic)',
+          image: 'Job Image',
+          published: 'Published',
+          submit: 'Save Job',
+          cancel: 'Cancel',
+          delete: 'Delete',
+          edit: 'Edit',
+          createNew: 'Create New Job',
+        },
       },
     },
     home: {
@@ -651,13 +737,33 @@ export const translations: Record<Language, Translations> = {
         footer: 'We donate 2% of your membership to pediatric wellbeing',
       },
       footer: {
+        brand: {
+          tagline: 'Safe Lines Customs Clearance',
+          description: 'Your trusted partner in customs clearance and logistics services across the Kingdom.',
+        },
+        quickLinks: {
+          title: 'Quick Links',
+        },
+        jobs: {
+          title: 'We\'re Hiring!',
+          subtitle: 'Join our team and grow with us',
+          cta: 'View All Jobs',
+          hiring: 'Check All Job Openings',
+        },
+        social: {
+          title: 'Follow Us',
+        },
+        copyright: {
+          text: '© 2024 Safe Lines Customs Clearance. All rights reserved.',
+          rights: 'All rights reserved.',
+        },
         links: [
-          { label: 'Product', href: '#' },
-          { label: 'Integrations', href: '#' },
-          { label: 'Success Stories', href: '#' },
-          { label: 'Contact Us', href: '#contact' },
-          { label: 'Pricing', href: '#' },
-          { label: 'Careers', href: '#' },
+          { label: 'Home', href: '/' },
+          { label: 'About', href: '/about' },
+          { label: 'Services', href: '/services' },
+          { label: 'Blog', href: '/blog' },
+          { label: 'Contact', href: '/contact' },
+          { label: 'Jobs', href: '/jobs' },
         ],
       },
       testimonials: {
@@ -866,6 +972,38 @@ export const translations: Record<Language, Translations> = {
         text: 'احصل على أحدث المقالات والرؤى مباشرة إلى بريدك الإلكتروني.',
         emailPlaceholder: 'أدخل بريدك الإلكتروني',
         subscribe: 'اشترك',
+      },
+    },
+    jobs: {
+      hero: {
+        title: 'انضم إلى فريقنا',
+        subtitle: 'استكشف فرص وظيفية مثيرة مع الخطوط الآمنة للتخليص الجمركي. نحن نبحث عن أفراد موهوبين لمساعدتنا على النمو والتميز.',
+      },
+      noJobs: {
+        title: 'لا توجد وظائف شاغرة',
+        subtitle: 'نحن لا نوظف في الوقت الحالي',
+        description: 'شكراً لاهتمامك بالانضمام إلى فريقنا. حالياً، ليس لدينا أي وظائف شاغرة، لكننا نبحث دائماً عن المواهب الاستثنائية. يرجى التحقق مرة أخرى قريباً أو الاتصال بنا مباشرة.',
+      },
+      card: {
+        apply: 'تقدم الآن',
+        viewDetails: 'عرض التفاصيل',
+      },
+      admin: {
+        title: 'إدارة الوظائف',
+        subtitle: 'إنشاء وتحرير وإدارة إعلانات الوظائف',
+        form: {
+          title: 'عنوان الوظيفة (الإنجليزية)',
+          titleAr: 'عنوان الوظيفة (العربية)',
+          description: 'وصف الوظيفة (الإنجليزية)',
+          descriptionAr: 'وصف الوظيفة (العربية)',
+          image: 'صورة الوظيفة',
+          published: 'منشور',
+          submit: 'حفظ الوظيفة',
+          cancel: 'إلغاء',
+          delete: 'حذف',
+          edit: 'تعديل',
+          createNew: 'إنشاء وظيفة جديدة',
+        },
       },
     },
     home: {
@@ -1091,13 +1229,33 @@ export const translations: Record<Language, Translations> = {
         footer: 'نتبرع بنسبة 2% من عضويتك لرعاية الأطفال',
       },
       footer: {
+        brand: {
+          tagline: 'الخطوط الآمنة للتخليص الجمركي',
+          description: 'شريكك الموثوق في خدمات التخليص الجمركي واللوجستيات في جميع أنحاء المملكة.',
+        },
+        quickLinks: {
+          title: 'روابط سريعة',
+        },
+        jobs: {
+          title: 'نوظف الآن!',
+          subtitle: 'انضم إلى فريقنا و نم معنا',
+          cta: 'عرض جميع الوظائف',
+          hiring: 'تحقق من جميع الوظائف الشاغرة',
+        },
+        social: {
+          title: 'تابعنا',
+        },
+        copyright: {
+          text: '© 2024 الخطوط الآمنة للتخليص الجمركي. جميع الحقوق محفوظة.',
+          rights: 'جميع الحقوق محفوظة.',
+        },
         links: [
-          { label: 'المنتج', href: '#' },
-          { label: 'التكاملات', href: '#' },
-          { label: 'قصص النجاح', href: '#' },
-          { label: 'اتصل بنا', href: '#contact' },
-          { label: 'التسعير', href: '#' },
-          { label: 'الوظائف', href: '#' },
+          { label: 'الرئيسية', href: '/' },
+          { label: 'من نحن', href: '/about' },
+          { label: 'الخدمات', href: '/services' },
+          { label: 'المدونة', href: '/blog' },
+          { label: 'اتصل بنا', href: '/contact' },
+          { label: 'الوظائف', href: '/jobs' },
         ],
       },
       testimonials: {

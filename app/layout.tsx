@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Navbar } from './components/Navbar';
 import { LoadingScreen } from './components/LoadingScreen';
+import ScrollToTop from './components/ScrollToTop';
 import { Playpen_Sans } from 'next/font/google';
 import { LanguageProvider } from './contexts/LanguageContext';
 
@@ -31,6 +32,7 @@ export default function RootLayout({
         <LanguageProvider>
           <Navbar />
           {children}
+          <ScrollToTop />
         </LanguageProvider>
       </body>
     </html>

@@ -87,7 +87,19 @@ type Service = {
 	testimonials?: Testimonial[];
 };
 
-type ActivePanel = "images" | "blog" | "services" | "seo-config" | "link-mappings";
+type ActivePanel = "images" | "blog" | "services" | "seo-config" | "link-mappings" | "jobs";
+
+type Job = {
+	id: string;
+	title: string;
+	titleAr: string;
+	description: string;
+	descriptionAr: string;
+	image?: string;
+	published: boolean;
+	createdAt: string;
+	updatedAt: string;
+};
 
 export default function AdminPage() {
 	const expectedPassword = (process.env.NEXT_PUBLIC_ADMIN_PASSWORD as string | undefined) || "admin123";
@@ -299,6 +311,7 @@ export default function AdminPage() {
 				{activePanel === "images" && <ImagesPanel />}
 				{activePanel === "blog" && <BlogPanel />}
 				{activePanel === "services" && <ServicesPanel />}
+				{activePanel === "jobs" && <JobsPanel />}
 				{activePanel === "seo-config" && <SEOConfigPanel />}
 				{activePanel === "link-mappings" && <LinkMappingsPanel />}
 			</div>
@@ -318,6 +331,7 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 		{ id: "images" as ActivePanel, label: "Images", icon: "image" },
 		{ id: "blog" as ActivePanel, label: "Blog", icon: "article" },
 		{ id: "services" as ActivePanel, label: "Services", icon: "settings" },
+		{ id: "jobs" as ActivePanel, label: "Jobs", icon: "work" },
 		{ id: "seo-config" as ActivePanel, label: "SEO Config", icon: "seo" },
 		{ id: "link-mappings" as ActivePanel, label: "Link Mappings", icon: "links" },
 	];
@@ -1969,6 +1983,446 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 						>
 							Save
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
+}
+
+// Jobs Panel
+function JobsPanel() {
+	const [jobs, setJobs] = useState<Job[]>([]);
+	const [editingJob, setEditingJob] = useState<Job | null>(null);
+	const [showModal, setShowModal] = useState(false);
+	const panelRef = useRef<HTMLDivElement>(null);
+
+	// Load jobs from MongoDB
+	useEffect(() => {
+		async function loadJobs() {
+			try {
+				const res = await fetch('/api/jobs?includeUnpublished=true', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					const jobsWithId = data.map((j: any) => ({
+						...j,
+						id: j._id?.toString() || j.id,
+						_id: undefined,
+					}));
+					setJobs(jobsWithId);
+				}
+			} catch (error) {
+				console.error('Error loading jobs:', error);
+			}
+		}
+		loadJobs();
+	}, []);
+
+	useEffect(() => {
+		if (panelRef.current) {
+			const cards = panelRef.current.querySelectorAll('.admin-job-card');
+			gsap.fromTo(cards,
+				{ opacity: 0, y: 20 },
+				{ opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }
+			);
+		}
+	}, [jobs]);
+
+	const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+
+	function showToast(type: 'success' | 'error' | 'info', message: string) {
+		setToast({ type, message });
+		const toastEl = document.querySelector('.admin-toast');
+		if (toastEl) {
+			gsap.fromTo(toastEl,
+				{ opacity: 0, x: 400 },
+				{ opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
+			);
+			setTimeout(() => {
+				gsap.to(toastEl, {
+					opacity: 0,
+					x: 400,
+					duration: 0.3,
+					ease: "power2.in",
+					onComplete: () => setToast(null)
+				});
+			}, 3000);
+		}
+	}
+
+	async function saveJob(job: Job) {
+		// This function is called from the modal, but the modal handles the actual save
+		// So we just refresh the list and close the modal
+		try {
+			const res = await fetch('/api/jobs?includeUnpublished=true', { cache: 'no-store' });
+			if (res.ok) {
+				const data = await res.json();
+				const jobsWithId = data.map((j: any) => ({
+					...j,
+					id: j._id?.toString() || j.id,
+					_id: undefined,
+				}));
+				setJobs(jobsWithId);
+			}
+			setEditingJob(null);
+			setShowModal(false);
+			showToast('success', editingJob ? 'Job updated successfully!' : 'Job created successfully!');
+		} catch (error) {
+			console.error('Error refreshing jobs:', error);
+		}
+	}
+
+	async function deleteJob(id: string) {
+		try {
+			const response = await fetch(`/api/jobs?id=${id}`, {
+				method: 'DELETE',
+			});
+			
+			if (response.ok) {
+				const res = await fetch('/api/jobs?includeUnpublished=true', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					const jobsWithId = data.map((j: any) => ({
+						...j,
+						id: j._id?.toString() || j.id,
+						_id: undefined,
+					}));
+					setJobs(jobsWithId);
+				}
+				showToast('success', 'Job deleted successfully!');
+			} else {
+				showToast('error', 'Failed to delete job');
+			}
+		} catch (error) {
+			console.error('Error deleting job:', error);
+			showToast('error', 'Error deleting job');
+		}
+	}
+
+	useEffect(() => {
+		const buttons = panelRef.current?.querySelectorAll('.btn');
+		if (buttons) {
+			buttons.forEach((btn) => {
+				const handleMouseEnter = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1.02,
+						y: -2,
+						duration: 0.3,
+						ease: "power2.out"
+					});
+				};
+				const handleMouseLeave = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1,
+						y: 0,
+						duration: 0.3,
+						ease: "power2.out"
+					});
+				};
+				btn.addEventListener('mouseenter', handleMouseEnter);
+				btn.addEventListener('mouseleave', handleMouseLeave);
+				return () => {
+					btn.removeEventListener('mouseenter', handleMouseEnter);
+					btn.removeEventListener('mouseleave', handleMouseLeave);
+				};
+			});
+		}
+	}, [jobs]);
+
+	return (
+		<div className="admin-panel" ref={panelRef}>
+			<div className="admin-panel-header">
+				<h2>Jobs Management</h2>
+				<p>Create, edit, and manage job postings</p>
+				<button 
+					className="btn primary" 
+					onClick={() => { setEditingJob(null); setShowModal(true); }}
+					onMouseEnter={(e) => {
+						gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" });
+					}}
+					onMouseLeave={(e) => {
+						gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" });
+					}}
+				>
+					+ New Job
+				</button>
+			</div>
+			<div className="admin-blog-grid">
+				{jobs.map((job) => (
+					<div key={job.id} className="admin-blog-card">
+						{job.image && (
+							<img src={job.image} alt={job.title} className="admin-blog-image" />
+						)}
+						<div className="admin-blog-content">
+							<div className="admin-blog-header">
+								<h3>{job.title}</h3>
+								<span className={`admin-blog-status ${job.published ? 'published' : 'draft'}`}>
+									{job.published ? 'Published' : 'Draft'}
+								</span>
+							</div>
+							<p className="admin-blog-excerpt">{job.description.substring(0, 150)}...</p>
+							<div className="admin-blog-actions">
+								<button 
+									className="btn ghost" 
+									onClick={() => { setEditingJob(job); setShowModal(true); }}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Edit
+								</button>
+								<button 
+									className="btn ghost danger" 
+									onClick={() => deleteJob(job.id)}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Delete
+								</button>
+							</div>
+						</div>
+					</div>
+				))}
+				{jobs.length === 0 && (
+					<div className="admin-empty-state">
+						<p>No jobs yet. Create your first job posting!</p>
+					</div>
+				)}
+			</div>
+			{showModal && (
+				<JobModal 
+					job={editingJob}
+					onSave={saveJob}
+					onClose={() => { setShowModal(false); setEditingJob(null); }}
+				/>
+			)}
+			{toast && (
+				<div className={`admin-toast ${toast.type} show`}>
+					<span className="admin-toast-icon">
+						{toast.type === 'success' ? '✓' : toast.type === 'error' ? '✕' : 'ℹ'}
+					</span>
+					<span>{toast.message}</span>
+				</div>
+			)}
+		</div>
+	);
+}
+
+// Job Modal Component
+function JobModal({ job, onSave, onClose }: {
+	job: Job | null;
+	onSave: (job: Job) => void;
+	onClose: () => void;
+}) {
+	const [formData, setFormData] = useState<Partial<Job>>({
+		title: job?.title || '',
+		titleAr: job?.titleAr || '',
+		description: job?.description || '',
+		descriptionAr: job?.descriptionAr || '',
+		published: job?.published ?? true,
+		image: job?.image,
+	});
+	const [imageFile, setImageFile] = useState<File | null>(null);
+	const [imagePreview, setImagePreview] = useState<string | null>(job?.image || null);
+	const modalRef = useRef<HTMLDivElement>(null);
+	const overlayRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (modalRef.current && overlayRef.current) {
+			const modal = modalRef.current;
+			const overlay = overlayRef.current;
+			
+			gsap.set([modal, overlay], { opacity: 0 });
+			gsap.set(modal, { scale: 0.9, y: 20 });
+			gsap.set(overlay, { backdropFilter: 'blur(0px)' });
+			
+			const tl = gsap.timeline();
+			tl.to(overlay, {
+				opacity: 1,
+				backdropFilter: 'blur(8px)',
+				duration: 0.3,
+				ease: "power2.out"
+			})
+			.to(modal, {
+				opacity: 1,
+				scale: 1,
+				y: 0,
+				duration: 0.4,
+				ease: "expo.out"
+			}, "-=0.2");
+		}
+	}, []);
+
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	function handleSubmit(e: React.FormEvent) {
+		e.preventDefault();
+		
+		if (isSubmitting) return; // Prevent double submission
+		setIsSubmitting(true);
+		
+		const formDataToSubmit = new FormData();
+		if (job) {
+			formDataToSubmit.append('id', job.id);
+		}
+		formDataToSubmit.append('title', formData.title || '');
+		formDataToSubmit.append('titleAr', formData.titleAr || '');
+		formDataToSubmit.append('description', formData.description || '');
+		formDataToSubmit.append('descriptionAr', formData.descriptionAr || '');
+		formDataToSubmit.append('published', (formData.published || false).toString());
+		
+		if (imageFile) {
+			formDataToSubmit.append('file', imageFile);
+		}
+
+		fetch('/api/jobs', {
+			method: 'POST',
+			body: formDataToSubmit,
+		})
+		.then(res => res.json())
+		.then(data => {
+			if (data.success) {
+				onSave({
+					id: data.id || job?.id || '',
+					title: formData.title || '',
+					titleAr: formData.titleAr || '',
+					description: formData.description || '',
+					descriptionAr: formData.descriptionAr || '',
+					published: formData.published || false,
+					image: imagePreview || formData.image,
+					createdAt: job?.createdAt || new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+				});
+			}
+		})
+		.catch(err => {
+			console.error('Error saving job:', err);
+		})
+		.finally(() => {
+			setIsSubmitting(false);
+		});
+	}
+
+	function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const file = e.target.files?.[0];
+		if (file) {
+			setImageFile(file);
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				setImagePreview(reader.result as string);
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+
+	const handleClose = () => {
+		if (modalRef.current && overlayRef.current) {
+			const modal = modalRef.current;
+			const overlay = overlayRef.current;
+			
+			const tl = gsap.timeline({
+				onComplete: () => onClose()
+			});
+			
+			tl.to(modal, {
+				opacity: 0,
+				scale: 0.9,
+				y: -20,
+				duration: 0.3,
+				ease: "power3.in"
+			});
+			
+			tl.to(overlay, {
+				opacity: 0,
+				backdropFilter: 'blur(0px)',
+				duration: 0.3,
+				ease: "power2.in"
+			}, "-=0.2");
+		} else {
+			onClose();
+		}
+	};
+
+	return (
+		<div className="admin-modal-overlay" ref={overlayRef} onClick={handleClose}>
+			<div className="admin-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
+				<div className="admin-modal-header">
+					<h3>{job ? 'Edit Job' : 'New Job'}</h3>
+					<button className="admin-modal-close" onClick={handleClose}>×</button>
+				</div>
+				<form onSubmit={handleSubmit} className="admin-modal-form">
+					<div className="admin-modal-form-scrollable">
+						<div className="admin-field">
+							<label className="admin-label">Job Title (English)</label>
+							<input
+								className="admin-input"
+								type="text"
+								value={formData.title}
+								onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+								required
+							/>
+						</div>
+						<div className="admin-field">
+							<label className="admin-label">Job Title (Arabic)</label>
+							<input
+								className="admin-input"
+								type="text"
+								value={formData.titleAr}
+								onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+								required
+							/>
+						</div>
+						<div className="admin-field">
+							<label className="admin-label">Job Description (English)</label>
+							<textarea
+								className="admin-input"
+								rows={6}
+								value={formData.description}
+								onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+								required
+							/>
+						</div>
+						<div className="admin-field">
+							<label className="admin-label">Job Description (Arabic)</label>
+							<textarea
+								className="admin-input"
+								rows={6}
+								value={formData.descriptionAr}
+								onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
+								required
+							/>
+						</div>
+						<div className="admin-field">
+							<label className="admin-label">Job Image</label>
+							<input
+								className="admin-input"
+								type="file"
+								accept="image/*"
+								onChange={handleImageChange}
+							/>
+							{imagePreview && (
+								<div style={{ marginTop: '12px' }}>
+									<img src={imagePreview} alt="Preview" style={{ maxWidth: '200px', borderRadius: '8px' }} />
+								</div>
+							)}
+						</div>
+						<div className="admin-field">
+							<label className="admin-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+								<input
+									type="checkbox"
+									checked={formData.published}
+									onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+								/>
+								Published
+							</label>
+						</div>
+					</div>
+					<div className="admin-modal-footer">
+						<button type="button" className="btn ghost" onClick={handleClose} disabled={isSubmitting}>Cancel</button>
+						<button type="submit" className="btn primary" disabled={isSubmitting}>
+							{isSubmitting ? 'Saving...' : 'Save Job'}
 						</button>
 					</div>
 				</form>

@@ -2,11 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const router = useRouter();
   
   React.useEffect(() => {
     const onRoute = () => setOpen(false);
@@ -15,6 +17,13 @@ export function Navbar() {
     }
     return () => { if (typeof window !== 'undefined') window.removeEventListener('hashchange', onRoute); };
   }, []);
+
+  const handleMobileLinkClick = React.useCallback((e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(false);
+    router.push(href);
+  }, [router]);
 
 
   const navLinks = {
@@ -80,23 +89,100 @@ export function Navbar() {
         <div className="nav-mobile" role="dialog" aria-modal="true" onClick={() => setOpen(false)}>
           <div className="nav-mobile-card" onClick={(e) => e.stopPropagation()}>
             <div className="nav-mobile-header">
-              <Link href="/" className="nav-mobile-logo" onClick={() => setOpen(false)} aria-label="Go to homepage">
+              <button 
+                type="button"
+                className="nav-mobile-logo" 
+                onClick={(e) => handleMobileLinkClick(e, '/')} 
+                aria-label="Go to homepage"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer'
+                }}
+              >
                 <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-mobile-logo-img" />
-              </Link>
-              <button className="nav-mobile-close" aria-label="Close menu" onClick={() => setOpen(false)}>
+              </button>
+              <button 
+                type="button"
+                className="nav-mobile-close" 
+                aria-label="Close menu" 
+                onClick={() => setOpen(false)}
+              >
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
             </div>
             <nav className="nav-mobile-links">
-              <Link href="/" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.home}</Link>
-              <Link href="/about" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.about}</Link>
-              <Link href="/services" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.services}</Link>
-              <Link href="/blog" className="nav-mobile-link" onClick={() => setOpen(false)}>{currentNavLinks.blog}</Link>
+              <button 
+                type="button"
+                className="nav-mobile-link" 
+                onClick={(e) => handleMobileLinkClick(e, '/')}
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  width: '100%', 
+                  textAlign: language === 'ar' ? 'right' : 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {currentNavLinks.home}
+              </button>
+              <button 
+                type="button"
+                className="nav-mobile-link" 
+                onClick={(e) => handleMobileLinkClick(e, '/about')}
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  width: '100%', 
+                  textAlign: language === 'ar' ? 'right' : 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {currentNavLinks.about}
+              </button>
+              <button 
+                type="button"
+                className="nav-mobile-link" 
+                onClick={(e) => handleMobileLinkClick(e, '/services')}
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  width: '100%', 
+                  textAlign: language === 'ar' ? 'right' : 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {currentNavLinks.services}
+              </button>
+              <button 
+                type="button"
+                className="nav-mobile-link" 
+                onClick={(e) => handleMobileLinkClick(e, '/blog')}
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  width: '100%', 
+                  textAlign: language === 'ar' ? 'right' : 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {currentNavLinks.blog}
+              </button>
             </nav>
             <div className="nav-mobile-actions">
               <button
+                type="button"
                 className="nav-mobile-lang-toggle"
                 onClick={() => {
                   setLanguage(language === 'ar' ? 'en' : 'ar');
@@ -106,14 +192,37 @@ export function Navbar() {
               >
                 {language === 'ar' ? 'English' : 'العربية'}
               </button>
-              <Link href="/contact" className="nav-mobile-cta-primary" onClick={() => setOpen(false)}>
+              <button
+                type="button"
+                className="nav-mobile-cta-primary"
+                onClick={(e) => handleMobileLinkClick(e, '/contact')}
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  background: 'linear-gradient(90deg, #3B82F6, #2563EB)',
+                  color: '#fff',
+                  padding: '14px 20px',
+                  borderRadius: '16px',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  textDecoration: 'none',
+                  boxShadow: '0 6px 18px rgba(37,99,235,0.3)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
+                  fontFamily: 'inherit'
+                }}
+              >
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="9" />
                   <path d="M3.6 12h16.8" strokeLinecap="round" />
                   <path d="M12 3a17 17 0 0 0 0 18M12 3a17 17 0 0 1 0 18" strokeLinecap="round" />
                 </svg>
                 {currentNavLinks.connect}
-              </Link>
+              </button>
             </div>
           </div>
         </div>
