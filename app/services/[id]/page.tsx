@@ -215,6 +215,7 @@ export default function ServiceDetailPage() {
       const processSteps = processRef.current.querySelectorAll('.process-step');
       
       gsap.set(processTitle, { opacity: 0, y: 50 });
+      // Reverse animation direction for RTL (Arabic) - animate from right side
       gsap.set(processSteps, { opacity: 0, x: isRTL ? 100 : -100, scale: 0.9 });
 
       ScrollTrigger.create({
@@ -222,7 +223,12 @@ export default function ServiceDetailPage() {
         start: 'top 80%',
         onEnter: () => {
           gsap.to(processTitle, { opacity: 1, y: 0, duration: 1, ease: 'expo.out' });
-          gsap.to(processSteps, {
+          // For RTL, reverse the stagger direction so steps animate from right to left
+          // Convert NodeList to Array for proper reversal
+          const stepsArray = Array.from(processSteps);
+          const orderedSteps = isRTL ? stepsArray.reverse() : stepsArray;
+          
+          gsap.to(orderedSteps, {
             opacity: 1,
             x: 0,
             scale: 1,
@@ -552,8 +558,11 @@ export default function ServiceDetailPage() {
                   <p>{step.description}</p>
                 </div>
                 {index < processSteps.length - 1 && (
-                  <div className="process-step-connector">
-                    <FaArrowRight />
+                  <div className="process-step-connector" style={{ 
+                    right: isRTL ? 'auto' : '-16px',
+                    left: isRTL ? '-16px' : 'auto'
+                  }}>
+                    <FaArrowRight style={{ transform: isRTL ? 'scaleX(-1)' : 'none' }} />
                   </div>
                 )}
               </div>
