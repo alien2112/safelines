@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import Blob from './Blob';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -40,7 +41,7 @@ export default function FAQSection() {
               {t.home.faq.subtitle}
             </p>
           </div>
-          <a className="faq-cta" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.faq.cta}</a>
+          <Link className="faq-cta" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.faq.cta}</Link>
         </div>
 
         <div className="faq-grid">

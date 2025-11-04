@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import VideoBackground from './VideoBackground';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useImages } from '../lib/swr-config';
@@ -78,7 +79,7 @@ export default function MakingEasySection() {
             </span>
             {t.home.makingEasy.jobOpenings}
           </a>
-          <a className="faq-cta" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.contact}</a>
+          <Link className="faq-cta" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.makingEasy.contact}</Link>
         </div>
       </div>
     </section>

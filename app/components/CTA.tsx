@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import VideoBackground from './VideoBackground';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -38,8 +39,8 @@ export default function CTASection() {
             </div>
 
             <div className="cta-actions">
-              <a className="cta-btn-secondary" href="#more" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.cta.actions.more}</a>
-              <a className="cta-btn" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.cta.actions.contact}</a>
+              <Link className="cta-btn-secondary" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.cta.actions.more}</Link>
+              <Link className="cta-btn" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.cta.actions.contact}</Link>
             </div>
           </div>
         </div>

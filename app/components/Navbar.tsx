@@ -16,6 +16,7 @@ export function Navbar() {
     return () => { if (typeof window !== 'undefined') window.removeEventListener('hashchange', onRoute); };
   }, []);
 
+
   const navLinks = {
     en: {
       home: 'Home',
@@ -99,6 +100,7 @@ export function Navbar() {
                 className="nav-mobile-lang-toggle"
                 onClick={() => {
                   setLanguage(language === 'ar' ? 'en' : 'ar');
+                  setOpen(false);
                 }}
                 aria-label="Toggle language"
               >

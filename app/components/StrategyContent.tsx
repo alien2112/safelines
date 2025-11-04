@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useImages } from '../lib/swr-config';
 
@@ -94,8 +95,8 @@ export default function StrategyContentSection() {
         </div>
 
         <div className="strategy-actions">
-          <a className="cta-btn-secondary" href="#book" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.bookCall}</a>
-          <a className="faq-cta" href="#contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.contact}</a>
+          <Link className="cta-btn-secondary" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.bookCall}</Link>
+          <Link className="faq-cta" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.strategy.contact}</Link>
         </div>
       </div>
     </section>
