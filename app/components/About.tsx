@@ -115,7 +115,13 @@ export function AboutSection() {
     });
     
     // Refresh ScrollTrigger after all stats are set up
-    ScrollTrigger.refresh();
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      // Also refresh after a short delay
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    });
     };
 
     initStatsAnimation();
@@ -123,7 +129,7 @@ export function AboutSection() {
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [t.home.about.stats]);
+  }, [t.home.about.stats, language]); // Re-run when language changes
 
   return (
     <section id="about" className="section-about">

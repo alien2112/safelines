@@ -14,8 +14,11 @@ if (typeof window !== 'undefined') {
 type BlogPost = {
   id: string;
   title: string;
+  titleAr: string;
   content: string;
+  contentAr: string;
   excerpt: string;
+  excerptAr: string;
   category: string;
   tags: string[];
   featuredImage?: string;
@@ -54,21 +57,37 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
         const sortedPosts = [...publishedPosts].sort((a: BlogPost, b: BlogPost) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        setAllPosts(sortedPosts);
+        // Apply language to all posts
+        const languageAwarePosts = sortedPosts.map((p: BlogPost) => ({
+          ...p,
+          title: language === 'ar' ? (p.titleAr || p.title) : p.title,
+          excerpt: language === 'ar' ? (p.excerptAr || p.excerpt) : p.excerpt,
+        }));
+        setAllPosts(languageAwarePosts);
         
         // Find current post index
         const currentIndex = sortedPosts.findIndex((p: BlogPost) => p.id === post.id);
         if (currentIndex > 0) {
-          setNextPost(sortedPosts[currentIndex - 1]);
+          const prev = sortedPosts[currentIndex - 1];
+          setNextPost({
+            ...prev,
+            title: language === 'ar' ? (prev.titleAr || prev.title) : prev.title,
+            excerpt: language === 'ar' ? (prev.excerptAr || prev.excerpt) : prev.excerpt,
+          });
         }
         if (currentIndex < sortedPosts.length - 1) {
-          setPrevPost(sortedPosts[currentIndex + 1]);
+          const next = sortedPosts[currentIndex + 1];
+          setPrevPost({
+            ...next,
+            title: language === 'ar' ? (next.titleAr || next.title) : next.title,
+            excerpt: language === 'ar' ? (next.excerptAr || next.excerpt) : next.excerpt,
+          });
         }
       }
     } catch (e) {
       console.error('Error loading posts:', e);
     }
-  }, [post.id]);
+  }, [post.id, language]);
 
   useEffect(() => {
     // Page transition animation

@@ -13,7 +13,9 @@ if (typeof window !== 'undefined') {
 type BlogPost = {
   id: string;
   title: string;
+  titleAr: string;
   excerpt: string;
+  excerptAr: string;
   author: string;
   date: string;
   category: string;
@@ -32,12 +34,15 @@ function getBlogPosts(): BlogPost[] {
   try {
     const adminPosts = JSON.parse(saved);
     // Convert admin post format to blog page format
+    // Note: Language selection will be handled in the component
     return adminPosts
       .filter((post: any) => post.published) // Only show published posts
       .map((post: any) => ({
         id: post.id,
-        title: post.title,
-        excerpt: post.excerpt,
+        title: post.title || '',
+        titleAr: post.titleAr || post.title || '',
+        excerpt: post.excerpt || '',
+        excerptAr: post.excerptAr || post.excerpt || '',
         author: 'Safe Lines Team', // Default author
         date: new Date(post.createdAt).toLocaleDateString('en-US', { 
           year: 'numeric', 
@@ -63,21 +68,40 @@ export default function BlogPage() {
   const [blogPosts, setBlogPosts] = React.useState<BlogPost[]>([]);
 
   React.useEffect(() => {
-    setBlogPosts(getBlogPosts());
+    const posts = getBlogPosts();
+    // Update posts with current language
+    const updatedPosts = posts.map(post => ({
+      ...post,
+      title: language === 'ar' ? (post.titleAr || post.title) : post.title,
+      excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
+    }));
+    setBlogPosts(updatedPosts);
     // Listen for storage changes to update blog posts in real-time
     const handleStorageChange = () => {
-      setBlogPosts(getBlogPosts());
+      const posts = getBlogPosts();
+      const updatedPosts = posts.map(post => ({
+        ...post,
+        title: language === 'ar' ? (post.titleAr || post.title) : post.title,
+        excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
+      }));
+      setBlogPosts(updatedPosts);
     };
     window.addEventListener('storage', handleStorageChange);
     // Also check periodically for changes (since storage event only fires in other tabs)
     const interval = setInterval(() => {
-      setBlogPosts(getBlogPosts());
+      const posts = getBlogPosts();
+      const updatedPosts = posts.map(post => ({
+        ...post,
+        title: language === 'ar' ? (post.titleAr || post.title) : post.title,
+        excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
+      }));
+      setBlogPosts(updatedPosts);
     }, 1000);
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     // Split Text Animation for Hero

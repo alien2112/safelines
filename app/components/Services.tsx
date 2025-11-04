@@ -8,7 +8,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 type AdminService = {
   id: string;
   title: string;
+  titleAr: string;
   description: string;
+  descriptionAr: string;
   image?: string;
   visible: boolean;
   order: number;
@@ -70,8 +72,8 @@ export function ServicesSection() {
   // Use admin services if available, otherwise fallback to translations
   const allServices = adminServices.length > 0 
     ? adminServices.map((service, idx) => ({
-        title: service.title,
-        description: service.description,
+        title: language === 'ar' ? service.titleAr : service.title,
+        description: language === 'ar' ? service.descriptionAr : service.description,
         category: idx < 3 ? 'transportation' : 'customs',
         icon: iconMap[idx % iconMap.length],
       }))

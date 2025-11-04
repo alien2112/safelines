@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -10,9 +11,16 @@ if (typeof window !== 'undefined') {
 }
 
 export function GSAPAnimations() {
+  const { language } = useLanguage();
+
   useEffect(() => {
-    // Hero Section Animations
-    const heroTag = document.querySelector('.hero-tag');
+    // Wait for layout to settle after language/RTL changes
+    const initAnimations = () => {
+      // Kill existing triggers first
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      
+      // Hero Section Animations
+      const heroTag = document.querySelector('.hero-tag');
     const heroHeadline = document.querySelector('.hero-headline');
     const heroCta = document.querySelector('.hero-cta');
 
@@ -298,11 +306,45 @@ export function GSAPAnimations() {
       }
     }
 
+      // Refresh ScrollTrigger after all animations are set up
+      // Use requestAnimationFrame to ensure DOM is fully rendered
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        // Also refresh after a short delay to account for any async rendering
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 100);
+      });
+    };
+
+    // Small delay to ensure RTL layout is applied before initializing animations
+    const timeoutId = setTimeout(() => {
+      initAnimations();
+    }, 50);
+
+    // Also refresh on window load to ensure everything is ready
+    const handleLoad = () => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    };
+
+    // Refresh on window resize as well
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener('load', handleLoad);
+    window.addEventListener('resize', handleResize);
+
     // Cleanup
     return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('load', handleLoad);
+      window.removeEventListener('resize', handleResize);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, []);
+  }, [language]); // Re-run when language changes
 
   return null;
 }

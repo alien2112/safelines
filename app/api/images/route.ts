@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 	if (!(file instanceof File)) {
 		return new Response("file is required", { status: 400 });
 	}
-	if (!section || (section !== "making-easy" && section !== "strategy-right")) {
+	if (!section || (section !== "making-easy" && section !== "strategy-right" && section !== "blog")) {
 		return new Response("invalid section", { status: 400 });
 	}
 	const arrayBuffer = await file.arrayBuffer();

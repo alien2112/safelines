@@ -10,8 +10,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://safelines.com';
 type BlogPost = {
   id: string;
   title: string;
+  titleAr: string;
   content: string;
+  contentAr: string;
   excerpt: string;
+  excerptAr: string;
   category: string;
   tags: string[];
   featuredImage?: string;
@@ -43,7 +46,16 @@ export default function BlogPostPage() {
         const posts = JSON.parse(saved);
         const found = posts.find((p: BlogPost) => p.id === id || p.slug === id);
         if (found && found.published) {
-          setPost(found);
+          // Get current language
+          const language = localStorage.getItem('language') || 'en';
+          const isArabic = language === 'ar';
+          // Use language-appropriate content
+          setPost({
+            ...found,
+            title: isArabic ? (found.titleAr || found.title) : found.title,
+            content: isArabic ? (found.contentAr || found.content) : found.content,
+            excerpt: isArabic ? (found.excerptAr || found.excerpt) : found.excerpt,
+          });
         }
       }
     } catch (e) {

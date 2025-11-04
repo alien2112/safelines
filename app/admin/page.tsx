@@ -19,8 +19,11 @@ type ImageFile = {
 type BlogPost = {
 	id: string;
 	title: string;
+	titleAr: string;
 	content: string;
+	contentAr: string;
 	excerpt: string;
+	excerptAr: string;
 	category: string;
 	tags: string[];
 	featuredImage?: string;
@@ -42,7 +45,9 @@ type BlogPost = {
 type Service = {
 	id: string;
 	title: string;
+	titleAr: string;
 	description: string;
+	descriptionAr: string;
 	image?: string;
 	visible: boolean;
 	order: number;
@@ -247,7 +252,7 @@ export default function AdminPage() {
 
 	// Dashboard
 	return (
-		<div className="admin-dashboard">
+		<div className="admin admin-dashboard">
 			<AdminSidebar 
 				ref={sidebarRef}
 				activePanel={activePanel}
@@ -283,35 +288,265 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 		{ id: "link-mappings" as ActivePanel, label: "Link Mappings", icon: "links" },
 	];
 
+	const sidebarRef = useRef<HTMLDivElement>(null);
+	const logoTextRef = useRef<HTMLSpanElement>(null);
+	const toggleButtonRef = useRef<HTMLButtonElement>(null);
+	const navRef = useRef<HTMLElement>(null);
+	const footerRef = useRef<HTMLDivElement>(null);
+	const labelRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
+	const previousOpenState = useRef(open);
+
+	// Initial animation on mount
 	useEffect(() => {
-		const items = document.querySelectorAll('.admin-sidebar-item');
-		gsap.fromTo(items,
-			{ opacity: 0, x: -20 },
-			{ opacity: 1, x: 0, duration: 0.4, stagger: 0.1, delay: 0.3, ease: "power2.out" }
-		);
+		if (sidebarRef.current) {
+			const items = sidebarRef.current.querySelectorAll('.admin-sidebar-item');
+			gsap.fromTo(items,
+				{ opacity: 0, x: -20 },
+				{ opacity: 1, x: 0, duration: 0.4, stagger: 0.1, delay: 0.3, ease: "power2.out" }
+			);
+		}
 	}, []);
 
+	// Set initial state for labels after refs are ready
+	useEffect(() => {
+		// Use a small delay to ensure refs are populated
+		const timer = setTimeout(() => {
+			if (logoTextRef.current) {
+				gsap.set(logoTextRef.current, { opacity: open ? 1 : 0, x: open ? 0 : -15, scale: open ? 1 : 0.9 });
+			}
+			const labels = Array.from(labelRefs.current.values());
+			labels.forEach(label => {
+				if (label) {
+					gsap.set(label, { opacity: open ? 1 : 0, x: open ? 0 : -15, scale: open ? 1 : 0.9 });
+				}
+			});
+			// Set initial sidebar width
+			if (sidebarRef.current) {
+				gsap.set(sidebarRef.current, { width: open ? 260 : 80 });
+			}
+		}, 50);
+		
+		return () => clearTimeout(timer);
+	}, [open]);
+
+	// Enhanced sidebar collapse/expand animation
+	useEffect(() => {
+		// Skip if this is the initial render
+		if (previousOpenState.current === open) {
+			previousOpenState.current = open;
+			return;
+		}
+		
+		if (!sidebarRef.current || !logoTextRef.current || !navRef.current || !footerRef.current) {
+			previousOpenState.current = open;
+			return;
+		}
+
+		const sidebar = sidebarRef.current;
+		const logoText = logoTextRef.current;
+		const nav = navRef.current;
+		const footer = footerRef.current;
+		const labels = Array.from(labelRefs.current.values()).filter(Boolean);
+		const dashboardContent = document.querySelector('.admin-dashboard-content');
+		const icons = sidebar.querySelectorAll('.admin-sidebar-icon');
+
+		if (open) {
+			// EXPANDING SIDEBAR - Premium animation sequence
+			const tl = gsap.timeline();
+
+			// 1. Animate sidebar width from 80px to 260px with bounce easing
+			tl.to(sidebar, {
+				width: 260,
+				duration: 0.6,
+				ease: "back.out(1.7)"
+			});
+
+			// 2. Fade in and slide logo text with scale
+			tl.to(logoText, {
+				opacity: 1,
+				x: 0,
+				scale: 1,
+				duration: 0.4,
+				ease: "power3.out"
+			}, "-=0.4");
+
+			// 3. Staggered label animation - fade and slide in sequentially
+			tl.to(labels, {
+				opacity: 1,
+				x: 0,
+				scale: 1,
+				duration: 0.35,
+				stagger: 0.06,
+				ease: "power2.out"
+			}, "-=0.3");
+
+			// 4. Icon micro-animations (slight scale up)
+			tl.to(icons, {
+				scale: 1.05,
+				duration: 0.3,
+				stagger: 0.04,
+				ease: "power2.out",
+				yoyo: true,
+				repeat: 1
+			}, "-=0.2");
+
+			// 5. Animate dashboard content margin
+			if (dashboardContent) {
+				tl.to(dashboardContent, {
+					marginLeft: 260,
+					duration: 0.6,
+					ease: "back.out(1.7)"
+				}, "-=0.6");
+			}
+
+			// 6. Toggle button rotation and morph
+			if (toggleButtonRef.current) {
+				tl.to(toggleButtonRef.current, {
+					rotation: 0,
+					scale: 1,
+					duration: 0.4,
+					ease: "back.out(1.5)"
+				}, "-=0.4");
+			}
+		} else {
+			// COLLAPSING SIDEBAR - Reverse animation
+			const tl = gsap.timeline();
+
+			// 1. Fade out labels first with stagger
+			tl.to(labels, {
+				opacity: 0,
+				x: -15,
+				scale: 0.9,
+				duration: 0.25,
+				stagger: 0.03,
+				ease: "power2.in"
+			});
+
+			// 2. Fade out logo text
+			tl.to(logoText, {
+				opacity: 0,
+				x: -15,
+				scale: 0.9,
+				duration: 0.25,
+				ease: "power2.in"
+			}, "-=0.15");
+
+			// 3. Shrink sidebar width from 260px to 80px
+			tl.to(sidebar, {
+				width: 80,
+				duration: 0.5,
+				ease: "back.out(1.7)"
+			}, "-=0.2");
+
+			// 4. Animate dashboard content
+			if (dashboardContent) {
+				tl.to(dashboardContent, {
+					marginLeft: 80,
+					duration: 0.5,
+					ease: "back.out(1.7)"
+				}, "-=0.5");
+			}
+
+			// 5. Toggle button rotation
+			if (toggleButtonRef.current) {
+				tl.to(toggleButtonRef.current, {
+					rotation: 180,
+					scale: 1.1,
+					duration: 0.35,
+					ease: "back.out(1.5)"
+				}, "-=0.3");
+			}
+		}
+		
+		previousOpenState.current = open;
+	}, [open]);
+
+	// Handle toggle with animation
+	const handleToggle = () => {
+		setOpen(!open);
+	};
+
 	return (
-		<div className={`admin-sidebar ${open ? 'open' : ''}`} ref={ref}>
+		<div className={`admin-sidebar ${open ? 'open' : 'collapsed'}`} ref={(el) => {
+			if (el) {
+				sidebarRef.current = el;
+				if (typeof ref === 'function') {
+					ref(el);
+				} else if (ref) {
+					ref.current = el;
+				}
+			}
+		}}>
 			<div className="admin-sidebar-header">
 				<div className="admin-sidebar-logo">
 					<img src="/safelines_logo-removebg-preview.png" alt="Safe Lines" />
-					<span>Admin Panel</span>
+					<span ref={logoTextRef} className="admin-sidebar-logo-text">Admin Panel</span>
 				</div>
 				<button 
+					ref={toggleButtonRef}
 					className="admin-sidebar-toggle" 
-					onClick={() => setOpen(!open)}
+					onClick={handleToggle}
 					aria-label="Toggle sidebar"
+					onMouseEnter={(e) => {
+						gsap.to(e.currentTarget, { 
+							scale: 1.1, 
+							rotation: open ? -10 : 10,
+							duration: 0.2, 
+							ease: "power2.out" 
+						});
+					}}
+					onMouseLeave={(e) => {
+						gsap.to(e.currentTarget, { 
+							scale: 1, 
+							rotation: open ? 0 : 180,
+							duration: 0.2, 
+							ease: "power2.out" 
+						});
+					}}
 				>
 					{open ? '←' : '→'}
 				</button>
 			</div>
-			<nav className="admin-sidebar-nav">
+			<nav className="admin-sidebar-nav" ref={navRef}>
 				{menuItems.map((item) => (
 					<button
 						key={item.id}
 						className={`admin-sidebar-item ${activePanel === item.id ? 'active' : ''}`}
-						onClick={() => setActivePanel(item.id)}
+						onClick={() => {
+							// Add micro-interaction
+							const button = document.querySelector(`[data-sidebar-item="${item.id}"]`) as HTMLElement;
+							if (button) {
+								gsap.to(button, {
+									scale: 0.95,
+									duration: 0.1,
+									ease: "power2.out",
+									yoyo: true,
+									repeat: 1
+								});
+							}
+							setActivePanel(item.id);
+						}}
+						data-sidebar-item={item.id}
+						onMouseEnter={(e) => {
+							if (activePanel !== item.id) {
+								gsap.to(e.currentTarget, { 
+									scale: 1.02, 
+									x: 4,
+									duration: 0.2, 
+									ease: "power2.out" 
+								});
+							}
+						}}
+						onMouseLeave={(e) => {
+							if (activePanel !== item.id) {
+								gsap.to(e.currentTarget, { 
+									scale: 1, 
+									x: 0,
+									duration: 0.2, 
+									ease: "power2.out" 
+								});
+							}
+						}}
 					>
 						<span className="admin-sidebar-icon">
 							{item.icon === "image" && (
@@ -348,12 +583,40 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 								</svg>
 							)}
 						</span>
-						{open && <span className="admin-sidebar-label">{item.label}</span>}
+						<span 
+							className="admin-sidebar-label" 
+							ref={(el) => {
+								if (el) {
+									labelRefs.current.set(item.id, el);
+								}
+							}}
+						>
+							{item.label}
+						</span>
 					</button>
 				))}
 			</nav>
-			<div className="admin-sidebar-footer">
-				<button className="admin-sidebar-item admin-logout-button" onClick={onLogout}>
+			<div className="admin-sidebar-footer" ref={footerRef}>
+				<button 
+					className="admin-sidebar-item admin-logout-button" 
+					onClick={onLogout}
+					onMouseEnter={(e) => {
+						gsap.to(e.currentTarget, { 
+							scale: 1.02, 
+							x: 4,
+							duration: 0.2, 
+							ease: "power2.out" 
+						});
+					}}
+					onMouseLeave={(e) => {
+						gsap.to(e.currentTarget, { 
+							scale: 1, 
+							x: 0,
+							duration: 0.2, 
+							ease: "power2.out" 
+						});
+					}}
+				>
 					<span className="admin-sidebar-icon">
 						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
 							<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -361,7 +624,16 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 							<line x1="21" y1="12" x2="9" y2="12"/>
 						</svg>
 					</span>
-					{open && <span className="admin-sidebar-label">Logout</span>}
+					<span 
+						className="admin-sidebar-label"
+						ref={(el) => {
+							if (el) {
+								labelRefs.current.set('logout', el);
+							}
+						}}
+					>
+						Logout
+					</span>
 				</button>
 			</div>
 		</div>
@@ -458,7 +730,16 @@ function ImagesPanel() {
 									<div className="admin-list-fn">{f.filename}</div>
 									<div className="admin-list-date">{new Date(f.uploadDate).toLocaleString()}</div>
 								</div>
-								<button className="btn ghost" aria-label={`Delete ${f.filename}`} onClick={() => onDelete(f._id)}>Delete</button>
+								<button 
+									className="btn ghost danger" 
+									data-action="delete"
+									aria-label={`Delete ${f.filename}`} 
+									onClick={() => onDelete(f._id)}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Delete
+								</button>
 							</div>
 						))}
 						{files.length === 0 && !isLoading && <div className="muted">No images yet</div>}
@@ -488,8 +769,11 @@ function BlogPanel() {
 				{
 					id: '1',
 					title: 'The Future of Customs Clearance: Digital Transformation',
+					titleAr: 'مستقبل التخليص الجمركي: التحول الرقمي',
 					content: 'Discover how digital technologies are revolutionizing the customs clearance process, making it faster, more efficient, and more transparent than ever before. This comprehensive article explores the latest innovations in customs technology and how they benefit businesses.',
+					contentAr: 'اكتشف كيف تقوم التقنيات الرقمية بثورة في عملية التخليص الجمركي، مما يجعلها أسرع وأكثر كفاءة وشفافية من أي وقت مضى. تستكشف هذه المقالة الشاملة أحدث الابتكارات في تقنية الجمارك وكيفية استفادة الشركات منها.',
 					excerpt: 'Discover how digital technologies are revolutionizing the customs clearance process, making it faster, more efficient, and more transparent than ever before.',
+					excerptAr: 'اكتشف كيف تقوم التقنيات الرقمية بثورة في عملية التخليص الجمركي، مما يجعلها أسرع وأكثر كفاءة وشفافية.',
 					category: 'Technology',
 					tags: ['Technology', 'Digital', 'Innovation'],
 					featuredImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
@@ -500,8 +784,11 @@ function BlogPanel() {
 				{
 					id: '2',
 					title: 'Streamlining Import-Export Documentation',
+					titleAr: 'تبسيط وثائق الاستيراد والتصدير',
 					content: 'Learn about the essential documents needed for smooth international trade and how to avoid common documentation pitfalls. This guide covers all the necessary paperwork for successful customs clearance.',
+					contentAr: 'تعرف على الوثائق الأساسية المطلوبة للتجارة الدولية السلسة وكيفية تجنب أخطاء التوثيق الشائعة. يغطي هذا الدليل جميع الأوراق اللازمة للتخليص الجمركي الناجح.',
 					excerpt: 'Learn about the essential documents needed for smooth international trade and how to avoid common documentation pitfalls.',
+					excerptAr: 'تعرف على الوثائق الأساسية المطلوبة للتجارة الدولية السلسة وكيفية تجنب أخطاء التوثيق الشائعة.',
 					category: 'Guidance',
 					tags: ['Documentation', 'Import', 'Export'],
 					featuredImage: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1920&auto=format&fit=crop',
@@ -520,8 +807,11 @@ function BlogPanel() {
 				{
 					id: '3',
 					title: 'Understanding Tariff Classification Systems',
+					titleAr: 'فهم أنظمة تصنيف التعريفة الجمركية',
 					content: 'A comprehensive guide to understanding how goods are classified for customs purposes and why accurate classification matters. Learn about the harmonized system and how it affects your imports and exports.',
+					contentAr: 'دليل شامل لفهم كيفية تصنيف البضائع لأغراض جمركية ولماذا يهم التصنيف الدقيق. تعرف على النظام المتناسق وكيف يؤثر على وارداتك وصادراتك.',
 					excerpt: 'A comprehensive guide to understanding how goods are classified for customs purposes and why accurate classification matters.',
+					excerptAr: 'دليل شامل لفهم كيفية تصنيف البضائع لأغراض جمركية ولماذا يهم التصنيف الدقيق.',
 					category: 'Education',
 					tags: ['Tariff', 'Classification', 'Education'],
 					featuredImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1920&auto=format&fit=crop',
@@ -533,8 +823,11 @@ function BlogPanel() {
 				{
 					id: '4',
 					title: 'Best Practices for Freight Forwarding',
+					titleAr: 'أفضل الممارسات للشحن والنقل',
 					content: 'Expert tips on selecting the right freight forwarder and ensuring your cargo arrives safely and on time. This article covers everything you need to know about working with freight forwarders.',
+					contentAr: 'نصائح الخبراء حول اختيار شركة الشحن المناسبة وضمان وصول البضائع بأمان وفي الوقت المحدد. تغطي هذه المقالة كل ما تحتاج لمعرفته حول العمل مع شركات الشحن.',
 					excerpt: 'Expert tips on selecting the right freight forwarder and ensuring your cargo arrives safely and on time.',
+					excerptAr: 'نصائح الخبراء حول اختيار شركة الشحن المناسبة وضمان وصول البضائع بأمان وفي الوقت المحدد.',
 					category: 'Best Practices',
 					tags: ['Freight', 'Best Practices', 'Logistics'],
 					featuredImage: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop',
@@ -546,8 +839,11 @@ function BlogPanel() {
 				{
 					id: '5',
 					title: 'Navigating Customs Regulations in the GCC',
+					titleAr: 'التنقل في اللوائح الجمركية في دول مجلس التعاون الخليجي',
 					content: 'An overview of customs regulations across Gulf Cooperation Council countries and how to navigate them effectively. Learn about the specific requirements for each GCC member state.',
+					contentAr: 'نظرة عامة على اللوائح الجمركية في دول مجلس التعاون الخليجي وكيفية التنقل فيها بشكل فعال. تعرف على المتطلبات المحددة لكل دولة عضو في مجلس التعاون.',
 					excerpt: 'An overview of customs regulations across Gulf Cooperation Council countries and how to navigate them effectively.',
+					excerptAr: 'نظرة عامة على اللوائح الجمركية في دول مجلس التعاون الخليجي وكيفية التنقل فيها بشكل فعال.',
 					category: 'Regulations',
 					tags: ['GCC', 'Regulations', 'Compliance'],
 					featuredImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1920&auto=format&fit=crop',
@@ -559,8 +855,11 @@ function BlogPanel() {
 				{
 					id: '6',
 					title: 'Cost-Effective Shipping Solutions for SMEs',
+					titleAr: 'حلول الشحن الموفرة للتكلفة للشركات الصغيرة والمتوسطة',
 					content: 'Strategies for small and medium enterprises to reduce shipping costs while maintaining quality service. Discover cost-saving tips and best practices for SME shipping.',
+					contentAr: 'استراتيجيات للشركات الصغيرة والمتوسطة لتقليل تكاليف الشحن مع الحفاظ على جودة الخدمة. اكتشف نصائح لتوفير التكاليف وأفضل الممارسات لشحن الشركات الصغيرة والمتوسطة.',
 					excerpt: 'Strategies for small and medium enterprises to reduce shipping costs while maintaining quality service.',
+					excerptAr: 'استراتيجيات للشركات الصغيرة والمتوسطة لتقليل تكاليف الشحن مع الحفاظ على جودة الخدمة.',
 					category: 'Business',
 					tags: ['SME', 'Cost Savings', 'Shipping'],
 					featuredImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1920&auto=format&fit=crop',
@@ -585,6 +884,29 @@ function BlogPanel() {
 		}
 	}, [posts]);
 
+		// Toast notification state
+	const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+
+	function showToast(type: 'success' | 'error' | 'info', message: string) {
+		setToast({ type, message });
+		const toastEl = document.querySelector('.admin-toast');
+		if (toastEl) {
+			gsap.fromTo(toastEl,
+				{ opacity: 0, x: 400 },
+				{ opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
+			);
+			setTimeout(() => {
+				gsap.to(toastEl, {
+					opacity: 0,
+					x: 400,
+					duration: 0.3,
+					ease: "power2.in",
+					onComplete: () => setToast(null)
+				});
+			}, 3000);
+		}
+	}
+
 	function savePost(post: BlogPost) {
 		// Auto-generate slug if not provided
 		if (!post.slug && post.title) {
@@ -598,20 +920,84 @@ function BlogPanel() {
 		localStorage.setItem('admin_blog_posts', JSON.stringify(updated));
 		setEditingPost(null);
 		setShowModal(false);
+		showToast('success', editingPost ? 'Post updated successfully!' : 'Post created successfully!');
 	}
 
 	function deletePost(id: string) {
 		const updated = posts.filter(p => p.id !== id);
 		setPosts(updated);
 		localStorage.setItem('admin_blog_posts', JSON.stringify(updated));
+		showToast('success', 'Post deleted successfully!');
 	}
+
+	// Add GSAP button hover animations
+	useEffect(() => {
+		const buttons = panelRef.current?.querySelectorAll('.btn');
+		if (buttons) {
+			buttons.forEach((btn) => {
+				const handleMouseEnter = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1.02,
+						y: -2,
+						duration: 0.3,
+						ease: "power2.out"
+					});
+				};
+				const handleMouseLeave = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1,
+						y: 0,
+						duration: 0.3,
+						ease: "power2.out"
+					});
+				};
+				const handleMouseDown = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 0.98,
+						duration: 0.1,
+						ease: "power2.out"
+					});
+				};
+				const handleMouseUp = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1.02,
+						duration: 0.1,
+						ease: "power2.out"
+					});
+				};
+				btn.addEventListener('mouseenter', handleMouseEnter);
+				btn.addEventListener('mouseleave', handleMouseLeave);
+				btn.addEventListener('mousedown', handleMouseDown);
+				btn.addEventListener('mouseup', handleMouseUp);
+				return () => {
+					btn.removeEventListener('mouseenter', handleMouseEnter);
+					btn.removeEventListener('mouseleave', handleMouseLeave);
+					btn.removeEventListener('mousedown', handleMouseDown);
+					btn.removeEventListener('mouseup', handleMouseUp);
+				};
+			});
+		}
+	}, [posts]);
 
 	return (
 		<div className="admin-panel" ref={panelRef}>
 			<div className="admin-panel-header">
 				<h2>Blog Management</h2>
 				<p>Create, edit, and manage blog posts</p>
-				<button className="btn primary" onClick={() => { setEditingPost(null); setShowModal(true); }}>
+				<button 
+					className="btn primary" 
+					onClick={() => { setEditingPost(null); setShowModal(true); }}
+					onMouseEnter={(e) => {
+						gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" });
+					}}
+					onMouseLeave={(e) => {
+						gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" });
+					}}
+				>
 					+ New Post
 				</button>
 			</div>
@@ -636,8 +1022,23 @@ function BlogPanel() {
 								))}
 							</div>
 							<div className="admin-blog-actions">
-								<button className="btn ghost" onClick={() => { setEditingPost(post); setShowModal(true); }}>Edit</button>
-								<button className="btn ghost" onClick={() => deletePost(post.id)}>Delete</button>
+								<button 
+									className="btn ghost" 
+									onClick={() => { setEditingPost(post); setShowModal(true); }}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Edit
+								</button>
+								<button 
+									className="btn ghost danger" 
+									data-action="delete"
+									onClick={() => deletePost(post.id)}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Delete
+								</button>
 							</div>
 						</div>
 					</div>
@@ -657,6 +1058,14 @@ function BlogPanel() {
 					setPreviewMode={setPreviewMode}
 				/>
 			)}
+			{toast && (
+				<div className={`admin-toast ${toast.type} show`}>
+					<span className="admin-toast-icon">
+						{toast.type === 'success' ? '✓' : toast.type === 'error' ? '✕' : 'ℹ'}
+					</span>
+					<span>{toast.message}</span>
+				</div>
+			)}
 		</div>
 	);
 }
@@ -671,8 +1080,11 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 }) {
 	const [formData, setFormData] = useState<Partial<BlogPost>>({
 		title: post?.title || '',
+		titleAr: post?.titleAr || '',
 		content: post?.content || '',
+		contentAr: post?.contentAr || '',
 		excerpt: post?.excerpt || '',
+		excerptAr: post?.excerptAr || '',
 		category: post?.category || '',
 		tags: post?.tags || [],
 		published: post?.published || false,
@@ -686,64 +1098,446 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 	const [showSEOSection, setShowSEOSection] = useState(false);
 	const [showLinksSection, setShowLinksSection] = useState(false);
 	const modalRef = useRef<HTMLDivElement>(null);
+	const overlayRef = useRef<HTMLDivElement>(null);
+	const contentRef = useRef<HTMLFormElement>(null);
+	const previewRef = useRef<HTMLDivElement>(null);
+	const previousPreviewMode = useRef(previewMode);
 
+	// Enhanced modal opening animation
 	useEffect(() => {
-		if (modalRef.current) {
-			gsap.fromTo(modalRef.current,
-				{ opacity: 0, scale: 0.9, y: 20 },
-				{ opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "expo.out" }
+		if (modalRef.current && overlayRef.current) {
+			const modal = modalRef.current;
+			const overlay = overlayRef.current;
+			const content = contentRef.current;
+			
+			// Set initial states
+			gsap.set(overlay, { opacity: 0, backdropFilter: 'blur(0px)' });
+			gsap.set(modal, { opacity: 0, scale: 0.85, y: 30, filter: 'blur(10px)' });
+			
+			// Create timeline for coordinated animation
+			const tl = gsap.timeline();
+			
+			// Animate overlay with blur
+			tl.to(overlay, {
+				opacity: 0.6,
+				backdropFilter: 'blur(8px)',
+				duration: 0.4,
+				ease: "power3.out"
+			});
+			
+			// Animate modal entrance
+			tl.to(modal, {
+				opacity: 1,
+				scale: 1,
+				y: 0,
+				filter: 'blur(0px)',
+				duration: 0.5,
+				ease: "expo.out"
+			}, "-=0.2");
+			
+			// Stagger content appearance
+			if (content) {
+				const fields = content.querySelectorAll('.admin-field, .admin-modal-header, .admin-modal-footer');
+				gsap.fromTo(fields,
+					{ opacity: 0, y: 20 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 0.4,
+						stagger: 0.05,
+						ease: "power2.out",
+						delay: 0.2
+					}
+				);
+			}
+		}
+	}, []);
+
+	// Enhanced closing animation
+	useEffect(() => {
+		return () => {
+			if (modalRef.current && overlayRef.current) {
+				const modal = modalRef.current;
+				const overlay = overlayRef.current;
+				
+				const tl = gsap.timeline();
+				
+				// Animate modal exit
+				tl.to(modal, {
+					opacity: 0,
+					scale: 0.9,
+					y: -20,
+					filter: 'blur(5px)',
+					duration: 0.3,
+					ease: "power3.in"
+				});
+				
+				// Fade out overlay
+				tl.to(overlay, {
+					opacity: 0,
+					backdropFilter: 'blur(0px)',
+					duration: 0.3,
+					ease: "power2.in"
+				}, "-=0.2");
+			}
+		};
+	}, []);
+
+	// Tab transition animations
+	useEffect(() => {
+		if (!contentRef.current) return;
+		
+		const content = contentRef.current;
+		const seoSection = content.querySelector('.admin-seo-section');
+		const linksSection = content.querySelector('.admin-links-section');
+		
+		if (showSEOSection && seoSection) {
+			gsap.fromTo(seoSection,
+				{ opacity: 0, x: -30, scale: 0.95 },
+				{ opacity: 1, x: 0, scale: 1, duration: 0.4, ease: "power2.out" }
 			);
+		} else if (seoSection) {
+			gsap.to(seoSection, {
+				opacity: 0,
+				x: 30,
+				scale: 0.95,
+				duration: 0.3,
+				ease: "power2.in"
+			});
+		}
+		
+		if (showLinksSection && linksSection) {
+			gsap.fromTo(linksSection,
+				{ opacity: 0, x: -30, scale: 0.95 },
+				{ opacity: 1, x: 0, scale: 1, duration: 0.4, ease: "power2.out" }
+			);
+		} else if (linksSection) {
+			gsap.to(linksSection, {
+				opacity: 0,
+				x: 30,
+				scale: 0.95,
+				duration: 0.3,
+				ease: "power2.in"
+			});
+		}
+	}, [showSEOSection, showLinksSection]);
+
+	// Preview mode cinematic animation
+	useEffect(() => {
+		if (previousPreviewMode.current !== previewMode && previewRef.current && modalRef.current) {
+			const preview = previewRef.current;
+			const modal = modalRef.current;
+			const content = contentRef.current;
+			
+			if (previewMode) {
+				// Entering preview mode - cinematic reveal
+				const tl = gsap.timeline();
+				
+				// Darken background slightly
+				tl.to(modal, {
+					backgroundColor: 'rgba(248, 250, 252, 0.98)',
+					duration: 0.3,
+					ease: "power2.out"
+				});
+				
+				// Fade out form content
+				if (content) {
+					tl.to(content.querySelectorAll('.admin-field'), {
+						opacity: 0,
+						y: -20,
+						duration: 0.3,
+						ease: "power2.in",
+						stagger: 0.02
+					}, "-=0.1");
+				}
+				
+				// Slide up preview content from bottom
+				gsap.set(preview, { opacity: 0, y: 100, scale: 0.9 });
+				tl.to(preview, {
+					opacity: 1,
+					y: 0,
+					scale: 1,
+					duration: 0.6,
+					ease: "expo.out"
+				}, "-=0.2");
+				
+				// Stagger preview content appearance
+				const previewElements = preview.querySelectorAll('h2, .admin-preview-excerpt, .admin-preview-content, img');
+				gsap.fromTo(previewElements,
+					{ opacity: 0, y: 30 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 0.5,
+						stagger: 0.1,
+						ease: "power2.out",
+						delay: 0.3
+					}
+				);
+				
+				// Title typing effect (mask slide)
+				const title = preview.querySelector('h2');
+				if (title) {
+					gsap.fromTo(title,
+						{ clipPath: 'inset(0 100% 0 0)' },
+						{
+							clipPath: 'inset(0 0% 0 0)',
+							duration: 0.8,
+							ease: "power2.out",
+							delay: 0.4
+						}
+					);
+				}
+				
+				// Add parallax scroll effect to preview
+				const previewContent = preview.querySelector('.admin-preview-content');
+				if (previewContent) {
+					preview.addEventListener('scroll', () => {
+						const scrollTop = preview.scrollTop;
+						const elements = preview.querySelectorAll('img, h2, .admin-preview-excerpt');
+						elements.forEach((el, index) => {
+							gsap.to(el, {
+								y: scrollTop * 0.1 * (index + 1),
+								duration: 0.1,
+								ease: "none"
+							});
+						});
+					});
+				}
+			} else {
+				// Exiting preview mode - reverse animation
+				const tl = gsap.timeline();
+				
+				// Slide down and fade out preview
+				tl.to(preview, {
+					opacity: 0,
+					y: 100,
+					scale: 0.9,
+					duration: 0.4,
+					ease: "power2.in"
+				});
+				
+				// Restore modal background
+				tl.to(modal, {
+					backgroundColor: 'rgba(255, 255, 255, 0.98)',
+					duration: 0.3,
+					ease: "power2.out"
+				}, "-=0.2");
+				
+				// Fade in form content
+				if (content) {
+					tl.fromTo(content.querySelectorAll('.admin-field'),
+						{ opacity: 0, y: 20 },
+						{
+							opacity: 1,
+							y: 0,
+							duration: 0.4,
+							ease: "power2.out",
+							stagger: 0.03
+						},
+						"-=0.1"
+					);
+				}
+			}
+			
+			previousPreviewMode.current = previewMode;
+		}
+	}, [previewMode]);
+
+	// Add input focus animations
+	useEffect(() => {
+		const inputs = modalRef.current?.querySelectorAll('.admin-input');
+		if (inputs) {
+			inputs.forEach((input) => {
+				const handleFocus = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1.01,
+						y: -1,
+						duration: 0.2,
+						ease: "power2.out"
+					});
+				};
+				const handleBlur = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1,
+						y: 0,
+						duration: 0.2,
+						ease: "power2.out"
+					});
+				};
+				input.addEventListener('focus', handleFocus);
+				input.addEventListener('blur', handleBlur);
+				return () => {
+					input.removeEventListener('focus', handleFocus);
+					input.removeEventListener('blur', handleBlur);
+				};
+			});
 		}
 	}, []);
 
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
-		onSave(formData as BlogPost);
+		
+		// Success animation before save
+		if (modalRef.current) {
+			const modal = modalRef.current;
+			const tl = gsap.timeline({
+				onComplete: () => {
+					onSave(formData as BlogPost);
+				}
+			});
+			
+			// Pulse animation
+			tl.to(modal, {
+				scale: 1.02,
+				duration: 0.15,
+				ease: "power2.out"
+			})
+			.to(modal, {
+				scale: 1,
+				duration: 0.15,
+				ease: "power2.in"
+			});
+			
+			// Success glow effect
+			const saveButton = modal.querySelector('button[type="submit"]');
+			if (saveButton) {
+				gsap.to(saveButton, {
+					boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)',
+					duration: 0.3,
+					ease: "power2.out",
+					yoyo: true,
+					repeat: 1
+				});
+			}
+		} else {
+			onSave(formData as BlogPost);
+		}
 	}
 
+	const handleClose = () => {
+		if (modalRef.current && overlayRef.current) {
+			const modal = modalRef.current;
+			const overlay = overlayRef.current;
+			
+			const tl = gsap.timeline({
+				onComplete: () => onClose()
+			});
+			
+			// Animate modal exit
+			tl.to(modal, {
+				opacity: 0,
+				scale: 0.9,
+				y: -20,
+				filter: 'blur(5px)',
+				duration: 0.3,
+				ease: "power3.in"
+			});
+			
+			// Fade out overlay
+			tl.to(overlay, {
+				opacity: 0,
+				backdropFilter: 'blur(0px)',
+				duration: 0.3,
+				ease: "power2.in"
+			}, "-=0.2");
+		} else {
+			onClose();
+		}
+	};
+
 	return (
-		<div className="admin-modal-overlay" onClick={onClose}>
+		<div className="admin-modal-overlay" ref={overlayRef} onClick={handleClose}>
 			<div className="admin-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
 				<div className="admin-modal-header">
 					<h3>{post ? 'Edit Post' : 'New Post'}</h3>
 					<div className="admin-modal-actions">
 						<button 
 							type="button"
-							className={`btn ghost ${showSEOSection ? 'active' : ''}`}
-							onClick={() => setShowSEOSection(!showSEOSection)}
+							className={`admin-modal-tab ${showSEOSection ? 'active' : ''}`}
+							onClick={() => {
+								setShowSEOSection(!showSEOSection);
+								setShowLinksSection(false);
+								setPreviewMode(false);
+							}}
 							title="SEO Settings"
+							onMouseEnter={(e) => {
+								if (!showSEOSection) {
+									gsap.to(e.currentTarget, { scale: 1.05, y: -2, duration: 0.2, ease: "power2.out" });
+								}
+							}}
+							onMouseLeave={(e) => {
+								if (!showSEOSection) {
+									gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.2, ease: "power2.out" });
+								}
+							}}
 						>
-							SEO
+							<span>SEO</span>
+							{showSEOSection && <span className="admin-modal-tab-indicator"></span>}
 						</button>
 						<button 
 							type="button"
-							className={`btn ghost ${showLinksSection ? 'active' : ''}`}
-							onClick={() => setShowLinksSection(!showLinksSection)}
+							className={`admin-modal-tab ${showLinksSection ? 'active' : ''}`}
+							onClick={() => {
+								setShowLinksSection(!showLinksSection);
+								setShowSEOSection(false);
+								setPreviewMode(false);
+							}}
 							title="Internal Links"
+							onMouseEnter={(e) => {
+								if (!showLinksSection) {
+									gsap.to(e.currentTarget, { scale: 1.05, y: -2, duration: 0.2, ease: "power2.out" });
+								}
+							}}
+							onMouseLeave={(e) => {
+								if (!showLinksSection) {
+									gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.2, ease: "power2.out" });
+								}
+							}}
 						>
-							Links
+							<span>Links</span>
+							{showLinksSection && <span className="admin-modal-tab-indicator"></span>}
 						</button>
 						<button 
 							type="button"
-							className="btn ghost" 
-							onClick={() => setPreviewMode(!previewMode)}
+							className={`admin-modal-tab ${previewMode ? 'active' : ''}`}
+							onClick={() => {
+								setPreviewMode(!previewMode);
+								setShowSEOSection(false);
+								setShowLinksSection(false);
+							}}
+							onMouseEnter={(e) => {
+								if (!previewMode) {
+									gsap.to(e.currentTarget, { scale: 1.05, y: -2, duration: 0.2, ease: "power2.out" });
+								}
+							}}
+							onMouseLeave={(e) => {
+								if (!previewMode) {
+									gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.2, ease: "power2.out" });
+								}
+							}}
 						>
-							{previewMode ? 'Edit' : 'Preview'}
+							<span>{previewMode ? 'Edit' : 'Preview'}</span>
+							{previewMode && <span className="admin-modal-tab-indicator"></span>}
 						</button>
 						<button 
 							type="button"
 							className="admin-modal-close" 
-							onClick={onClose}
+							onClick={handleClose}
+							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.1, rotation: 90, duration: 0.2, ease: "power2.out" })}
+							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, rotation: 0, duration: 0.2, ease: "power2.out" })}
 						>
 							×
 						</button>
 					</div>
 				</div>
-				<form onSubmit={handleSubmit} className="admin-modal-content">
+				<form onSubmit={handleSubmit} className="admin-modal-content" ref={contentRef}>
 					{!previewMode ? (
-						<>
+						<div className="admin-modal-form-content">
 							<label className="admin-field">
-								<span className="admin-label">Title</span>
+								<span className="admin-label">Title (English)</span>
 								<input 
 									className="admin-input"
 									value={formData.title}
@@ -752,7 +1546,16 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								/>
 							</label>
 							<label className="admin-field">
-								<span className="admin-label">Excerpt</span>
+								<span className="admin-label">Title (Arabic)</span>
+								<input 
+									className="admin-input"
+									value={formData.titleAr}
+									onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+									required
+								/>
+							</label>
+							<label className="admin-field">
+								<span className="admin-label">Excerpt (English)</span>
 								<textarea 
 									className="admin-input"
 									value={formData.excerpt}
@@ -762,11 +1565,31 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								/>
 							</label>
 							<label className="admin-field">
-								<span className="admin-label">Content</span>
+								<span className="admin-label">Excerpt (Arabic)</span>
+								<textarea 
+									className="admin-input"
+									value={formData.excerptAr}
+									onChange={(e) => setFormData({ ...formData, excerptAr: e.target.value })}
+									rows={3}
+									required
+								/>
+							</label>
+							<label className="admin-field">
+								<span className="admin-label">Content (English)</span>
 								<textarea 
 									className="admin-input"
 									value={formData.content}
 									onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+									rows={10}
+									required
+								/>
+							</label>
+							<label className="admin-field">
+								<span className="admin-label">Content (Arabic)</span>
+								<textarea 
+									className="admin-input"
+									value={formData.contentAr}
+									onChange={(e) => setFormData({ ...formData, contentAr: e.target.value })}
 									rows={10}
 									required
 								/>
@@ -789,13 +1612,77 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								/>
 							</label>
 							<label className="admin-field">
-								<span className="admin-label">Featured Image URL</span>
-								<input 
-									className="admin-input"
-									type="url"
-									value={formData.featuredImage}
-									onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
-								/>
+								<span className="admin-label">Featured Image</span>
+								<div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+									<input 
+										className="admin-input"
+										type="url"
+										value={formData.featuredImage}
+										onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
+										placeholder="Enter image URL or upload from device"
+										style={{ flex: 1 }}
+									/>
+									<label 
+										className="btn primary"
+										style={{ 
+											display: 'inline-flex', 
+											alignItems: 'center', 
+											justifyContent: 'center',
+											cursor: 'pointer',
+											margin: 0
+										}}
+										onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+										onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+									>
+										<input 
+											type="file" 
+											accept="image/*" 
+											style={{ display: 'none' }}
+											onChange={async (e) => {
+												const file = e.target.files?.[0];
+												if (!file) return;
+												
+												const formData = new FormData();
+												formData.append('file', file);
+												formData.append('section', 'blog');
+												
+												try {
+													const res = await fetch('/api/images', {
+														method: 'POST',
+														body: formData
+													});
+													
+													if (res.ok) {
+														const data = await res.json();
+														setFormData(prev => ({ ...prev, featuredImage: `/api/images/${data.id}` }));
+													} else {
+														alert('Failed to upload image');
+													}
+												} catch (error) {
+													console.error('Upload error:', error);
+													alert('Error uploading image');
+												}
+												
+												e.target.value = '';
+											}}
+										/>
+										Upload
+									</label>
+								</div>
+								{formData.featuredImage && (
+									<div style={{ marginTop: '12px' }}>
+										<img 
+											src={formData.featuredImage} 
+											alt="Preview" 
+											style={{ 
+												maxWidth: '100%', 
+												maxHeight: '200px', 
+												borderRadius: '8px',
+												boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+											}} 
+										/>
+									</div>
+								)}
 							</label>
 							<label className="admin-field">
 								<span className="admin-label">Slug (URL-friendly)</span>
@@ -924,20 +1811,35 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 									</button>
 								</div>
 							)}
-						</>
+						</div>
 					) : (
-						<div className="admin-preview">
+						<div className="admin-preview" ref={previewRef}>
 							{formData.featuredImage && (
-								<img src={formData.featuredImage} alt={formData.title} />
+								<img src={formData.featuredImage} alt={formData.title || formData.titleAr} />
 							)}
-							<h2>{formData.title}</h2>
-							<p className="admin-preview-excerpt">{formData.excerpt}</p>
-							<div className="admin-preview-content">{formData.content}</div>
+							<h2>{formData.title || formData.titleAr}</h2>
+							<p className="admin-preview-excerpt">{formData.excerpt || formData.excerptAr}</p>
+							<div className="admin-preview-content">{formData.content || formData.contentAr}</div>
 						</div>
 					)}
 					<div className="admin-modal-footer">
-						<button type="button" className="btn ghost" onClick={onClose}>Cancel</button>
-						<button type="submit" className="btn primary">Save</button>
+						<button 
+							type="button" 
+							className="btn ghost" 
+							onClick={onClose}
+							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+						>
+							Cancel
+						</button>
+						<button 
+							type="submit" 
+							className="btn primary"
+							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+						>
+							Save
+						</button>
 					</div>
 				</form>
 			</div>
@@ -958,27 +1860,33 @@ function ServicesPanel() {
 		if (saved) {
 			setServices(JSON.parse(saved));
 		} else {
-			// Initialize with existing services from translations
+				// Initialize with existing services from translations
 			const initialServices: Service[] = [
 				// Transportation Services
 				{
 					id: '1',
 					title: 'Transportation to customer warehouses throughout the Kingdom',
+					titleAr: 'النقل إلى مستودعات العميل في جميع أنحاء المملكة',
 					description: 'We provide integrated transportation services covering all sea ports, air and land entry points, and all types of containers and parcels, including refrigerated and regular transport, ensuring fast and safe delivery to customer warehouses throughout the Kingdom.',
+					descriptionAr: 'نقدم خدمات نقل متكاملة تشمل جميع الموانئ البحرية والمنافذ الجوية والبرية ونغطي جميع أنواع الحاويات والطرود، بما في ذلك النقل المبرد والنقل العادي مع ضمان توصيل سريع وآمن إلى مستودعات العملاء في مختلف أنحاء المملكة.',
 					visible: true,
 					order: 0,
 				},
 				{
 					id: '2',
 					title: 'Flexible distribution service',
+					titleAr: 'نوفر خدمة توزيع مرنة تتوافق مع احتياجات العملاء',
 					description: 'We provide a flexible distribution service that meets customer needs, ensuring the delivery of shipments to multiple locations according to the customer\'s desire, which facilitates the delivery of goods at specified times and locations.',
+					descriptionAr: 'حيث نضمن توصيل الشحنات إلى مواقع متعددة وفقا لرغبة العميل. مما يسهل توصيل البضائع في الوقت والمكان المحددين.',
 					visible: true,
 					order: 1,
 				},
 				{
 					id: '3',
 					title: 'Transportation and Storage to and from the Yard',
+					titleAr: 'نقل وتخزين من وإلى الساحة',
 					description: 'Providing comprehensive yard services including saving money and time, vast spaces and a safe environment for storage, increasing work efficiency and reducing the risks of floor accumulation, and accuracy and flexibility in the process of receiving shipments after storage.',
+					descriptionAr: 'توفير المال والوقت . مساحات شاسعة وبيئة آمنة للتخزين . رفع كفاءة العمل وتقليل مخاطر تراكم الأرضيات. الدقة والمرونة في عملية استلام الشحنات ما بعد التخزين .',
 					visible: true,
 					order: 2,
 				},
@@ -986,49 +1894,63 @@ function ServicesPanel() {
 				{
 					id: '4',
 					title: 'Customs Clearance for Exports and Imports',
+					titleAr: 'تخليص جمركي للصادرات والواردات',
 					description: 'We work to facilitate all customs procedures for your commercial and personal exports and imports, ensuring fast clearance of shipments and reducing unnecessary delays.',
+					descriptionAr: 'نعمل على تسهيل جميع الإجراءات الجمركية لصادراتكم ووارداتكم التجارية والشخصية، بما يضمن سرعة الفسح عن الشحنات وتقليل التأخير الغير الضروري.',
 					visible: true,
 					order: 3,
 				},
 				{
 					id: '5',
 					title: 'SABER Certificate Issuance',
+					titleAr: 'استخراج شهادة هيئة المواصفات والمقاييس السعودية ( سابر )',
 					description: 'We provide a specialized service for issuing product conformity certificates from the Saudi Standards, Metrology and Quality Organization (SABER) to ensure their compliance with the quality standards approved in the Saudi market.',
+					descriptionAr: 'نقدم خدمة متخصصة في استخراج شهادة المطابقة للمنتجات للتأكد من توافقها مع معايير الجودة المعتمدة في السوق السعودي.',
 					visible: true,
 					order: 4,
 				},
 				{
 					id: '6',
 					title: 'SFDA Product Registration',
+					titleAr: 'تسجيل المنتجات في الهيئة العامة للغذاء والدواء (SFDA)',
 					description: 'We provide a service for registering food and pharmaceutical products with the Saudi Food and Drug Authority (SFDA) and issuing import approvals to ensure compliance with regulatory requirements and their entry into the Saudi market.',
+					descriptionAr: 'نوفر خدمة تسجيل المنتجات الغذائية والدوائية في الهيئة العامة للغذاء والدواء وإصدار الموافقة بالاستيراد لضمان الامتثال للمتطلبات التنظيمية ودخولها للسوق السعودي.',
 					visible: true,
 					order: 5,
 				},
 				{
 					id: '7',
 					title: 'Follow-up and Tracking',
+					titleAr: 'المتابعة والتعقيب',
 					description: 'We provide a continuous follow-up service for all shipments and track the progress of procedures from the country of origin to the destination to ensure timely arrival of shipments.',
+					descriptionAr: 'نوفر خدمة متابعة مستمرة لجميع الشحنات والتعقيب على سير الإجراءات من البلد المصدر إلى جهة الوصول لضمان وصول الشحنات في الوقت المناسب.',
 					visible: true,
 					order: 6,
 				},
 				{
 					id: '8',
 					title: 'Avoiding Unnecessary Expenses',
+					titleAr: 'تجنب النفقات غير الضرورية - الآمنة للتخليص الجمركي',
 					description: 'We guide you in reducing unnecessary costs according to the requirements for each type of product to avoid errors and prevent demurrage by improving customs and logistics operations and increasing operational efficiency.',
+					descriptionAr: 'نرشدك في تقليل التكاليف الغير الضرورية حسب المتطلبات لكل نوع من المنتجات لتجنب الأخطاء وتفادياً للأرضيات من خلال تحسين العمليات الجمركية واللوجستية وزيادة الكفاءة التشغيلية.',
 					visible: true,
 					order: 7,
 				},
 				{
 					id: '9',
 					title: '24/7 Customer Service',
+					titleAr: 'تقديم خدمات العملاء على مدار الساعة',
 					description: 'Our team is available to serve customers according to official working hours to ensure continuous support and respond to inquiries.',
+					descriptionAr: 'فريقنا متاح لخدمة العملاء وفقاً لأوقات العمل الرسمية لضمان تقديم الدعم المستمر والرد على الاستفسارات.',
 					visible: true,
 					order: 8,
 				},
 				{
 					id: '10',
 					title: 'Customs and Logistics Consultations',
+					titleAr: 'الاستشارات الجمركية واللوجستية',
 					description: 'We provide our clients with the best solutions and information regarding customs laws and logistics procedures to achieve safe shipping and smooth operations.',
+					descriptionAr: 'نزود عملاءنا بأفضل الحلول والمعلومات حول القوانين الجمركية والإجراءات اللوجستية لتحقيق شحن آمن وسلاسة في العمليات.',
 					visible: true,
 					order: 9,
 				},
@@ -1048,6 +1970,29 @@ function ServicesPanel() {
 		}
 	}, [services]);
 
+	// Toast notification state
+	const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+
+	function showToast(type: 'success' | 'error' | 'info', message: string) {
+		setToast({ type, message });
+		const toastEl = document.querySelector('.admin-toast');
+		if (toastEl) {
+			gsap.fromTo(toastEl,
+				{ opacity: 0, x: 400 },
+				{ opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
+			);
+			setTimeout(() => {
+				gsap.to(toastEl, {
+					opacity: 0,
+					x: 400,
+					duration: 0.3,
+					ease: "power2.in",
+					onComplete: () => setToast(null)
+				});
+			}, 3000);
+		}
+	}
+
 	function saveService(service: Service) {
 		const updated = editingService
 			? services.map(s => s.id === editingService.id ? service : s)
@@ -1056,12 +2001,14 @@ function ServicesPanel() {
 		localStorage.setItem('admin_services', JSON.stringify(updated));
 		setEditingService(null);
 		setShowModal(false);
+		showToast('success', editingService ? 'Service updated successfully!' : 'Service created successfully!');
 	}
 
 	function deleteService(id: string) {
 		const updated = services.filter(s => s.id !== id);
 		setServices(updated);
 		localStorage.setItem('admin_services', JSON.stringify(updated));
+		showToast('success', 'Service deleted successfully!');
 	}
 
 	function toggleVisibility(id: string) {
@@ -1116,8 +2063,23 @@ function ServicesPanel() {
 							<h3>{service.title}</h3>
 							<p>{service.description}</p>
 							<div className="admin-service-actions">
-								<button className="btn ghost" onClick={() => { setEditingService(service); setShowModal(true); }}>Edit</button>
-								<button className="btn ghost" onClick={() => deleteService(service.id)}>Delete</button>
+								<button 
+									className="btn ghost" 
+									onClick={() => { setEditingService(service); setShowModal(true); }}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Edit
+								</button>
+								<button 
+									className="btn ghost danger" 
+									data-action="delete"
+									onClick={() => deleteService(service.id)}
+									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+								>
+									Delete
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1135,6 +2097,14 @@ function ServicesPanel() {
 					onClose={() => { setShowModal(false); setEditingService(null); }}
 				/>
 			)}
+			{toast && (
+				<div className={`admin-toast ${toast.type} show`}>
+					<span className="admin-toast-icon">
+						{toast.type === 'success' ? '✓' : toast.type === 'error' ? '✕' : 'ℹ'}
+					</span>
+					<span>{toast.message}</span>
+				</div>
+			)}
 		</div>
 	);
 }
@@ -1147,37 +2117,188 @@ function ServiceModal({ service, onSave, onClose }: {
 }) {
 	const [formData, setFormData] = useState<Partial<Service>>({
 		title: service?.title || '',
+		titleAr: service?.titleAr || '',
 		description: service?.description || '',
+		descriptionAr: service?.descriptionAr || '',
 		image: service?.image || '',
 		visible: service?.visible ?? true,
 		order: service?.order ?? 0,
 	});
 	const modalRef = useRef<HTMLDivElement>(null);
+	const overlayRef = useRef<HTMLDivElement>(null);
+	const contentRef = useRef<HTMLFormElement>(null);
 
+	// Enhanced modal opening animation
 	useEffect(() => {
-		if (modalRef.current) {
-			gsap.fromTo(modalRef.current,
-				{ opacity: 0, scale: 0.9, y: 20 },
-				{ opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "expo.out" }
-			);
+		if (modalRef.current && overlayRef.current) {
+			const modal = modalRef.current;
+			const overlay = overlayRef.current;
+			const content = contentRef.current;
+			
+			// Set initial states
+			gsap.set(overlay, { opacity: 0, backdropFilter: 'blur(0px)' });
+			gsap.set(modal, { opacity: 0, scale: 0.85, y: 30, filter: 'blur(10px)' });
+			
+			// Create timeline for coordinated animation
+			const tl = gsap.timeline();
+			
+			// Animate overlay with blur
+			tl.to(overlay, {
+				opacity: 0.6,
+				backdropFilter: 'blur(8px)',
+				duration: 0.4,
+				ease: "power3.out"
+			});
+			
+			// Animate modal entrance
+			tl.to(modal, {
+				opacity: 1,
+				scale: 1,
+				y: 0,
+				filter: 'blur(0px)',
+				duration: 0.5,
+				ease: "expo.out"
+			}, "-=0.2");
+			
+			// Stagger content appearance
+			if (content) {
+				const fields = content.querySelectorAll('.admin-field, .admin-modal-header, .admin-modal-footer');
+				gsap.fromTo(fields,
+					{ opacity: 0, y: 20 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 0.4,
+						stagger: 0.05,
+						ease: "power2.out",
+						delay: 0.2
+					}
+				);
+			}
+		}
+	}, []);
+
+	// Add input focus animations
+	useEffect(() => {
+		const inputs = modalRef.current?.querySelectorAll('.admin-input');
+		if (inputs) {
+			inputs.forEach((input) => {
+				const handleFocus = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1.01,
+						y: -1,
+						duration: 0.2,
+						ease: "power2.out"
+					});
+				};
+				const handleBlur = (e: Event) => {
+					const target = e.currentTarget as HTMLElement;
+					gsap.to(target, {
+						scale: 1,
+						y: 0,
+						duration: 0.2,
+						ease: "power2.out"
+					});
+				};
+				input.addEventListener('focus', handleFocus);
+				input.addEventListener('blur', handleBlur);
+				return () => {
+					input.removeEventListener('focus', handleFocus);
+					input.removeEventListener('blur', handleBlur);
+				};
+			});
 		}
 	}, []);
 
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
-		onSave(formData as Service);
+		
+		// Success animation before save
+		if (modalRef.current) {
+			const modal = modalRef.current;
+			const tl = gsap.timeline({
+				onComplete: () => {
+					onSave(formData as Service);
+				}
+			});
+			
+			// Pulse animation
+			tl.to(modal, {
+				scale: 1.02,
+				duration: 0.15,
+				ease: "power2.out"
+			})
+			.to(modal, {
+				scale: 1,
+				duration: 0.15,
+				ease: "power2.in"
+			});
+			
+			// Success glow effect
+			const saveButton = modal.querySelector('button[type="submit"]');
+			if (saveButton) {
+				gsap.to(saveButton, {
+					boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)',
+					duration: 0.3,
+					ease: "power2.out",
+					yoyo: true,
+					repeat: 1
+				});
+			}
+		} else {
+			onSave(formData as Service);
+		}
 	}
 
+	const handleClose = () => {
+		if (modalRef.current && overlayRef.current) {
+			const modal = modalRef.current;
+			const overlay = overlayRef.current;
+			
+			const tl = gsap.timeline({
+				onComplete: () => onClose()
+			});
+			
+			// Animate modal exit
+			tl.to(modal, {
+				opacity: 0,
+				scale: 0.9,
+				y: -20,
+				filter: 'blur(5px)',
+				duration: 0.3,
+				ease: "power3.in"
+			});
+			
+			// Fade out overlay
+			tl.to(overlay, {
+				opacity: 0,
+				backdropFilter: 'blur(0px)',
+				duration: 0.3,
+				ease: "power2.in"
+			}, "-=0.2");
+		} else {
+			onClose();
+		}
+	};
+
 	return (
-		<div className="admin-modal-overlay" onClick={onClose}>
+		<div className="admin-modal-overlay" ref={overlayRef} onClick={handleClose}>
 			<div className="admin-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
 				<div className="admin-modal-header">
 					<h3>{service ? 'Edit Service' : 'New Service'}</h3>
-					<button className="admin-modal-close" onClick={onClose}>×</button>
+					<button 
+						className="admin-modal-close" 
+						onClick={handleClose}
+						onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.1, rotation: 90, duration: 0.2, ease: "power2.out" })}
+						onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, rotation: 0, duration: 0.2, ease: "power2.out" })}
+					>
+						×
+					</button>
 				</div>
-				<form onSubmit={handleSubmit} className="admin-modal-content">
+				<form onSubmit={handleSubmit} className="admin-modal-content" ref={contentRef}>
 					<label className="admin-field">
-						<span className="admin-label">Title</span>
+						<span className="admin-label">Title (English)</span>
 						<input 
 							className="admin-input"
 							value={formData.title}
@@ -1186,11 +2307,30 @@ function ServiceModal({ service, onSave, onClose }: {
 						/>
 					</label>
 					<label className="admin-field">
-						<span className="admin-label">Description</span>
+						<span className="admin-label">Title (Arabic)</span>
+						<input 
+							className="admin-input"
+							value={formData.titleAr}
+							onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+							required
+						/>
+					</label>
+					<label className="admin-field">
+						<span className="admin-label">Description (English)</span>
 						<textarea 
 							className="admin-input"
 							value={formData.description}
 							onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+							rows={5}
+							required
+						/>
+					</label>
+					<label className="admin-field">
+						<span className="admin-label">Description (Arabic)</span>
+						<textarea 
+							className="admin-input"
+							value={formData.descriptionAr}
+							onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
 							rows={5}
 							required
 						/>
@@ -1213,8 +2353,23 @@ function ServiceModal({ service, onSave, onClose }: {
 						<span className="admin-label">Visible</span>
 					</label>
 					<div className="admin-modal-footer">
-						<button type="button" className="btn ghost" onClick={onClose}>Cancel</button>
-						<button type="submit" className="btn primary">Save</button>
+						<button 
+							type="button" 
+							className="btn ghost" 
+							onClick={onClose}
+							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+						>
+							Cancel
+						</button>
+						<button 
+							type="submit" 
+							className="btn primary"
+							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+						>
+							Save
+						</button>
 					</div>
 				</form>
 			</div>
