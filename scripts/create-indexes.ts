@@ -76,3 +76,4 @@ async function createIndexes() {
 // Run the script
 createIndexes();
 
+
