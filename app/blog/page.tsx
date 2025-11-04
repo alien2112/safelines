@@ -24,37 +24,38 @@ type BlogPost = {
   slug?: string;
 };
 
-// Get blog posts from admin dashboard (localStorage)
-function getBlogPosts(): BlogPost[] {
+// Get blog posts from MongoDB via API
+async function getBlogPosts(): Promise<BlogPost[]> {
   if (typeof window === 'undefined') return [];
   
-  const saved = localStorage.getItem('admin_blog_posts');
-  if (!saved) return [];
-  
   try {
-    const adminPosts = JSON.parse(saved);
-    // Convert admin post format to blog page format
-    // Note: Language selection will be handled in the component
-    return adminPosts
-      .filter((post: any) => post.published) // Only show published posts
-      .map((post: any) => ({
-        id: post.id,
-        title: post.title || '',
-        titleAr: post.titleAr || post.title || '',
-        excerpt: post.excerpt || '',
-        excerptAr: post.excerptAr || post.excerpt || '',
-        author: 'Safe Lines Team', // Default author
-        date: new Date(post.createdAt).toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        }),
-        category: post.category,
-        image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
-        readTime: '5 min read', // Default read time
-        slug: post.slug, // Include slug from admin post
-      }))
-      .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date, newest first
+    const res = await fetch('/api/blogs', { cache: 'no-store' });
+    if (res.ok) {
+      const adminPosts = await res.json();
+      // Convert admin post format to blog page format
+      // Note: Language selection will be handled in the component
+      return adminPosts
+        .filter((post: any) => post.published) // Only show published posts
+        .map((post: any) => ({
+          id: post._id?.toString() || post.id,
+          title: post.title || '',
+          titleAr: post.titleAr || post.title || '',
+          excerpt: post.excerpt || '',
+          excerptAr: post.excerptAr || post.excerpt || '',
+          author: 'Safe Lines Team', // Default author
+          date: new Date(post.createdAt).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          category: post.category,
+          image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
+          readTime: '5 min read', // Default read time
+          slug: post.slug, // Include slug from admin post
+        }))
+        .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date, newest first
+    }
+    return [];
   } catch {
     return [];
   }
@@ -68,37 +69,22 @@ export default function BlogPage() {
   const [blogPosts, setBlogPosts] = React.useState<BlogPost[]>([]);
 
   React.useEffect(() => {
-    const posts = getBlogPosts();
-    // Update posts with current language
-    const updatedPosts = posts.map(post => ({
-      ...post,
-      title: language === 'ar' ? (post.titleAr || post.title) : post.title,
-      excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
-    }));
-    setBlogPosts(updatedPosts);
-    // Listen for storage changes to update blog posts in real-time
-    const handleStorageChange = () => {
-      const posts = getBlogPosts();
+    async function loadPosts() {
+      const posts = await getBlogPosts();
+      // Update posts with current language
       const updatedPosts = posts.map(post => ({
         ...post,
         title: language === 'ar' ? (post.titleAr || post.title) : post.title,
         excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
       }));
       setBlogPosts(updatedPosts);
-    };
-    window.addEventListener('storage', handleStorageChange);
-    // Also check periodically for changes (since storage event only fires in other tabs)
+    }
+    loadPosts();
+    // Check periodically for changes
     const interval = setInterval(() => {
-      const posts = getBlogPosts();
-      const updatedPosts = posts.map(post => ({
-        ...post,
-        title: language === 'ar' ? (post.titleAr || post.title) : post.title,
-        excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : post.excerpt,
-      }));
-      setBlogPosts(updatedPosts);
-    }, 1000);
+      loadPosts();
+    }, 5000); // Check every 5 seconds
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
   }, [language]);

@@ -48,45 +48,52 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
   const backButtonRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    // Load all posts for related posts and navigation
-    try {
-      const saved = localStorage.getItem('admin_blog_posts');
-      if (saved) {
-        const posts = JSON.parse(saved);
-        const publishedPosts = posts.filter((p: BlogPost) => p.published);
-        const sortedPosts = [...publishedPosts].sort((a: BlogPost, b: BlogPost) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        // Apply language to all posts
-        const languageAwarePosts = sortedPosts.map((p: BlogPost) => ({
-          ...p,
-          title: language === 'ar' ? (p.titleAr || p.title) : p.title,
-          excerpt: language === 'ar' ? (p.excerptAr || p.excerpt) : p.excerpt,
-        }));
-        setAllPosts(languageAwarePosts);
-        
-        // Find current post index
-        const currentIndex = sortedPosts.findIndex((p: BlogPost) => p.id === post.id);
-        if (currentIndex > 0) {
-          const prev = sortedPosts[currentIndex - 1];
-          setNextPost({
-            ...prev,
-            title: language === 'ar' ? (prev.titleAr || prev.title) : prev.title,
-            excerpt: language === 'ar' ? (prev.excerptAr || prev.excerpt) : prev.excerpt,
-          });
+    // Load all posts for related posts and navigation from MongoDB
+    async function loadAllPosts() {
+      try {
+        const res = await fetch('/api/blogs', { cache: 'no-store' });
+        if (res.ok) {
+          const posts = await res.json();
+          const publishedPosts = posts.filter((p: any) => p.published);
+          const sortedPosts = [...publishedPosts].sort((a: any, b: any) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          // Apply language to all posts
+          const languageAwarePosts = sortedPosts.map((p: any) => ({
+            ...p,
+            id: p._id?.toString() || p.id,
+            title: language === 'ar' ? (p.titleAr || p.title) : p.title,
+            excerpt: language === 'ar' ? (p.excerptAr || p.excerpt) : p.excerpt,
+          }));
+          setAllPosts(languageAwarePosts);
+          
+          // Find current post index
+          const currentPostId = post.id || (post as any)._id?.toString();
+          const currentIndex = sortedPosts.findIndex((p: any) => (p._id?.toString() || p.id) === currentPostId);
+          if (currentIndex > 0) {
+            const prev = sortedPosts[currentIndex - 1];
+            setNextPost({
+              ...prev,
+              id: prev._id?.toString() || prev.id,
+              title: language === 'ar' ? (prev.titleAr || prev.title) : prev.title,
+              excerpt: language === 'ar' ? (prev.excerptAr || prev.excerpt) : prev.excerpt,
+            });
+          }
+          if (currentIndex < sortedPosts.length - 1) {
+            const next = sortedPosts[currentIndex + 1];
+            setPrevPost({
+              ...next,
+              id: next._id?.toString() || next.id,
+              title: language === 'ar' ? (next.titleAr || next.title) : next.title,
+              excerpt: language === 'ar' ? (next.excerptAr || next.excerpt) : next.excerpt,
+            });
+          }
         }
-        if (currentIndex < sortedPosts.length - 1) {
-          const next = sortedPosts[currentIndex + 1];
-          setPrevPost({
-            ...next,
-            title: language === 'ar' ? (next.titleAr || next.title) : next.title,
-            excerpt: language === 'ar' ? (next.excerptAr || next.excerpt) : next.excerpt,
-          });
-        }
+      } catch (e) {
+        console.error('Error loading posts:', e);
       }
-    } catch (e) {
-      console.error('Error loading posts:', e);
     }
+    loadAllPosts();
   }, [post.id, language]);
 
   useEffect(() => {

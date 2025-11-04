@@ -39,30 +39,34 @@ export default function BlogPostPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get blog post from localStorage
-    try {
-      const saved = localStorage.getItem('admin_blog_posts');
-      if (saved) {
-        const posts = JSON.parse(saved);
-        const found = posts.find((p: BlogPost) => p.id === id || p.slug === id);
-        if (found && found.published) {
-          // Get current language
-          const language = localStorage.getItem('language') || 'en';
-          const isArabic = language === 'ar';
-          // Use language-appropriate content
-          setPost({
-            ...found,
-            title: isArabic ? (found.titleAr || found.title) : found.title,
-            content: isArabic ? (found.contentAr || found.content) : found.content,
-            excerpt: isArabic ? (found.excerptAr || found.excerpt) : found.excerpt,
-          });
+    // Get blog post from MongoDB
+    async function loadPost() {
+      try {
+        const res = await fetch('/api/blogs', { cache: 'no-store' });
+        if (res.ok) {
+          const posts = await res.json();
+          const found = posts.find((p: any) => (p._id?.toString() || p.id) === id || p.slug === id);
+          if (found && found.published) {
+            // Get current language
+            const language = localStorage.getItem('language') || 'en';
+            const isArabic = language === 'ar';
+            // Use language-appropriate content
+            setPost({
+              ...found,
+              id: found._id?.toString() || found.id,
+              title: isArabic ? (found.titleAr || found.title) : found.title,
+              content: isArabic ? (found.contentAr || found.content) : found.content,
+              excerpt: isArabic ? (found.excerptAr || found.excerpt) : found.excerpt,
+            });
+          }
         }
+      } catch (e) {
+        console.error('Error loading post:', e);
+      } finally {
+        setLoading(false);
       }
-    } catch (e) {
-      console.error('Error loading post:', e);
-    } finally {
-      setLoading(false);
     }
+    loadPost();
   }, [id]);
 
   useEffect(() => {

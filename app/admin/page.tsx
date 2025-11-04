@@ -758,14 +758,24 @@ function BlogPanel() {
 	const [previewMode, setPreviewMode] = useState(false);
 	const panelRef = useRef<HTMLDivElement>(null);
 
-	// Initialize with existing blog posts if localStorage is empty
+	// Load blog posts from MongoDB
 	useEffect(() => {
-		const saved = localStorage.getItem('admin_blog_posts');
-		if (saved) {
-			setPosts(JSON.parse(saved));
-		} else {
-			// Initialize with existing blog posts from blog/page.tsx
-			const initialPosts: BlogPost[] = [
+		async function loadPosts() {
+			try {
+				const res = await fetch('/api/blogs', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					if (data.length > 0) {
+						// Convert MongoDB _id to id for frontend
+						const postsWithId = data.map((p: any) => ({
+							...p,
+							id: p._id?.toString() || p.id,
+							_id: undefined, // Remove _id from frontend
+						}));
+						setPosts(postsWithId);
+					} else {
+						// Initialize with existing blog posts from blog/page.tsx if DB is empty
+						const initialPosts: BlogPost[] = [
 				{
 					id: '1',
 					title: 'The Future of Customs Clearance: Digital Transformation',
@@ -868,10 +878,23 @@ function BlogPanel() {
 					updatedAt: new Date('2025-02-18').toISOString(),
 					slug: 'cost-effective-shipping-solutions-for-smes',
 				},
-			];
-			setPosts(initialPosts);
-			localStorage.setItem('admin_blog_posts', JSON.stringify(initialPosts));
+						];
+						// Save initial posts to MongoDB
+						for (const post of initialPosts) {
+							await fetch('/api/blogs', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify(post),
+							});
+						}
+						setPosts(initialPosts);
+					}
+				}
+			} catch (error) {
+				console.error('Error loading blog posts:', error);
+			}
 		}
+		loadPosts();
 	}, []);
 
 	useEffect(() => {
@@ -907,27 +930,73 @@ function BlogPanel() {
 		}
 	}
 
-	function savePost(post: BlogPost) {
+	async function savePost(post: BlogPost) {
 		// Auto-generate slug if not provided
 		if (!post.slug && post.title) {
 			post.slug = post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 		}
 		
-		const updated = editingPost 
-			? posts.map(p => p.id === editingPost.id ? { ...post, updatedAt: new Date().toISOString() } : p)
-			: [...posts, { ...post, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }];
-		setPosts(updated);
-		localStorage.setItem('admin_blog_posts', JSON.stringify(updated));
-		setEditingPost(null);
-		setShowModal(false);
-		showToast('success', editingPost ? 'Post updated successfully!' : 'Post created successfully!');
+		try {
+			const postData = editingPost
+				? { ...post, id: editingPost.id, updatedAt: new Date().toISOString() }
+				: { ...post, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+			
+			const response = await fetch('/api/blogs', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(postData),
+			});
+			
+			if (response.ok) {
+				// Reload posts from MongoDB
+				const res = await fetch('/api/blogs', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					const postsWithId = data.map((p: any) => ({
+						...p,
+						id: p._id?.toString() || p.id,
+						_id: undefined,
+					}));
+					setPosts(postsWithId);
+				}
+				setEditingPost(null);
+				setShowModal(false);
+				showToast('success', editingPost ? 'Post updated successfully!' : 'Post created successfully!');
+			} else {
+				showToast('error', 'Failed to save post');
+			}
+		} catch (error) {
+			console.error('Error saving post:', error);
+			showToast('error', 'Error saving post');
+		}
 	}
 
-	function deletePost(id: string) {
-		const updated = posts.filter(p => p.id !== id);
-		setPosts(updated);
-		localStorage.setItem('admin_blog_posts', JSON.stringify(updated));
-		showToast('success', 'Post deleted successfully!');
+	async function deletePost(id: string) {
+		try {
+			const response = await fetch(`/api/blogs?id=${id}`, {
+				method: 'DELETE',
+			});
+			
+			if (response.ok) {
+				// Reload posts from MongoDB
+				const res = await fetch('/api/blogs', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					const postsWithId = data.map((p: any) => ({
+						...p,
+						id: p._id?.toString() || p.id,
+						_id: undefined,
+					}));
+					setPosts(postsWithId);
+				}
+				showToast('success', 'Post deleted successfully!');
+			} else {
+				showToast('error', 'Failed to delete post');
+			}
+		} catch (error) {
+			console.error('Error deleting post:', error);
+			showToast('error', 'Error deleting post');
+		}
 	}
 
 	// Add GSAP button hover animations
@@ -1854,14 +1923,24 @@ function ServicesPanel() {
 	const [showModal, setShowModal] = useState(false);
 	const panelRef = useRef<HTMLDivElement>(null);
 
-	// Initialize with existing services if localStorage is empty
+	// Load services from MongoDB
 	useEffect(() => {
-		const saved = localStorage.getItem('admin_services');
-		if (saved) {
-			setServices(JSON.parse(saved));
-		} else {
-				// Initialize with existing services from translations
-			const initialServices: Service[] = [
+		async function loadServices() {
+			try {
+				const res = await fetch('/api/services', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					if (data.length > 0) {
+						// Convert MongoDB _id to id for frontend
+						const servicesWithId = data.map((s: any) => ({
+							...s,
+							id: s._id?.toString() || s.id,
+							_id: undefined, // Remove _id from frontend
+						}));
+						setServices(servicesWithId);
+					} else {
+						// Initialize with existing services from translations if DB is empty
+						const initialServices: Service[] = [
 				// Transportation Services
 				{
 					id: '1',
@@ -1954,10 +2033,23 @@ function ServicesPanel() {
 					visible: true,
 					order: 9,
 				},
-			];
-			setServices(initialServices);
-			localStorage.setItem('admin_services', JSON.stringify(initialServices));
+						];
+						// Save initial services to MongoDB
+						for (const service of initialServices) {
+							await fetch('/api/services', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify(service),
+							});
+						}
+						setServices(initialServices);
+					}
+				}
+			} catch (error) {
+				console.error('Error loading services:', error);
+			}
 		}
+		loadServices();
 	}, []);
 
 	useEffect(() => {
@@ -1993,40 +2085,132 @@ function ServicesPanel() {
 		}
 	}
 
-	function saveService(service: Service) {
-		const updated = editingService
-			? services.map(s => s.id === editingService.id ? service : s)
-			: [...services, { ...service, id: Date.now().toString(), order: services.length }];
-		setServices(updated);
-		localStorage.setItem('admin_services', JSON.stringify(updated));
-		setEditingService(null);
-		setShowModal(false);
-		showToast('success', editingService ? 'Service updated successfully!' : 'Service created successfully!');
+	async function saveService(service: Service) {
+		try {
+			const response = await fetch('/api/services', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					...service,
+					id: editingService?.id || service.id,
+				}),
+			});
+			
+			if (response.ok) {
+				const result = await response.json();
+				// Reload services from MongoDB
+				const res = await fetch('/api/services', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					const servicesWithId = data.map((s: any) => ({
+						...s,
+						id: s._id?.toString() || s.id,
+						_id: undefined,
+					}));
+					setServices(servicesWithId);
+				}
+				setEditingService(null);
+				setShowModal(false);
+				showToast('success', editingService ? 'Service updated successfully!' : 'Service created successfully!');
+			} else {
+				showToast('error', 'Failed to save service');
+			}
+		} catch (error) {
+			console.error('Error saving service:', error);
+			showToast('error', 'Error saving service');
+		}
 	}
 
-	function deleteService(id: string) {
-		const updated = services.filter(s => s.id !== id);
-		setServices(updated);
-		localStorage.setItem('admin_services', JSON.stringify(updated));
-		showToast('success', 'Service deleted successfully!');
+	async function deleteService(id: string) {
+		try {
+			const response = await fetch(`/api/services?id=${id}`, {
+				method: 'DELETE',
+			});
+			
+			if (response.ok) {
+				// Reload services from MongoDB
+				const res = await fetch('/api/services', { cache: 'no-store' });
+				if (res.ok) {
+					const data = await res.json();
+					const servicesWithId = data.map((s: any) => ({
+						...s,
+						id: s._id?.toString() || s.id,
+						_id: undefined,
+					}));
+					setServices(servicesWithId);
+				}
+				showToast('success', 'Service deleted successfully!');
+			} else {
+				showToast('error', 'Failed to delete service');
+			}
+		} catch (error) {
+			console.error('Error deleting service:', error);
+			showToast('error', 'Error deleting service');
+		}
 	}
 
-	function toggleVisibility(id: string) {
-		const updated = services.map(s => s.id === id ? { ...s, visible: !s.visible } : s);
-		setServices(updated);
-		localStorage.setItem('admin_services', JSON.stringify(updated));
+	async function toggleVisibility(id: string) {
+		const service = services.find(s => s.id === id);
+		if (!service) return;
+		
+		try {
+			const updatedService = { ...service, visible: !service.visible };
+			await fetch('/api/services', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(updatedService),
+			});
+			
+			// Reload services from MongoDB
+			const res = await fetch('/api/services', { cache: 'no-store' });
+			if (res.ok) {
+				const data = await res.json();
+				const servicesWithId = data.map((s: any) => ({
+					...s,
+					id: s._id?.toString() || s.id,
+					_id: undefined,
+				}));
+				setServices(servicesWithId);
+			}
+		} catch (error) {
+			console.error('Error toggling visibility:', error);
+		}
 	}
 
-	function reorderService(id: string, direction: 'up' | 'down') {
+	async function reorderService(id: string, direction: 'up' | 'down') {
 		const index = services.findIndex(s => s.id === id);
 		if (index === -1) return;
 		const newIndex = direction === 'up' ? index - 1 : index + 1;
 		if (newIndex < 0 || newIndex >= services.length) return;
+		
 		const updated = [...services];
 		[updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
 		updated.forEach((s, i) => s.order = i);
-		setServices(updated);
-		localStorage.setItem('admin_services', JSON.stringify(updated));
+		
+		// Update all services with new order
+		try {
+			for (const service of updated) {
+				await fetch('/api/services', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(service),
+				});
+			}
+			
+			// Reload services from MongoDB
+			const res = await fetch('/api/services', { cache: 'no-store' });
+			if (res.ok) {
+				const data = await res.json();
+				const servicesWithId = data.map((s: any) => ({
+					...s,
+					id: s._id?.toString() || s.id,
+					_id: undefined,
+				}));
+				setServices(servicesWithId);
+			}
+		} catch (error) {
+			console.error('Error reordering services:', error);
+		}
 	}
 
 	return (

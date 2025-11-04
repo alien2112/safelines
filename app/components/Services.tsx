@@ -16,18 +16,24 @@ type AdminService = {
   order: number;
 };
 
-// Get services from admin dashboard (localStorage)
-function getServices(): AdminService[] {
+// Get services from MongoDB via API
+async function getServices(): Promise<AdminService[]> {
   if (typeof window === 'undefined') return [];
   
-  const saved = localStorage.getItem('admin_services');
-  if (!saved) return [];
-  
   try {
-    const services = JSON.parse(saved);
-    return services
-      .filter((service: AdminService) => service.visible)
-      .sort((a: AdminService, b: AdminService) => a.order - b.order);
+    const res = await fetch('/api/services', { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      return data
+        .map((s: any) => ({
+          ...s,
+          id: s._id?.toString() || s.id,
+          _id: undefined,
+        }))
+        .filter((service: AdminService) => service.visible)
+        .sort((a: AdminService, b: AdminService) => a.order - b.order);
+    }
+    return [];
   } catch {
     return [];
   }
@@ -39,18 +45,16 @@ export function ServicesSection() {
   const [adminServices, setAdminServices] = useState<AdminService[]>([]);
   
   useEffect(() => {
-    setAdminServices(getServices());
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      setAdminServices(getServices());
-    };
-    window.addEventListener('storage', handleStorageChange);
+    async function loadServices() {
+      const services = await getServices();
+      setAdminServices(services);
+    }
+    loadServices();
     // Check periodically for changes
     const interval = setInterval(() => {
-      setAdminServices(getServices());
-    }, 1000);
+      loadServices();
+    }, 5000); // Check every 5 seconds instead of 1
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
   }, []);
