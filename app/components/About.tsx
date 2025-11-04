@@ -17,6 +17,9 @@ export function AboutSection() {
   const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Kill all existing ScrollTriggers first
+    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    
     // Stats Counter Animation - wait for DOM to be ready
     const initStatsAnimation = () => {
       const statNumbers = statsRef.current?.querySelectorAll('.stat-number');
@@ -26,107 +29,134 @@ export function AboutSection() {
       }
 
       statNumbers.forEach((statEl) => {
-      // Get target values from data attributes
-      const hasKPlus = statEl.getAttribute('data-has-kplus') === 'true';
-      const targetNumber = parseFloat(statEl.getAttribute('data-target') || '0');
-      const suffix = statEl.getAttribute('data-suffix') || '';
-      
-      if (targetNumber === 0) return; // Skip if no valid target
-      
-      // Determine if it's a decimal number and get decimal places
-      const dataTarget = statEl.getAttribute('data-target') || '';
-      const isDecimal = !hasKPlus && !suffix && dataTarget.includes('.');
-      const decimalPlaces = isDecimal ? (dataTarget.split('.')[1]?.length || 0) : 0;
-
-      // Create a counter object for GSAP to animate
-      const counter = { value: 0 };
-      
-      // Set initial display value
-      if (hasKPlus) {
-        statEl.innerHTML = '<span class="stat-number-value">0</span><span class="stat-number-suffix">k+</span>';
-      } else if (isDecimal) {
-        // For decimals like "4.8", show "0.0" initially
-        statEl.textContent = '0.' + '0'.repeat(decimalPlaces);
-      } else {
-        statEl.textContent = suffix === '+' ? '0+' : '0';
-      }
-
-      const triggerElement = statEl.closest('.stat') || statEl;
-      
-      // Function to animate
-      let isAnimating = false;
-      const animateCounter = () => {
-        if (isAnimating) return; // Prevent duplicate animations
-        isAnimating = true;
+        // Get target values from data attributes
+        const hasKPlus = statEl.getAttribute('data-has-kplus') === 'true';
+        const targetNumber = parseFloat(statEl.getAttribute('data-target') || '0');
+        const suffix = statEl.getAttribute('data-suffix') || '';
         
-        gsap.to(counter, {
-          value: targetNumber,
-          duration: 2,
-          ease: 'power2.out',
-          snap: { value: 1 },
-          onUpdate: function() {
-            if (hasKPlus) {
-              const currentValue = counter.value / 1000;
-              const valueSpan = statEl.querySelector('.stat-number-value');
-              if (valueSpan) {
-                valueSpan.textContent = currentValue.toFixed(currentValue % 1 === 0 ? 0 : 1);
-              }
-            } else if (suffix === '+') {
-              statEl.textContent = Math.round(counter.value) + suffix;
-            } else if (isDecimal) {
-              // For decimal numbers
-              statEl.textContent = counter.value.toFixed(decimalPlaces);
-            } else {
-              // For numbers without suffix (like "4.8")
-              statEl.textContent = counter.value.toFixed(decimalPlaces);
-            }
-          },
-        });
-      };
+        if (targetNumber === 0) return; // Skip if no valid target
+        
+        // Determine if it's a decimal number and get decimal places
+        const dataTarget = statEl.getAttribute('data-target') || '';
+        const isDecimal = !hasKPlus && !suffix && dataTarget.includes('.');
+        const decimalPlaces = isDecimal ? (dataTarget.split('.')[1]?.length || 0) : 0;
 
-      // Check if already in view
-      ScrollTrigger.create({
-        trigger: triggerElement,
-        start: 'top 85%',
-        onEnter: animateCounter,
-        once: true,
-      });
-
-      // Also check immediately if already in viewport
-      setTimeout(() => {
-        const rect = triggerElement.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        const triggerPoint = windowHeight * 0.85;
-        if (rect.top < triggerPoint && rect.bottom > 0 && !isAnimating) {
-          animateCounter();
+        // Create a counter object for GSAP to animate
+        const counter = { value: 0 };
+        
+        // Set initial display value
+        if (hasKPlus) {
+          statEl.innerHTML = '<span class="stat-number-value">0</span><span class="stat-number-suffix">k+</span>';
+        } else if (isDecimal) {
+          // For decimals like "4.8", show "0.0" initially
+          statEl.textContent = '0.' + '0'.repeat(decimalPlaces);
+        } else {
+          statEl.textContent = suffix === '+' ? '0+' : '0';
         }
-      }, 200);
-      
-      // Force check after a longer delay to ensure it triggers
-      setTimeout(() => {
-        if (!isAnimating) {
+
+        const triggerElement = statEl.closest('.stat') || statEl;
+        
+        // Function to animate
+        let hasAnimated = false;
+        const animateCounter = () => {
+          if (hasAnimated) return; // Prevent duplicate animations
+          hasAnimated = true;
+          
+          // Reset counter to 0 to ensure animation starts from beginning
+          counter.value = 0;
+          
+          // Determine snap increment based on number type
+          let snapIncrement = 1;
+          if (isDecimal) {
+            snapIncrement = Math.pow(10, -decimalPlaces); // e.g., 0.1 for one decimal place
+          } else if (hasKPlus) {
+            snapIncrement = 0.1; // For k+ values, snap to 0.1k increments
+          }
+          
+          gsap.to(counter, {
+            value: targetNumber,
+            duration: 2,
+            ease: 'power2.out',
+            snap: { value: snapIncrement },
+            onUpdate: function() {
+              if (hasKPlus) {
+                const currentValue = counter.value / 1000;
+                const valueSpan = statEl.querySelector('.stat-number-value');
+                if (valueSpan) {
+                  valueSpan.textContent = currentValue.toFixed(currentValue % 1 === 0 ? 0 : 1);
+                }
+              } else if (suffix === '+') {
+                statEl.textContent = Math.round(counter.value) + suffix;
+              } else if (isDecimal) {
+                // For decimal numbers
+                statEl.textContent = counter.value.toFixed(decimalPlaces);
+              } else {
+                // For numbers without suffix
+                statEl.textContent = Math.round(counter.value).toString();
+              }
+            },
+            onComplete: function() {
+              // Ensure final value is set correctly
+              if (hasKPlus) {
+                const finalValue = targetNumber / 1000;
+                const valueSpan = statEl.querySelector('.stat-number-value');
+                if (valueSpan) {
+                  valueSpan.textContent = finalValue.toFixed(finalValue % 1 === 0 ? 0 : 1);
+                }
+              } else if (suffix === '+') {
+                statEl.textContent = Math.round(targetNumber) + suffix;
+              } else if (isDecimal) {
+                statEl.textContent = targetNumber.toFixed(decimalPlaces);
+              } else {
+                statEl.textContent = Math.round(targetNumber).toString();
+              }
+            },
+          });
+        };
+
+        // Create ScrollTrigger
+        ScrollTrigger.create({
+          trigger: triggerElement,
+          start: 'top 85%',
+          onEnter: animateCounter,
+          once: true,
+        });
+
+        // Check immediately if already in viewport (after a delay to ensure DOM is ready)
+        const checkVisibility = () => {
           const rect = triggerElement.getBoundingClientRect();
-          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-          if (isVisible) {
+          const windowHeight = window.innerHeight;
+          const triggerPoint = windowHeight * 0.85;
+          const isInView = rect.top < triggerPoint && rect.bottom > 0;
+          
+          if (isInView && !hasAnimated) {
             animateCounter();
           }
-        }
-      }, 500);
-    });
-    
-    // Refresh ScrollTrigger after all stats are set up
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-      // Also refresh after a short delay
-      setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 100);
-    });
+        };
+
+        // Check after a short delay
+        setTimeout(checkVisibility, 100);
+        
+        // Also check after ScrollTrigger refresh
+        setTimeout(checkVisibility, 500);
+      });
     };
 
-    initStatsAnimation();
+    // Wait for DOM to be ready and layout to settle
+    const timeoutId = setTimeout(() => {
+      initStatsAnimation();
+      
+      // Refresh ScrollTrigger after all stats are set up
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 100);
+      });
+    }, 100);
 
     return () => {
+      clearTimeout(timeoutId);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, [t.home.about.stats, language]); // Re-run when language changes
