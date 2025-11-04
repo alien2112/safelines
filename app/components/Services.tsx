@@ -70,15 +70,17 @@ export function ServicesSection() {
   ];
   
   // Use admin services if available, otherwise fallback to translations
-  const allServices = adminServices.length > 0 
-    ? adminServices.map((service, idx) => ({
-        title: language === 'ar' ? service.titleAr : service.title,
-        description: language === 'ar' ? service.descriptionAr : service.description,
+  const allServices = React.useMemo(() => {
+    if (adminServices.length > 0) {
+      return adminServices.map((service, idx) => ({
+        title: language === 'ar' ? (service.titleAr || service.title) : (service.title || service.titleAr),
+        description: language === 'ar' ? (service.descriptionAr || service.description) : (service.description || service.descriptionAr),
         category: idx < 3 ? 'transportation' : 'customs',
         icon: iconMap[idx % iconMap.length],
-      }))
-    : [
-        // Fallback to translations
+      }));
+    }
+    // Fallback to translations
+    return [
         ...t.home.services.transportation.services.map((service, idx) => ({
           ...service,
           category: 'transportation',
@@ -95,7 +97,8 @@ export function ServicesSection() {
                 idx === 5 ? <FaHeadset key="headset" /> :
                 <FaBoxes key="consult" />,
         })),
-      ];
+    ];
+  }, [adminServices, language, t.home.services.transportation.services, t.home.services.customs.services]);
 
   return (
     <section id="services" className="section-services">
