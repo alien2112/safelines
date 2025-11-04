@@ -67,7 +67,7 @@ export default function HomePage() {
       <GSAPAnimations />
       <HeroBanner section="hero-home" alt="Hero Banner" objectPosition="50% 66%">
         <div className="banner-card" dir={isRTL ? 'rtl' : 'ltr'}>
-          <p>we have your trust</p>
+          <p>{t.home.hero.trust}</p>
         </div>
       </HeroBanner>
       <div className="section-separator" aria-hidden="true">

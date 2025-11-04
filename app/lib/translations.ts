@@ -109,6 +109,7 @@ export interface Translations {
       tag: string;
       title: string;
       cta: string;
+      trust: string;
     };
     projects: {
       tag: string;
@@ -387,6 +388,7 @@ export const translations: Record<Language, Translations> = {
         tag: 'SAFE LINES CUSTOMS CLEARANCE',
         title: 'Unveiling a world of opportunities',
         cta: 'Book A Free Call Now',
+        trust: 'we have your trust',
       },
       projects: {
         tag: 'SERVICES',
@@ -759,6 +761,7 @@ export const translations: Record<Language, Translations> = {
         tag: 'الخطوط الآمنة للتخليص الجمركي',
         title: 'كشف عالم من الفرص',
         cta: 'احجز مكالمة مجانية الآن',
+        trust: 'نحن نمتلك ثقتك',
       },
       projects: {
         tag: 'الخدمات',
