@@ -389,7 +389,9 @@
 }
 
 /* Smooth scrolling for better UX */
+/* Prevent overflow from scroll animations */
 html {
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
@@ -400,8 +402,10 @@ html, body {
   background: var(--white);
   color: var(--gray-500);
   overflow-x: hidden; /* prevent horizontal overflow on mobile */
+  overflow-y: auto; /* allow vertical scrolling */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative; /* prevent transform issues */
 }
 
 /* Enable hardware acceleration for animations */

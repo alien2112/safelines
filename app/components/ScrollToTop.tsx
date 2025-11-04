@@ -46,7 +46,7 @@ export default function ScrollToTop() {
 
     // Scroll listener for reliable detection
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
       if (scrollY > 500) {
         setIsVisible(true);
       } else {
@@ -59,10 +59,29 @@ export default function ScrollToTop() {
       handleScroll();
     }, 100);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Use throttled scroll listener for better performance
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true });
+    // Also listen for scrollend if supported
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', handleScroll, { passive: true });
+    }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', throttledHandleScroll);
+      if ('onscrollend' in window) {
+        window.removeEventListener('scrollend', handleScroll);
+      }
     };
   }, []);
 
@@ -207,11 +226,11 @@ export default function ScrollToTop() {
     };
   }, []);
 
-  // Scroll to top function with page shake/bounce
+  // Scroll to top function with smooth animation
   const scrollToTop = () => {
     if (!buttonRef.current) return;
 
-    // Smooth scroll using GSAP
+    // Smooth scroll using requestAnimationFrame with easing
     const scrollDuration = 1200;
     const startY = window.scrollY;
     const startTime = performance.now();
@@ -228,17 +247,30 @@ export default function ScrollToTop() {
       if (progress < 1) {
         requestAnimationFrame(animateScroll);
       } else {
-        // Add page shake/bounce effect when reaching top
-        gsap.to('body', {
-          y: -8,
-          duration: 0.1,
-          ease: 'power2.out',
-          yoyo: true,
-          repeat: 1,
-          onComplete: () => {
-            gsap.set('body', { y: 0 });
-          },
-        });
+        // Ensure we're exactly at the top
+        window.scrollTo(0, 0);
+        
+        // Trigger scroll event manually to ensure button state updates
+        // Use a small delay to ensure scroll position is updated
+        setTimeout(() => {
+          window.dispatchEvent(new Event('scroll'));
+        }, 50);
+        
+        // Subtle bounce effect on button only (not body to avoid overflow)
+        if (buttonRef.current) {
+          gsap.to(buttonRef.current, {
+            y: -4,
+            duration: 0.15,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.out',
+            onComplete: () => {
+              if (buttonRef.current) {
+                gsap.set(buttonRef.current, { y: 0 });
+              }
+            },
+          });
+        }
       }
     };
 
