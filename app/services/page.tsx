@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { FaArrowRight, FaBoxOpen, FaClipboardList, FaSearch, FaWarehouse } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type AdminService = {
   id: string;
@@ -41,19 +42,21 @@ async function getServices(): Promise<AdminService[]> {
   }
 }
 
-const CATEGORIES = [
-  { key: "all", label: "All Services" },
-  { key: "transportation", label: "Transportation" },
-  { key: "customs", label: "Customs" },
-  { key: "support", label: "Support" },
-];
-
 export default function ServicesPage() {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   const [adminServices, setAdminServices] = useState<AdminService[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [modalService, setModalService] = useState<Service | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
+
+  const CATEGORIES = [
+    { key: "all", label: t.services.page.categories.all },
+    { key: "transportation", label: t.services.page.categories.transportation },
+    { key: "customs", label: t.services.page.categories.customs },
+    { key: "support", label: t.services.page.categories.support },
+  ];
 
   useEffect(() => {
     getServices().then((s) => setAdminServices(s.filter((x) => x.visible).sort((a, b) => a.order - b.order)));
@@ -84,13 +87,13 @@ export default function ServicesPage() {
   const allServices: Service[] = useMemo(() => {
     return adminServices.map((s, idx) => ({
       id: s.id,
-      title: s.title || s.titleAr,
-      description: s.description || s.descriptionAr,
+      title: language === 'ar' ? (s.titleAr || s.title) : (s.title || s.titleAr),
+      description: language === 'ar' ? (s.descriptionAr || s.description) : (s.description || s.descriptionAr),
       category: idx < 3 ? "transportation" : idx < 6 ? "customs" : "support",
       icon: [<FaWarehouse key="i0" />, <FaClipboardList key="i1" />, <FaBoxOpen key="i2" />][idx % 3],
       image: s.image,
     }));
-  }, [adminServices]);
+  }, [adminServices, language]);
 
   const filtered = useMemo(() => {
     if (activeCategory === "all") return allServices;
@@ -102,18 +105,18 @@ export default function ServicesPage() {
       {/* Hero */}
       <section ref={heroRef} className="srv-hero">
         <div className="srv-hero-inner">
-          <p data-hero className="srv-hero-badge">
-            Our Services
+          <p data-hero className="srv-hero-badge" dir={isRTL ? 'rtl' : 'ltr'}>
+            {t.services.page.hero.badge}
           </p>
-          <h1 data-hero className="srv-hero-title">
-            Modern, reliable services with a human touch
+          <h1 data-hero className="srv-hero-title" dir={isRTL ? 'rtl' : 'ltr'}>
+            {t.services.page.hero.title}
           </h1>
-          <p data-hero className="srv-hero-sub">
-            Explore our portfolio across transportation, customs, and customer support. Built for speed, compliance, and clarity.
+          <p data-hero className="srv-hero-sub" dir={isRTL ? 'rtl' : 'ltr'}>
+            {t.services.page.hero.subtitle}
           </p>
           <div data-hero style={{ marginTop: 24 }}>
-            <a href="#catalog" className="srv-cta">
-              View Services <FaArrowRight />
+            <a href="#catalog" className="srv-cta" dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.services.page.hero.cta} <FaArrowRight />
             </a>
           </div>
         </div>
@@ -140,15 +143,17 @@ export default function ServicesPage() {
               );
             })}
           </div>
-          <a href="#track" className="srv-track-link">
-            Track / Request <FaArrowRight />
+          <a href="#track" className="srv-track-link" dir={isRTL ? 'rtl' : 'ltr'}>
+            {t.services.page.track.link} <FaArrowRight />
           </a>
         </div>
 
         {/* Grid */}
         <div ref={cardsRef} className="srv-grid">
           {filtered.length === 0 && (
-            <div style={{ color: '#475569' }}>No services available at the moment.</div>
+            <div style={{ color: '#475569' }} dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.services.page.noServices}
+            </div>
           )}
           {filtered.map((svc) => (
             <article
@@ -173,16 +178,17 @@ export default function ServicesPage() {
                   {svc.icon}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <h3 className="srv-card-title">{svc.title}</h3>
-                  <p className="srv-card-desc">{svc.description}</p>
+                  <h3 className="srv-card-title" dir={isRTL ? 'rtl' : 'ltr'}>{svc.title}</h3>
+                  <p className="srv-card-desc" dir={isRTL ? 'rtl' : 'ltr'}>{svc.description}</p>
                 </div>
               </div>
               <div className="srv-card-actions">
                 <button
                   onClick={() => setModalService(svc)}
                   className="srv-card-btn"
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 >
-                  Learn More <FaArrowRight />
+                  {t.services.page.learnMore} <FaArrowRight />
                 </button>
               </div>
             </article>
@@ -199,12 +205,16 @@ export default function ServicesPage() {
                 <FaSearch />
               </div>
               <div>
-                <h3 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', margin: 0 }}>Track or request a service</h3>
-                <p style={{ fontSize: 14, color: '#475569', margin: 0 }}>Get started in minutes. We’ll guide you through the process.</p>
+                <h3 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
+                  {t.services.page.track.title}
+                </h3>
+                <p style={{ fontSize: 14, color: '#475569', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
+                  {t.services.page.track.subtitle}
+                </p>
               </div>
             </div>
-            <a href="/contact" className="srv-track-cta">
-              Start Now <FaArrowRight />
+            <a href="/contact" className="srv-track-cta" dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.services.page.track.cta} <FaArrowRight />
             </a>
           </div>
         </div>
@@ -217,6 +227,8 @@ export default function ServicesPage() {
 }
 
 function ServiceModal({ service, onClose }: { service: Service; onClose: () => void }) {
+  const { language, t } = useLanguage();
+  const isRTL = language === 'ar';
   const [tab, setTab] = useState<string>("overview");
   const containerRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -365,23 +377,28 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
       <div ref={modalBoxRef} className="srv-modal-box">
         <div className="srv-modal-inner">
           <div className="srv-modal-left">
-            <h3 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', margin: 0 }}>{service.title}</h3>
-            <p style={{ marginTop: 8, color: '#334155' }}>{service.description}</p>
+            <h3 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
+              {service.title}
+            </h3>
+            <p style={{ marginTop: 8, color: '#334155' }} dir={isRTL ? 'rtl' : 'ltr'}>
+              {service.description}
+            </p>
 
             <div className="srv-modal-tabs">
               {[
-                { key: "overview", label: "Overview" },
-                { key: "process", label: "Process" },
-                { key: "pricing", label: "Pricing" },
-              ].map((t) => {
-                const active = t.key === tab;
+                { key: "overview", label: t.services.page.modal.tabs.overview },
+                { key: "process", label: t.services.page.modal.tabs.process },
+                { key: "pricing", label: t.services.page.modal.tabs.pricing },
+              ].map((tabItem) => {
+                const active = tabItem.key === tab;
                 return (
                   <button
-                    key={t.key}
-                    onClick={() => setTab(t.key)}
+                    key={tabItem.key}
+                    onClick={() => setTab(tabItem.key)}
                     className={`srv-modal-tab${active ? ' active' : ''}`}
+                    dir={isRTL ? 'rtl' : 'ltr'}
                   >
-                    {t.label}
+                    {tabItem.label}
                   </button>
                 );
               })}
@@ -389,55 +406,50 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
 
             <div data-tab className="srv-modal-content">
               {tab === "overview" && (
-                <p>
-                  We deliver dependable outcomes with predictable timelines and transparent communication.
+                <p dir={isRTL ? 'rtl' : 'ltr'}>
+                  {t.services.page.modal.overview}
                 </p>
               )}
               {tab === "process" && (
                 <div ref={processStepsRef} className="process-steps" style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginTop: '16px', flexWrap: 'wrap' }}>
-                  <div className="process-step" style={{ position: 'relative', padding: '20px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%)', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)', flex: '1 1 0', minWidth: '140px', maxWidth: '180px' }}>
-                    <div className="process-step-number" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 800, marginBottom: '12px' }}>1</div>
-                    <div className="process-step-content">
-                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--brand-navy)', margin: '0 0 6px', lineHeight: '1.3' }}>Submit your request</h3>
-                      <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#64748b', margin: 0 }}>Share your requirements</p>
+                  {t.services.page.modal.processSteps.map((step, index) => (
+                    <div key={index} className="process-step" style={{ position: 'relative', padding: '20px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%)', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)', flex: '1 1 0', minWidth: '140px', maxWidth: '180px' }}>
+                      <div className="process-step-number" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 800, marginBottom: '12px' }}>
+                        {index + 1}
+                      </div>
+                      <div className="process-step-content">
+                        <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--brand-navy)', margin: '0 0 6px', lineHeight: '1.3' }} dir={isRTL ? 'rtl' : 'ltr'}>
+                          {step.title}
+                        </h3>
+                        <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#64748b', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
+                          {step.description}
+                        </p>
+                      </div>
+                      {index < t.services.page.modal.processSteps.length - 1 && (
+                        <div className="process-step-connector" style={{ position: 'absolute', top: '50%', right: isRTL ? 'auto' : '-8px', left: isRTL ? '-8px' : 'auto', transform: 'translateY(-50%)', color: 'var(--brand-gold)', fontSize: '16px', zIndex: 1 }}>
+                          <FaArrowRight style={{ transform: isRTL ? 'scaleX(-1)' : 'none' }} />
+                        </div>
+                      )}
                     </div>
-                    <div className="process-step-connector" style={{ position: 'absolute', top: '50%', right: '-8px', transform: 'translateY(-50%)', color: 'var(--brand-gold)', fontSize: '16px', zIndex: 1 }}>
-                      <FaArrowRight />
-                    </div>
-                  </div>
-                  <div className="process-step" style={{ position: 'relative', padding: '20px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%)', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)', flex: '1 1 0', minWidth: '140px', maxWidth: '180px' }}>
-                    <div className="process-step-number" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 800, marginBottom: '12px' }}>2</div>
-                    <div className="process-step-content">
-                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--brand-navy)', margin: '0 0 6px', lineHeight: '1.3' }}>We validate documentation</h3>
-                      <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#64748b', margin: 0 }}>Our team checks documents</p>
-                    </div>
-                    <div className="process-step-connector" style={{ position: 'absolute', top: '50%', right: '-8px', transform: 'translateY(-50%)', color: 'var(--brand-gold)', fontSize: '16px', zIndex: 1 }}>
-                      <FaArrowRight />
-                    </div>
-                  </div>
-                  <div className="process-step" style={{ position: 'relative', padding: '20px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%)', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)', flex: '1 1 0', minWidth: '140px', maxWidth: '180px' }}>
-                    <div className="process-step-number" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-accent) 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 800, marginBottom: '12px' }}>3</div>
-                    <div className="process-step-content">
-                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--brand-navy)', margin: '0 0 6px', lineHeight: '1.3' }}>Execution and delivery</h3>
-                      <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#64748b', margin: 0 }}>We execute and deliver</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               )}
               {tab === "pricing" && (
-                <p>Pricing varies by scope. Contact us for a tailored quote.</p>
+                <p dir={isRTL ? 'rtl' : 'ltr'}>
+                  {t.services.page.modal.pricing}
+                </p>
               )}
             </div>
 
             <div className="srv-modal-actions">
-              <a href="/contact" className="srv-modal-cta">
-                Request this Service <FaArrowRight />
+              <a href="/contact" className="srv-modal-cta" dir={isRTL ? 'rtl' : 'ltr'}>
+                {t.services.page.modal.actions.request} <FaArrowRight />
               </a>
-              <Link href={`/services/${service.id}`} className="srv-modal-close" onClick={handleCloseWithAnimation} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-                View Full Details <FaArrowRight />
+              <Link href={`/services/${service.id}`} className="srv-modal-close" onClick={handleCloseWithAnimation} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }} dir={isRTL ? 'rtl' : 'ltr'}>
+                {t.services.page.modal.actions.viewDetails} <FaArrowRight />
               </Link>
-              <button onClick={handleCloseWithAnimation} className="srv-modal-close">
-                Close
+              <button onClick={handleCloseWithAnimation} className="srv-modal-close" dir={isRTL ? 'rtl' : 'ltr'}>
+                {t.services.page.modal.actions.close}
               </button>
             </div>
           </div>

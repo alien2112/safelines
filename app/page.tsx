@@ -98,29 +98,12 @@ export default function HomePage() {
       <AboutSection />
       <ServicesSection />
       <TestimonialsSection
-        testimonials={[
-          {
-            avatarSrc: '/safelines-logo.png',
-            name: 'Ryan harper',
-            source: 'Harper education',
-            review:
-              'Working with this AI agency has been a game-changer for our team. Their smart solutions and action able insights help us make better decisions every day.',
-          },
-          {
-            avatarSrc: '/safelines-logo.png',
-            name: 'Mia emirt',
-            source: 'emirt agency',
-            review:
-              'The perfect partner for AI-driven innovation. They simplified our workflows and gave our marketing team the tools to achieve more with less effort.',
-          },
-          {
-            avatarSrc: '/safelines-logo.png',
-            name: 'Emily johns',
-            source: 'Johnson marketing',
-            review:
-              "We've seen measurable growth since implementing their solutions. It’s intuitive, fast, and works seamlessly with our existing workflows.",
-          },
-        ]}
+        testimonials={t.home.testimonials.items.map((item) => ({
+          avatarSrc: '/safelines-logo.png',
+          name: item.name,
+          source: item.source,
+          review: item.review,
+        }))}
         reviewUsers={[
           '/safelines-logo.png',
           '/safelines-logo.png',

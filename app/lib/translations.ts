@@ -149,6 +149,46 @@ export interface Translations {
       chips: Array<{
         label: string;
       }>;
+      page: {
+        hero: {
+          badge: string;
+          title: string;
+          subtitle: string;
+          cta: string;
+        };
+        categories: {
+          all: string;
+          transportation: string;
+          customs: string;
+          support: string;
+        };
+        track: {
+          link: string;
+          title: string;
+          subtitle: string;
+          cta: string;
+        };
+        noServices: string;
+        learnMore: string;
+        modal: {
+          tabs: {
+            overview: string;
+            process: string;
+            pricing: string;
+          };
+          overview: string;
+          pricing: string;
+          processSteps: Array<{
+            title: string;
+            description: string;
+          }>;
+          actions: {
+            request: string;
+            viewDetails: string;
+            close: string;
+          };
+        };
+      };
     };
     cta: {
       title: string;
@@ -195,6 +235,11 @@ export interface Translations {
       title: string;
       subtitle: string;
       totalReviews: string;
+      items: Array<{
+        name: string;
+        source: string;
+        review: string;
+      }>;
     };
     makingEasy: {
       title: string;
@@ -488,6 +533,56 @@ export const translations: Record<Language, Translations> = {
           { label: 'Comprehensive Services' },
           { label: 'Cost Effective' },
         ],
+        page: {
+          hero: {
+            badge: 'Our Services',
+            title: 'Modern, reliable services with a human touch',
+            subtitle: 'Explore our portfolio across transportation, customs, and customer support. Built for speed, compliance, and clarity.',
+            cta: 'View Services',
+          },
+          categories: {
+            all: 'All Services',
+            transportation: 'Transportation',
+            customs: 'Customs',
+            support: 'Support',
+          },
+          track: {
+            link: 'Track / Request',
+            title: 'Track or request a service',
+            subtitle: 'Get started in minutes. We\'ll guide you through the process.',
+            cta: 'Start Now',
+          },
+          noServices: 'No services available at the moment.',
+          learnMore: 'Learn More',
+          modal: {
+            tabs: {
+              overview: 'Overview',
+              process: 'Process',
+              pricing: 'Pricing',
+            },
+            overview: 'We deliver dependable outcomes with predictable timelines and transparent communication.',
+            pricing: 'Pricing varies by scope. Contact us for a tailored quote.',
+            processSteps: [
+              {
+                title: 'Submit your request',
+                description: 'Share your requirements',
+              },
+              {
+                title: 'We validate documentation',
+                description: 'Our team checks documents',
+              },
+              {
+                title: 'Execution and delivery',
+                description: 'We execute and deliver',
+              },
+            ],
+            actions: {
+              request: 'Request this Service',
+              viewDetails: 'View Full Details',
+              close: 'Close',
+            },
+          },
+        },
       },
       cta: {
         title: 'What you still waiting!!',
@@ -570,6 +665,23 @@ export const translations: Record<Language, Translations> = {
         title: 'Our customers love us',
         subtitle: 'Real feedback from teams and individuals who rely on our platform to power their business with real working analytics',
         totalReviews: 'Over 15,725+ people gave us review',
+        items: [
+          {
+            name: 'Ryan harper',
+            source: 'Harper education',
+            review: 'Working with this AI agency has been a game-changer for our team. Their smart solutions and action able insights help us make better decisions every day.',
+          },
+          {
+            name: 'Mia emirt',
+            source: 'emirt agency',
+            review: 'The perfect partner for AI-driven innovation. They simplified our workflows and gave our marketing team the tools to achieve more with less effort.',
+          },
+          {
+            name: 'Emily johns',
+            source: 'Johnson marketing',
+            review: "We've seen measurable growth since implementing their solutions. It's intuitive, fast, and works seamlessly with our existing workflows.",
+          },
+        ],
       },
       makingEasy: {
         title: 'Making future easy',
@@ -861,6 +973,56 @@ export const translations: Record<Language, Translations> = {
           { label: 'خدمات شاملة' },
           { label: 'فعال من حيث التكلفة' },
         ],
+        page: {
+          hero: {
+            badge: 'خدماتنا',
+            title: 'خدمات حديثة وموثوقة بإنسانية',
+            subtitle: 'استكشف محفظتنا عبر النقل والتخليص الجمركي وخدمة العملاء. مصممة للسرعة والامتثال والوضوح.',
+            cta: 'عرض الخدمات',
+          },
+          categories: {
+            all: 'جميع الخدمات',
+            transportation: 'النقل',
+            customs: 'الجمرك',
+            support: 'الدعم',
+          },
+          track: {
+            link: 'تتبع / طلب',
+            title: 'تتبع أو طلب خدمة',
+            subtitle: 'ابدأ في دقائق. سنرشدك خلال العملية.',
+            cta: 'ابدأ الآن',
+          },
+          noServices: 'لا توجد خدمات متاحة في الوقت الحالي.',
+          learnMore: 'اعرف المزيد',
+          modal: {
+            tabs: {
+              overview: 'نظرة عامة',
+              process: 'العملية',
+              pricing: 'التسعير',
+            },
+            overview: 'نوفر نتائج موثوقة مع جداول زمنية متوقعة وتواصل شفاف.',
+            pricing: 'يختلف التسعير حسب النطاق. اتصل بنا للحصول على عرض مخصص.',
+            processSteps: [
+              {
+                title: 'قدم طلبك',
+                description: 'شارك متطلباتك',
+              },
+              {
+                title: 'نتحقق من الوثائق',
+                description: 'يفحص فريقنا المستندات',
+              },
+              {
+                title: 'التنفيذ والتسليم',
+                description: 'ننفذ ونسلم',
+              },
+            ],
+            actions: {
+              request: 'طلب هذه الخدمة',
+              viewDetails: 'عرض التفاصيل الكاملة',
+              close: 'إغلاق',
+            },
+          },
+        },
       },
       cta: {
         title: 'ماذا تنتظر بعد!!',
@@ -943,6 +1105,23 @@ export const translations: Record<Language, Translations> = {
         title: 'عملاؤنا يحبوننا',
         subtitle: 'تعليقات حقيقية من الفرق والأفراد الذين يعتمدون على منصتنا لتشغيل أعمالهم باستخدام تحليلات حقيقية وفعالة',
         totalReviews: 'أكثر من 15,725+ شخص قدموا لنا مراجعة',
+        items: [
+          {
+            name: 'Ryan harper',
+            source: 'Harper education',
+            review: 'العمل مع هذه الوكالة كان نقطة تحول لفريقنا. حلولهم الذكية ورؤاهم القابلة للتنفيذ تساعدنا على اتخاذ قرارات أفضل كل يوم.',
+          },
+          {
+            name: 'Mia emirt',
+            source: 'emirt agency',
+            review: 'الشريك المثالي للابتكار المدعوم بالذكاء الاصطناعي. لقد بسطوا عملياتنا ووفرا لفريق التسويق لدينا الأدوات لتحقيق المزيد بجهد أقل.',
+          },
+          {
+            name: 'Emily johns',
+            source: 'Johnson marketing',
+            review: 'لقد شهدنا نمواً قابلاً للقياس منذ تطبيق حلولهم. إنها سهلة الاستخدام وسريعة وتعمل بسلاسة مع عملياتنا الحالية.',
+          },
+        ],
       },
       makingEasy: {
         title: 'جعل المستقبل سهلاً',
