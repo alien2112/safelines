@@ -202,11 +202,15 @@ export default function ServicesPage() {
                 <div className="srv-card-image-wrapper">
                   <Image
                     src={svc.image}
-                    alt=""
+                    alt={`${svc.title} - Safe Lines logistics service`}
                     width={400}
                     height={180}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    quality={80}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px', maxWidth: '100%' }}
                     loading="lazy"
+                    placeholder="blur"
+                    blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA="
                   />
                 </div>
               )}
@@ -483,15 +487,71 @@ function ServiceModal({ service, onClose, cardRect }: { service: Service; onClos
   }, []);
 
   return (
-    <div role="dialog" aria-modal="true" className="srv-modal" ref={containerRef}>
-      <div ref={overlayRef} className="srv-modal-backdrop" onClick={handleCloseWithAnimation} />
+    <div 
+      role="dialog" 
+      aria-modal="true" 
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+      className="srv-modal" 
+      ref={containerRef}
+    >
+      <div 
+        ref={overlayRef} 
+        className="srv-modal-backdrop" 
+        onClick={handleCloseWithAnimation}
+        aria-hidden="true"
+      />
       <div ref={modalBoxRef} className="srv-modal-box">
+        <button
+          onClick={handleCloseWithAnimation}
+          className="srv-modal-close-btn"
+          aria-label="Close modal"
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: isRTL ? 'auto' : '16px',
+            left: isRTL ? '16px' : 'auto',
+            background: 'rgba(255,255,255,0.9)',
+            border: '1px solid rgba(226,232,240,0.8)',
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: '20px',
+            color: '#475569',
+            zIndex: 10,
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#fff';
+            e.currentTarget.style.color = '#0f172a';
+            e.currentTarget.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.9)';
+            e.currentTarget.style.color = '#475569';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          ×
+        </button>
         <div className="srv-modal-inner">
           <div className="srv-modal-left">
-            <h3 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>
+            <h2 
+              id="modal-title"
+              style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', margin: 0 }} 
+              dir={isRTL ? 'rtl' : 'ltr'}
+            >
               {service.title}
-            </h3>
-            <p style={{ marginTop: 8, color: '#334155' }} dir={isRTL ? 'rtl' : 'ltr'}>
+            </h2>
+            <p 
+              id="modal-description"
+              style={{ marginTop: 8, color: '#334155' }} 
+              dir={isRTL ? 'rtl' : 'ltr'}
+            >
               {service.description}
             </p>
 

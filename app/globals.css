@@ -1,8 +1,53 @@
-/* Tajawal font for hero headline */
+/* CSS Variables */
 :root {
   --brand-navy: #0B1B3B;
   --brand-gold: #C9A227;
   --brand-accent: #1D4ED8;
+  
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Skeleton Loader Animation */
@@ -305,7 +350,9 @@
     overflow-wrap: break-word;
   }
 }
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+
+/* Tajawal font loaded via next/font in layout for better performance */
+
 /* Services */
 .section-services { 
   background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%); 
@@ -1042,7 +1089,7 @@ p {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  font-family: "Tajawal", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  font-family: var(--font-tajawal, "Tajawal", system-ui, -apple-system, sans-serif);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
@@ -5928,7 +5975,7 @@ html[dir="rtl"] body {
   color: var(--gray-900);
   margin: 40px 0 24px;
   letter-spacing: -0.02em;
-  font-family: "Tajawal", system-ui, sans-serif;
+  font-family: var(--font-tajawal, "Tajawal", system-ui, sans-serif);
 }
 
 .blog-hero-subtitle {
@@ -6708,7 +6755,7 @@ html[dir="rtl"] body {
   color: var(--gray-900);
   margin: 0 0 24px;
   letter-spacing: -0.02em;
-  font-family: "Tajawal", system-ui, sans-serif;
+  font-family: var(--font-tajawal, "Tajawal", system-ui, sans-serif);
 }
 
 .about-hero-subtitle {
@@ -7367,7 +7414,7 @@ body:not(.page-loaded) .nav-outer {
   color: var(--white);
   margin: 0 0 24px;
   letter-spacing: -0.02em;
-  font-family: "Tajawal", system-ui, sans-serif;
+  font-family: var(--font-tajawal, "Tajawal", system-ui, sans-serif);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -8408,5 +8455,259 @@ body:not(.page-loaded) .nav-outer {
 
   .cta-content p {
     font-size: 18px;
+  }
+}
+
+/* ========================================
+   MOBILE TOUCH TARGET IMPROVEMENTS
+   Ensures all interactive elements meet 
+   44x44px minimum touch target size
+   ======================================== */
+
+/* Improve touch targets for buttons and links */
+a, button, input[type="submit"], input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Exception for inline text links */
+p a, li a:not(.nav-link):not(.srv-card-btn):not(.srv-modal-cta) {
+  min-height: auto;
+  min-width: auto;
+  display: inline;
+}
+
+/* Improve spacing between touch targets */
+@media (max-width: 768px) {
+  .nav-links li {
+    margin: 0 0.5rem;
+  }
+  
+  .srv-modal-actions {
+    gap: 16px;
+  }
+  
+  .srv-tabs button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* GPU acceleration for animations */
+.srv-card,
+.svc-card,
+.nav-mobile,
+.srv-modal-box,
+.hero-cta,
+.nav-cta {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1;
+}
+
+/* Prevent layout shift from scrollbar */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+/* Optimize images */
+img {
+  content-visibility: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lazy load off-screen content */
+.section-services,
+.section-testimonials,
+.section-faq {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* ========================================
+   TYPOGRAPHY IMPROVEMENTS
+   ======================================== */
+
+/* Consistent line heights for readability */
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+}
+
+p, li, span {
+  line-height: var(--leading-normal);
+}
+
+/* Improved text contrast */
+body {
+  color: #1e293b;
+}
+
+.text-muted {
+  color: #64748b;
+}
+
+/* Better focus indicators for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--brand-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to main content link for accessibility */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--brand-navy);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 10000;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* ========================================
+   RESPONSIVE SPACING IMPROVEMENTS
+   ======================================== */
+
+@media (max-width: 640px) {
+  /* Reduce padding on mobile for more content space */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  /* Improve readability on small screens */
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+  
+  h3 {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+  }
+}
+
+/* ========================================
+   LOADING STATES & SKELETON IMPROVEMENTS
+   ======================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Smooth transitions for loading states */
+.srv-card,
+.svc-card {
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.srv-card-skeleton {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  /* Hide non-essential elements when printing */
+  .navbar,
+  .nav-outer,
+  .hero-cta,
+  .nav-cta,
+  .srv-modal,
+  .nav-mobile,
+  video,
+  .hero-bg {
+    display: none !important;
+  }
+  
+  /* Optimize for print */
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  /* Show URLs after links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666;
   }
 }

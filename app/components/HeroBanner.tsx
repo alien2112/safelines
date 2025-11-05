@@ -23,7 +23,7 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 
 	if (isLoading) {
 		return (
-			<section className="hero-banner">
+			<section className="hero-banner" aria-label="Hero banner loading">
 				<div className="banner-container">
 					{children}
 				</div>
@@ -35,14 +35,21 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 		// Fallback to default image if no banner is uploaded
 		const defaultImage = section === "hero-home" ? "/hero-banner.webp" : "/upscaled_image_high_quality.webp";
 		return (
-			<section className="hero-banner">
+			<section className="hero-banner" aria-label="Hero banner">
 				<Image
 					src={defaultImage}
-					alt={alt}
+					alt={alt || "Safe Lines Customs Clearance - Professional logistics and freight services"}
 					priority
 					fill
 					sizes="100vw"
-					style={{ objectFit: 'cover', objectPosition }}
+					quality={85}
+					placeholder="blur"
+					blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA="
+					style={{ 
+						objectFit: 'cover', 
+						objectPosition,
+					}}
+					fetchPriority="high"
 				/>
 				<div className="banner-container">
 					{children}
@@ -52,10 +59,10 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 	}
 
 	return (
-		<section className="hero-banner">
+		<section className="hero-banner" aria-label="Hero banner">
 			<Image
 				src={`/api/images/${imageId}`}
-				alt={alt}
+				alt={alt || "Safe Lines Customs Clearance - Professional logistics and freight services"}
 				fill
 				priority
 				style={{ 
@@ -63,7 +70,10 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 					objectPosition,
 				}}
 				sizes="100vw"
-				quality={90}
+				quality={85}
+				placeholder="blur"
+				blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA="
+				fetchPriority="high"
 			/>
 			<div className="banner-container">
 				{children}
