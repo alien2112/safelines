@@ -122,31 +122,13 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
       });
     }
 
-    // Split text animation for title
-    if (titleRef.current) {
-      const text = titleRef.current.textContent || '';
-      const words = text.split(' ');
-      titleRef.current.innerHTML = words
-        .map((word) => `<span class="blog-detail-word" style="display: inline-block; overflow: hidden;"><span style="display: inline-block;">${word}</span></span>`)
-        .join(' ');
-
-      const wordSpans = titleRef.current.querySelectorAll('.blog-detail-word span');
-      gsap.set(wordSpans, { y: '100%', opacity: 0 });
-      
-      const tl = gsap.timeline({ delay: 0.3 });
-      tl.to(wordSpans, {
-        y: '0%',
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.08,
-        ease: 'power3.out',
-      });
-    }
+    // Title animation removed per request
 
     // Animate hero content
     const heroContent = heroRef.current?.querySelector('.blog-post-hero-content');
     if (heroContent) {
-      gsap.fromTo(heroContent.children,
+      const children = Array.from(heroContent.children).filter((el) => !el.classList.contains('blog-post-title')) as any;
+      gsap.fromTo(children,
         { opacity: 0, y: 30 },
         {
           opacity: 1,
