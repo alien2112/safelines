@@ -9,6 +9,20 @@ export default function FAQSection() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const [openId, setOpenId] = React.useState<string | null>(null);
+  const [emailHref, setEmailHref] = React.useState('mailto:safelines.cc.co@gmail.com');
+  
+  // Set the email link to use MAPI on Windows
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isWindows = navigator.platform.toLowerCase().includes('win') || 
+                        navigator.userAgent.toLowerCase().includes('windows');
+      
+      if (isWindows) {
+        // Use MAPI protocol for Windows (Outlook registers this)
+        setEmailHref('mapi:mailto:safelines.cc.co@gmail.com');
+      }
+    }
+  }, []);
   
   const items = t.home.faq.items.map((item, index) => ({
     id: `q${index + 1}`,
@@ -82,7 +96,12 @@ export default function FAQSection() {
         </div>
 
         <div className="faq-mail">
-          <a className="mail-pill" href="mailto:safelines.cc.co@gmail.com" aria-label="Email" dir={isRTL ? 'rtl' : 'ltr'}>
+          <a 
+            className="mail-pill" 
+            href={emailHref}
+            aria-label="Email" 
+            dir={isRTL ? 'rtl' : 'ltr'}
+          >
             <span className="mail-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="5" width="18" height="14" rx="2"/>

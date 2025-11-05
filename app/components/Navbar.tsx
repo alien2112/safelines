@@ -32,14 +32,16 @@ export function Navbar() {
       about: 'About us',
       services: 'Services',
       blog: 'Blog',
-      connect: 'Connect us',
+      contactUs: 'Contact Us',
+      requestService: 'Request Service',
     },
     ar: {
       home: 'الرئيسية',
       about: 'من نحن',
       services: 'الخدمات',
       blog: 'المدونة',
-      connect: 'تواصل معنا',
+      contactUs: 'اتصل بنا',
+      requestService: 'اطلب الخدمة',
     },
   };
 
@@ -65,6 +67,7 @@ export function Navbar() {
           <li role="none"><Link role="menuitem" href="/about" className="nav-link">{currentNavLinks.about}</Link></li>
           <li role="none"><Link role="menuitem" href="/services" className="nav-link">{currentNavLinks.services}</Link></li>
           <li role="none"><Link role="menuitem" href="/blog" className="nav-link">{currentNavLinks.blog}</Link></li>
+          <li role="none"><Link role="menuitem" href="/contact" className="nav-link">{currentNavLinks.contactUs}</Link></li>
         </ul>
         <div className="nav-right">
           <button
@@ -81,7 +84,7 @@ export function Navbar() {
               <path d="M3.6 12h16.8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
               <path d="M12 3a17 17 0 0 0 0 18M12 3a17 17 0 0 1 0 18" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
             </svg>
-            {currentNavLinks.connect}
+            {currentNavLinks.requestService}
           </Link>
         </div>
       </nav>
@@ -179,6 +182,22 @@ export function Navbar() {
               >
                 {currentNavLinks.blog}
               </button>
+              <button 
+                type="button"
+                className="nav-mobile-link" 
+                onClick={(e) => handleMobileLinkClick(e, '/contact')}
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  width: '100%', 
+                  textAlign: language === 'ar' ? 'right' : 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {currentNavLinks.contactUs}
+              </button>
             </nav>
             <div className="nav-mobile-actions">
               <button
@@ -229,7 +248,7 @@ export function Navbar() {
                   <path d="M3.6 12h16.8" strokeLinecap="round" />
                   <path d="M12 3a17 17 0 0 0 0 18M12 3a17 17 0 0 1 0 18" strokeLinecap="round" />
                 </svg>
-                {currentNavLinks.connect}
+                {currentNavLinks.requestService}
               </button>
             </div>
           </div>

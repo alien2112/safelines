@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLanguage } from "../contexts/LanguageContext";
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -102,6 +103,7 @@ type Job = {
 };
 
 export default function AdminPage() {
+	const { t, language, setLanguage } = useLanguage();
 	const expectedPassword = (process.env.NEXT_PUBLIC_ADMIN_PASSWORD as string | undefined) || "admin123";
 	const [authed, setAuthed] = useState(false);
 	const [password, setPassword] = useState("");
@@ -218,7 +220,7 @@ export default function AdminPage() {
 					}
 				} catch {}
 			} else {
-				setAuthError("Incorrect password");
+				setAuthError(t.admin.login.incorrectPassword);
 				setIsLoggingIn(false);
 				// Shake animation on error
 				if (loginFormRef.current) {
@@ -246,34 +248,46 @@ export default function AdminPage() {
 	// Login Page
 	if (!authed) {
 		return (
-			<div className="admin-login-page">
+			<div className="admin-login-page" dir={language === 'ar' ? 'rtl' : 'ltr'}>
 				<div className="admin-login-background">
 					<div className="admin-login-blob admin-login-blob-1"></div>
 					<div className="admin-login-blob admin-login-blob-2"></div>
 				</div>
 				<div className="admin-login-container" ref={loginContainerRef}>
+					<div className="admin-login-header">
+						<button
+							className="admin-language-toggle"
+							onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
+							aria-label="Toggle language"
+						>
+							{language === 'ar' ? 'EN' : 'AR'}
+						</button>
+					</div>
 					<div className="admin-login-logo" ref={loginLogoRef}>
 						<img src="/safelines_logo-removebg-preview.png" alt="Safe Lines Logo" />
-						<h1>Admin Dashboard</h1>
+						<h1>{t.admin.login.title}</h1>
 					</div>
 					<form onSubmit={handleAuthSubmit} className="admin-login-form" ref={loginFormRef} aria-label="Admin password form">
-						<div className="admin-login-field">
-							<label htmlFor="admin-password">Password</label>
-							<input
-								id="admin-password"
-								ref={loginInputRef}
-								type="password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								placeholder="Enter admin password"
-								aria-invalid={authError ? true : false}
-								disabled={isLoggingIn}
-							/>
-							{authError && (
-								<div className="admin-login-error" role="alert">
-									{authError}
-								</div>
-							)}
+						<div className="admin-login-field-wrapper">
+							<div className="admin-login-field">
+								<label htmlFor="admin-password">{t.admin.login.password}</label>
+								<input
+									id="admin-password"
+									ref={loginInputRef}
+									type="password"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+									placeholder={t.admin.login.passwordPlaceholder}
+									aria-invalid={authError ? true : false}
+									disabled={isLoggingIn}
+									dir={language === 'ar' ? 'rtl' : 'ltr'}
+								/>
+								{authError && (
+									<div className="admin-login-error" role="alert">
+										{authError}
+									</div>
+								)}
+							</div>
 						</div>
 						<button 
 							type="submit" 
@@ -284,10 +298,10 @@ export default function AdminPage() {
 							{isLoggingIn ? (
 								<>
 									<span className="admin-login-spinner"></span>
-									Signing in...
+									{t.admin.login.signingIn}
 								</>
 							) : (
-								"Sign In"
+								t.admin.login.signIn
 							)}
 						</button>
 					</form>
@@ -298,7 +312,14 @@ export default function AdminPage() {
 
 	// Dashboard
 	return (
-		<div className="admin admin-dashboard">
+		<div className="admin admin-dashboard" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+			{sidebarOpen && (
+				<div 
+					className="admin-sidebar-overlay" 
+					onClick={() => setSidebarOpen(false)}
+					aria-label="Close sidebar"
+				/>
+			)}
 			<AdminSidebar 
 				ref={sidebarRef}
 				activePanel={activePanel}
@@ -308,6 +329,17 @@ export default function AdminPage() {
 				setOpen={setSidebarOpen}
 			/>
 			<div className="admin-dashboard-content" ref={dashboardRef}>
+				<button
+					className="admin-mobile-menu-toggle"
+					onClick={() => setSidebarOpen(!sidebarOpen)}
+					aria-label={t.admin.sidebar.toggleSidebar}
+				>
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+						<line x1="3" y1="6" x2="21" y2="6"/>
+						<line x1="3" y1="12" x2="21" y2="12"/>
+						<line x1="3" y1="18" x2="21" y2="18"/>
+					</svg>
+				</button>
 				{activePanel === "images" && <ImagesPanel />}
 				{activePanel === "blog" && <BlogPanel />}
 				{activePanel === "services" && <ServicesPanel />}
@@ -327,13 +359,14 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }>(({ activePanel, setActivePanel, onLogout, open, setOpen }, ref) => {
+	const { t, language } = useLanguage();
 	const menuItems = [
-		{ id: "images" as ActivePanel, label: "Images", icon: "image" },
-		{ id: "blog" as ActivePanel, label: "Blog", icon: "article" },
-		{ id: "services" as ActivePanel, label: "Services", icon: "settings" },
-		{ id: "jobs" as ActivePanel, label: "Jobs", icon: "work" },
-		{ id: "seo-config" as ActivePanel, label: "SEO Config", icon: "seo" },
-		{ id: "link-mappings" as ActivePanel, label: "Link Mappings", icon: "links" },
+		{ id: "images" as ActivePanel, label: t.admin.sidebar.images, icon: "image" },
+		{ id: "blog" as ActivePanel, label: t.admin.sidebar.blog, icon: "article" },
+		{ id: "services" as ActivePanel, label: t.admin.sidebar.services, icon: "settings" },
+		{ id: "jobs" as ActivePanel, label: t.admin.sidebar.jobs, icon: "work" },
+		{ id: "seo-config" as ActivePanel, label: t.admin.sidebar.seoConfig, icon: "seo" },
+		{ id: "link-mappings" as ActivePanel, label: t.admin.sidebar.linkMappings, icon: "links" },
 	];
 
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -680,7 +713,7 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 							}
 						}}
 					>
-						Logout
+						{t.admin.sidebar.logout}
 					</span>
 				</button>
 			</div>

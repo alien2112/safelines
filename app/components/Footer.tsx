@@ -402,7 +402,7 @@ export default function Footer() {
                 onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
                 aria-label="Toggle language"
               >
-                <span className={`footer-lang-flag ${language === 'ar' ? 'active' : ''}`}>Sa</span>
+                <span className={`footer-lang-flag ${language === 'ar' ? 'active' : ''}`}>Ar</span>
                 <span className="footer-lang-separator">|</span>
                 <span className={`footer-lang-flag ${language === 'en' ? 'active' : ''}`}>En</span>
               </button>
@@ -417,6 +417,17 @@ export default function Footer() {
           {/* Copyright Section */}
           <div className="footer-copyright">
             <p className="footer-copyright-text">{t.home.footer.copyright.text}</p>
+            <p className="footer-copyright-text" style={{ marginTop: '8px', fontSize: '14px' }} dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.home.footer.copyright.designer}{' '}
+              <a 
+                href="https://wa.me/966541430116" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{ color: 'var(--brand-gold)', textDecoration: 'none', fontWeight: 700 }}
+              >
+                {t.home.footer.copyright.designerName}
+              </a>
+            </p>
           </div>
         </div>
       </footer>

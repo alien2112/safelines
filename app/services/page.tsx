@@ -6,6 +6,7 @@ import { FaArrowRight, FaBoxOpen, FaClipboardList, FaSearch, FaWarehouse } from 
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useServices } from "../lib/swr-config";
 
 type AdminService = {
   id: string;
@@ -27,30 +28,43 @@ type Service = {
   image?: string;
 };
 
-async function getServices(): Promise<AdminService[]> {
-  try {
-    const res = await fetch("/api/services", { cache: "no-store" });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data || []).map((s: any) => ({
-      ...s,
-      id: s._id?.toString() || s.id,
-      _id: undefined,
-    }));
-  } catch {
-    return [];
-  }
-}
-
 export default function ServicesPage() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
-  const [adminServices, setAdminServices] = useState<AdminService[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [modalService, setModalService] = useState<Service | null>(null);
   const [clickedCardRect, setClickedCardRect] = useState<DOMRect | null>(null);
+  const [showSkeleton, setShowSkeleton] = useState(false);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
+
+  // Use SWR for data fetching
+  const { data: servicesData, isLoading } = useServices();
+
+  // Transform and memoize data from API
+  const adminServices = useMemo(() => {
+    if (!servicesData) return [];
+    return servicesData
+      .map((s: any) => ({
+        ...s,
+        id: s._id?.toString() || s.id,
+        _id: undefined,
+      }))
+      .filter((x: AdminService) => x.visible)
+      .sort((a: AdminService, b: AdminService) => a.order - b.order);
+  }, [servicesData]);
+
+  // Show skeleton only if loading takes more than 300ms
+  useEffect(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        setShowSkeleton(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setShowSkeleton(false);
+    }
+  }, [isLoading]);
 
   const CATEGORIES = [
     { key: "all", label: t.home.services.page.categories.all },
@@ -58,10 +72,6 @@ export default function ServicesPage() {
     { key: "customs", label: t.home.services.page.categories.customs },
     { key: "support", label: t.home.services.page.categories.support },
   ];
-
-  useEffect(() => {
-    getServices().then((s) => setAdminServices(s.filter((x) => x.visible).sort((a, b) => a.order - b.order)));
-  }, []);
 
   useEffect(() => {
     if (!heroRef.current) return;
@@ -155,12 +165,34 @@ export default function ServicesPage() {
       {/* Services Grid */}
       <section id="catalog" className="srv-wrap">
         <div ref={cardsRef} className="srv-grid">
-          {filtered.length === 0 && (
-            <div style={{ color: '#475569' }} dir={isRTL ? 'rtl' : 'ltr'}>
+          {isLoading || showSkeleton ? (
+            // Skeleton Loaders - show during loading or if loading takes more than 300ms
+            Array.from({ length: 6 }).map((_, index) => (
+              <article key={`skeleton-${index}`} className="srv-card srv-card-skeleton">
+                <div className="srv-card-image-wrapper">
+                  <div className="skeleton-shimmer" style={{ width: '100%', height: '100%', borderRadius: '12px' }} />
+                </div>
+                <div className="srv-card-top">
+                  <div className="srv-card-icon">
+                    <div className="skeleton-shimmer" style={{ width: '36px', height: '36px', borderRadius: '10px' }} />
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div className="skeleton-shimmer" style={{ width: '80%', height: '20px', borderRadius: '4px', marginBottom: '8px' }} />
+                    <div className="skeleton-shimmer" style={{ width: '100%', height: '16px', borderRadius: '4px', marginBottom: '4px' }} />
+                    <div className="skeleton-shimmer" style={{ width: '90%', height: '16px', borderRadius: '4px' }} />
+                  </div>
+                </div>
+                <div className="srv-card-actions">
+                  <div className="skeleton-shimmer" style={{ width: '120px', height: '36px', borderRadius: '9999px' }} />
+                </div>
+              </article>
+            ))
+          ) : !isLoading && filtered.length === 0 ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px', color: '#475569' }} dir={isRTL ? 'rtl' : 'ltr'}>
               {t.home.services.page.noServices}
             </div>
-          )}
-          {filtered.map((svc) => (
+          ) : (
+            filtered.map((svc) => (
             <article
               key={svc.id}
               data-card
@@ -204,7 +236,8 @@ export default function ServicesPage() {
                 </button>
               </div>
             </article>
-          ))}
+          ))
+          )}
         </div>
       </section>
 

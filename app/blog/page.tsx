@@ -33,7 +33,7 @@ export default function BlogPage() {
   const isRTL = language === 'ar';
   
   // Use SWR for data fetching
-  const { data: adminPosts } = useBlogs();
+  const { data: adminPosts, isLoading } = useBlogs();
 
   // Transform and memoize blog posts
   const blogPosts = useMemo(() => {
@@ -252,7 +252,30 @@ export default function BlogPage() {
       <section className="blog-posts-section">
         <div className="container">
           <div ref={cardsRef} className="blog-grid">
-            {blogPosts.length === 0 ? (
+            {isLoading ? (
+              // Skeleton Loaders
+              Array.from({ length: 6 }).map((_, index) => (
+                <article key={`skeleton-${index}`} className="blog-card blog-card-skeleton">
+                  <div className="blog-card-image-wrapper">
+                    <div className="blog-card-image skeleton-shimmer" />
+                    <div className="blog-card-category skeleton-shimmer" style={{ width: '80px', height: '24px', borderRadius: '9999px' }} />
+                  </div>
+                  <div className="blog-card-content">
+                    <div className="blog-card-meta">
+                      <span className="skeleton-shimmer" style={{ width: '100px', height: '14px', borderRadius: '4px' }} />
+                      <span className="skeleton-shimmer" style={{ width: '70px', height: '14px', borderRadius: '4px' }} />
+                    </div>
+                    <div className="skeleton-shimmer" style={{ width: '100%', height: '28px', borderRadius: '4px', marginBottom: '12px' }} />
+                    <div className="skeleton-shimmer" style={{ width: '100%', height: '20px', borderRadius: '4px', marginBottom: '8px' }} />
+                    <div className="skeleton-shimmer" style={{ width: '80%', height: '20px', borderRadius: '4px', marginBottom: '20px' }} />
+                    <div className="blog-card-footer">
+                      <span className="skeleton-shimmer" style={{ width: '120px', height: '14px', borderRadius: '4px' }} />
+                      <span className="skeleton-shimmer" style={{ width: '80px', height: '14px', borderRadius: '4px' }} />
+                    </div>
+                  </div>
+                </article>
+              ))
+            ) : blogPosts.length === 0 ? (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px' }}>
                 <p style={{ color: 'var(--gray-500)', fontSize: '18px' }}>No blog posts available yet.</p>
               </div>

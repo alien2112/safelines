@@ -103,6 +103,29 @@ export interface Translations {
     };
   };
 
+  // Admin Page
+  admin: {
+    login: {
+      title: string;
+      password: string;
+      passwordPlaceholder: string;
+      signIn: string;
+      signingIn: string;
+      incorrectPassword: string;
+    };
+    sidebar: {
+      adminPanel: string;
+      toggleSidebar: string;
+      logout: string;
+      images: string;
+      blog: string;
+      services: string;
+      jobs: string;
+      seoConfig: string;
+      linkMappings: string;
+    };
+  };
+
   // Jobs Page
   jobs: {
     hero: {
@@ -278,6 +301,9 @@ export interface Translations {
       copyright: {
         text: string;
         rights: string;
+        designer: string;
+        designerName: string;
+        followUs: string;
       };
       links: Array<{
         label: string;
@@ -468,6 +494,27 @@ export const translations: Record<Language, Translations> = {
         message: 'Message',
         messagePlaceholder: 'Write your message here...',
         submit: 'Send',
+      },
+    },
+    admin: {
+      login: {
+        title: 'Admin Dashboard',
+        password: 'Password',
+        passwordPlaceholder: 'Enter admin password',
+        signIn: 'Sign In',
+        signingIn: 'Signing in...',
+        incorrectPassword: 'Incorrect password',
+      },
+      sidebar: {
+        adminPanel: 'Admin Panel',
+        toggleSidebar: 'Toggle sidebar',
+        logout: 'Logout',
+        images: 'Images',
+        blog: 'Blog',
+        services: 'Services',
+        jobs: 'Jobs',
+        seoConfig: 'SEO Config',
+        linkMappings: 'Link Mappings',
       },
     },
     blog: {
@@ -756,6 +803,9 @@ export const translations: Record<Language, Translations> = {
         copyright: {
           text: '© 2024 Safe Lines Customs Clearance. All rights reserved.',
           rights: 'All rights reserved.',
+          designer: 'Designed by',
+          designerName: 'Rawad Digital',
+          followUs: 'Follow us',
         },
         links: [
           { label: 'Home', href: '/' },
@@ -960,6 +1010,27 @@ export const translations: Record<Language, Translations> = {
         message: 'الرسالة',
         messagePlaceholder: 'اكتب رسالتك هنا...',
         submit: 'إرسال',
+      },
+    },
+    admin: {
+      login: {
+        title: 'لوحة تحكم الإدارة',
+        password: 'كلمة المرور',
+        passwordPlaceholder: 'أدخل كلمة مرور الإدارة',
+        signIn: 'تسجيل الدخول',
+        signingIn: 'جارٍ تسجيل الدخول...',
+        incorrectPassword: 'كلمة المرور غير صحيحة',
+      },
+      sidebar: {
+        adminPanel: 'لوحة الإدارة',
+        toggleSidebar: 'تبديل الشريط الجانبي',
+        logout: 'تسجيل الخروج',
+        images: 'الصور',
+        blog: 'المدونة',
+        services: 'الخدمات',
+        jobs: 'الوظائف',
+        seoConfig: 'إعدادات SEO',
+        linkMappings: 'ربط الروابط',
       },
     },
     blog: {
@@ -1248,6 +1319,9 @@ export const translations: Record<Language, Translations> = {
         copyright: {
           text: '© 2024 الخطوط الآمنة للتخليص الجمركي. جميع الحقوق محفوظة.',
           rights: 'جميع الحقوق محفوظة.',
+          designer: 'صمم بواسطة',
+          designerName: 'رواد الرقمية',
+          followUs: 'تابعنا',
         },
         links: [
           { label: 'الرئيسية', href: '/' },
