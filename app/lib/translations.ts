@@ -124,6 +124,117 @@ export interface Translations {
       seoConfig: string;
       linkMappings: string;
     };
+    images: {
+      title: string;
+      description: string;
+      uploadImage: string;
+      section: string;
+      sectionHomePage: string;
+      sectionAboutPage: string;
+      noFileChosen: string;
+      upload: string;
+      imagesInSection: string;
+      delete: string;
+      noImagesYet: string;
+    };
+    blog: {
+      title: string;
+      description: string;
+      newPost: string;
+      published: string;
+      draft: string;
+      edit: string;
+      delete: string;
+      noPostsYet: string;
+      createFirstPost: string;
+      modal: {
+        editPost: string;
+        newPost: string;
+        seo: string;
+        links: string;
+        preview: string;
+        edit: string;
+        titleEn: string;
+        titleAr: string;
+        excerptEn: string;
+        excerptAr: string;
+        contentEn: string;
+        contentAr: string;
+        category: string;
+        tags: string;
+        featuredImage: string;
+        slug: string;
+        published: string;
+        seoSettings: string;
+        seoTitle: string;
+        seoDescription: string;
+        seoKeywords: string;
+        internalLinks: string;
+        addLink: string;
+        remove: string;
+        cancel: string;
+        save: string;
+        upload: string;
+      };
+    };
+    services: {
+      title: string;
+      description: string;
+      newService: string;
+      edit: string;
+      delete: string;
+      featured: string;
+      noServicesYet: string;
+      createFirstService: string;
+      modal: {
+        editService: string;
+        newService: string;
+        titleEn: string;
+        titleAr: string;
+        descriptionEn: string;
+        descriptionAr: string;
+        image: string;
+        icon: string;
+        slug: string;
+        detailedDescriptionEn: string;
+        detailedDescriptionAr: string;
+        visible: string;
+        featured: string;
+        processSteps: string;
+        addStep: string;
+        benefits: string;
+        addBenefit: string;
+        testimonials: string;
+        addTestimonial: string;
+        remove: string;
+        cancel: string;
+        save: string;
+        clear: string;
+      };
+    };
+    jobs: {
+      title: string;
+      description: string;
+      newJob: string;
+      published: string;
+      draft: string;
+      edit: string;
+      delete: string;
+      noJobsYet: string;
+      createFirstJob: string;
+      modal: {
+        editJob: string;
+        newJob: string;
+        jobTitleEn: string;
+        jobTitleAr: string;
+        jobDescriptionEn: string;
+        jobDescriptionAr: string;
+        jobImage: string;
+        published: string;
+        cancel: string;
+        save: string;
+      };
+    };
   };
 
   // Jobs Page
@@ -515,6 +626,117 @@ export const translations: Record<Language, Translations> = {
         jobs: 'Jobs',
         seoConfig: 'SEO Config',
         linkMappings: 'Link Mappings',
+      },
+      images: {
+        title: 'Images Management',
+        description: 'Manage homepage images, hero banners, and about page images per section. Latest upload is displayed.',
+        uploadImage: 'Upload Image',
+        section: 'Section',
+        sectionHomePage: 'Home Page',
+        sectionAboutPage: 'About Page',
+        noFileChosen: 'No file chosen',
+        upload: 'Upload',
+        imagesInSection: 'Images in Section',
+        delete: 'Delete',
+        noImagesYet: 'No images yet',
+      },
+      blog: {
+        title: 'Blog Management',
+        description: 'Create, edit, and manage blog posts',
+        newPost: '+ New Post',
+        published: 'Published',
+        draft: 'Draft',
+        edit: 'Edit',
+        delete: 'Delete',
+        noPostsYet: 'No blog posts yet.',
+        createFirstPost: 'Create your first post!',
+        modal: {
+          editPost: 'Edit Post',
+          newPost: 'New Post',
+          seo: 'SEO',
+          links: 'Links',
+          preview: 'Preview',
+          edit: 'Edit',
+          titleEn: 'Title (English)',
+          titleAr: 'Title (Arabic)',
+          excerptEn: 'Excerpt (English)',
+          excerptAr: 'Excerpt (Arabic)',
+          contentEn: 'Content (English)',
+          contentAr: 'Content (Arabic)',
+          category: 'Category',
+          tags: 'Tags (comma-separated)',
+          featuredImage: 'Featured Image',
+          slug: 'Slug (URL-friendly)',
+          published: 'Published',
+          seoSettings: 'SEO Settings',
+          seoTitle: 'SEO Title (optional, defaults to title)',
+          seoDescription: 'SEO Description (optional, defaults to excerpt)',
+          seoKeywords: 'SEO Keywords (comma-separated)',
+          internalLinks: 'Internal Links',
+          addLink: '+ Add Link',
+          remove: 'Remove',
+          cancel: 'Cancel',
+          save: 'Save',
+          upload: 'Upload',
+        },
+      },
+      services: {
+        title: 'Services Management',
+        description: 'Manage services displayed on the main site',
+        newService: '+ New Service',
+        edit: 'Edit',
+        delete: 'Delete',
+        featured: 'Featured',
+        noServicesYet: 'No services yet.',
+        createFirstService: 'Create your first service!',
+        modal: {
+          editService: 'Edit Service',
+          newService: 'New Service',
+          titleEn: 'Title (English)',
+          titleAr: 'Title (Arabic)',
+          descriptionEn: 'Description (English)',
+          descriptionAr: 'Description (Arabic)',
+          image: 'Image',
+          icon: 'Icon (for service card)',
+          slug: 'Slug (URL-friendly identifier, e.g., "customs-clearance")',
+          detailedDescriptionEn: 'Detailed Description (English) - For service detail page',
+          detailedDescriptionAr: 'Detailed Description (Arabic)',
+          visible: 'Visible on Services Page',
+          featured: 'Featured on Homepage',
+          processSteps: 'Process Steps',
+          addStep: '+ Add Step',
+          benefits: 'Benefits',
+          addBenefit: '+ Add Benefit',
+          testimonials: 'Testimonials',
+          addTestimonial: '+ Add Testimonial',
+          remove: 'Remove',
+          cancel: 'Cancel',
+          save: 'Save',
+          clear: 'Clear',
+        },
+      },
+      jobs: {
+        title: 'Jobs Management',
+        description: 'Create, edit, and manage job postings',
+        newJob: '+ New Job',
+        published: 'Published',
+        draft: 'Draft',
+        edit: 'Edit',
+        delete: 'Delete',
+        noJobsYet: 'No jobs yet.',
+        createFirstJob: 'Create your first job posting!',
+        modal: {
+          editJob: 'Edit Job',
+          newJob: 'New Job',
+          jobTitleEn: 'Job Title (English)',
+          jobTitleAr: 'Job Title (Arabic)',
+          jobDescriptionEn: 'Job Description (English)',
+          jobDescriptionAr: 'Job Description (Arabic)',
+          jobImage: 'Job Image',
+          published: 'Published',
+          cancel: 'Cancel',
+          save: 'Save Job',
+        },
       },
     },
     blog: {
@@ -1031,6 +1253,117 @@ export const translations: Record<Language, Translations> = {
         jobs: 'الوظائف',
         seoConfig: 'إعدادات SEO',
         linkMappings: 'ربط الروابط',
+      },
+      images: {
+        title: 'إدارة الصور',
+        description: 'إدارة صور الصفحة الرئيسية واللافتات وصور صفحة من نحن لكل قسم. يتم عرض آخر تحميل.',
+        uploadImage: 'رفع صورة',
+        section: 'القسم',
+        sectionHomePage: 'الصفحة الرئيسية',
+        sectionAboutPage: 'صفحة من نحن',
+        noFileChosen: 'لم يتم اختيار ملف',
+        upload: 'رفع',
+        imagesInSection: 'الصور في القسم',
+        delete: 'حذف',
+        noImagesYet: 'لا توجد صور بعد',
+      },
+      blog: {
+        title: 'إدارة المدونة',
+        description: 'إنشاء وتحرير وإدارة المقالات',
+        newPost: '+ مقال جديد',
+        published: 'منشور',
+        draft: 'مسودة',
+        edit: 'تعديل',
+        delete: 'حذف',
+        noPostsYet: 'لا توجد مقالات بعد.',
+        createFirstPost: 'أنشئ مقالك الأول!',
+        modal: {
+          editPost: 'تعديل المقال',
+          newPost: 'مقال جديد',
+          seo: 'SEO',
+          links: 'الروابط',
+          preview: 'معاينة',
+          edit: 'تعديل',
+          titleEn: 'العنوان (الإنجليزية)',
+          titleAr: 'العنوان (العربية)',
+          excerptEn: 'الملخص (الإنجليزية)',
+          excerptAr: 'الملخص (العربية)',
+          contentEn: 'المحتوى (الإنجليزية)',
+          contentAr: 'المحتوى (العربية)',
+          category: 'الفئة',
+          tags: 'العلامات (مفصولة بفواصل)',
+          featuredImage: 'الصورة المميزة',
+          slug: 'الرابط (صديق للـ URL)',
+          published: 'منشور',
+          seoSettings: 'إعدادات SEO',
+          seoTitle: 'عنوان SEO (اختياري، افتراضي: العنوان)',
+          seoDescription: 'وصف SEO (اختياري، افتراضي: الملخص)',
+          seoKeywords: 'كلمات مفتاحية SEO (مفصولة بفواصل)',
+          internalLinks: 'روابط داخلية',
+          addLink: '+ إضافة رابط',
+          remove: 'إزالة',
+          cancel: 'إلغاء',
+          save: 'حفظ',
+          upload: 'رفع',
+        },
+      },
+      services: {
+        title: 'إدارة الخدمات',
+        description: 'إدارة الخدمات المعروضة على الموقع الرئيسي',
+        newService: '+ خدمة جديدة',
+        edit: 'تعديل',
+        delete: 'حذف',
+        featured: 'مميز',
+        noServicesYet: 'لا توجد خدمات بعد.',
+        createFirstService: 'أنشئ خدمتك الأولى!',
+        modal: {
+          editService: 'تعديل الخدمة',
+          newService: 'خدمة جديدة',
+          titleEn: 'العنوان (الإنجليزية)',
+          titleAr: 'العنوان (العربية)',
+          descriptionEn: 'الوصف (الإنجليزية)',
+          descriptionAr: 'الوصف (العربية)',
+          image: 'الصورة',
+          icon: 'الأيقونة (لبطاقة الخدمة)',
+          slug: 'الرابط (معرف صديق للـ URL، مثل "customs-clearance")',
+          detailedDescriptionEn: 'وصف مفصل (الإنجليزية) - لصفحة تفاصيل الخدمة',
+          detailedDescriptionAr: 'وصف مفصل (العربية)',
+          visible: 'مرئي على صفحة الخدمات',
+          featured: 'مميز على الصفحة الرئيسية',
+          processSteps: 'خطوات العملية',
+          addStep: '+ إضافة خطوة',
+          benefits: 'الفوائد',
+          addBenefit: '+ إضافة فائدة',
+          testimonials: 'الشهادات',
+          addTestimonial: '+ إضافة شهادة',
+          remove: 'إزالة',
+          cancel: 'إلغاء',
+          save: 'حفظ',
+          clear: 'مسح',
+        },
+      },
+      jobs: {
+        title: 'إدارة الوظائف',
+        description: 'إنشاء وتحرير وإدارة إعلانات الوظائف',
+        newJob: '+ وظيفة جديدة',
+        published: 'منشور',
+        draft: 'مسودة',
+        edit: 'تعديل',
+        delete: 'حذف',
+        noJobsYet: 'لا توجد وظائف بعد.',
+        createFirstJob: 'أنشئ إعلان وظيفتك الأول!',
+        modal: {
+          editJob: 'تعديل الوظيفة',
+          newJob: 'وظيفة جديدة',
+          jobTitleEn: 'عنوان الوظيفة (الإنجليزية)',
+          jobTitleAr: 'عنوان الوظيفة (العربية)',
+          jobDescriptionEn: 'وصف الوظيفة (الإنجليزية)',
+          jobDescriptionAr: 'وصف الوظيفة (العربية)',
+          jobImage: 'صورة الوظيفة',
+          published: 'منشور',
+          cancel: 'إلغاء',
+          save: 'حفظ الوظيفة',
+        },
       },
     },
     blog: {

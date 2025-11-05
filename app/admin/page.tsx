@@ -739,6 +739,12 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 									<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
 								</svg>
 							)}
+							{item.icon === "work" && (
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+									<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+									<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+								</svg>
+							)}
 							{item.icon === "links" && (
 								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
 									<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -812,6 +818,7 @@ type ImageSectionType =
 	"about-feature-1" | "about-feature-2" | "about-feature-3" | "about-feature-4";
 
 function ImagesPanel() {
+	const { t, language } = useLanguage();
 	const [activeSection, setActiveSection] = useState<ImageSectionType>("making-easy");
 	const [files, setFiles] = useState<ImageFile[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -863,46 +870,46 @@ function ImagesPanel() {
 	return (
 		<div className="admin-panel" ref={panelRef}>
 			<div className="admin-panel-header">
-				<h2>Images Management</h2>
-				<p>Manage homepage images, hero banners, and about page images per section. Latest upload is displayed.</p>
+				<h2>{t.admin.images.title}</h2>
+				<p>{t.admin.images.description}</p>
 			</div>
 			<div className="admin-panel-grid">
 				<div className="admin-panel-card">
-					<h3>Upload Image</h3>
+					<h3>{t.admin.images.uploadImage}</h3>
 					<form onSubmit={onUpload} className="admin-form">
 						<label className="admin-field">
-							<span className="admin-label">Section</span>
+							<span className="admin-label">{t.admin.images.section}</span>
 							<select 
 								className="admin-input"
 								value={activeSection} 
 								onChange={(e) => setActiveSection(e.target.value as ImageSectionType)} 
 							>
-								<optgroup label="Home Page">
-									<option value="making-easy">Making future easy (left)</option>
-									<option value="strategy-right">Strategy & Content (right)</option>
-									<option value="hero-home">Hero Banner - Home Page</option>
+								<optgroup label={t.admin.images.sectionHomePage}>
+									<option value="making-easy">{language === 'ar' ? 'جعل المستقبل سهلاً (يسار)' : 'Making future easy (left)'}</option>
+									<option value="strategy-right">{language === 'ar' ? 'الإستراتيجية والمحتوى (يمين)' : 'Strategy & Content (right)'}</option>
+									<option value="hero-home">{language === 'ar' ? 'لافتة البطل - الصفحة الرئيسية' : 'Hero Banner - Home Page'}</option>
 								</optgroup>
-								<optgroup label="About Page">
-									<option value="hero-about">Hero Banner - About Page</option>
-									<option value="about-milestone-1">Vision Timeline - Milestone 1</option>
-									<option value="about-milestone-2">Vision Timeline - Milestone 2</option>
-									<option value="about-milestone-3">Vision Timeline - Milestone 3</option>
-									<option value="about-milestone-4">Vision Timeline - Milestone 4</option>
-									<option value="about-feature-1">Why Choose Us - Feature 1</option>
-									<option value="about-feature-2">Why Choose Us - Feature 2</option>
-									<option value="about-feature-3">Why Choose Us - Feature 3</option>
-									<option value="about-feature-4">Why Choose Us - Feature 4</option>
+								<optgroup label={t.admin.images.sectionAboutPage}>
+									<option value="hero-about">{language === 'ar' ? 'لافتة البطل - صفحة من نحن' : 'Hero Banner - About Page'}</option>
+									<option value="about-milestone-1">{language === 'ar' ? 'الجدول الزمني للرؤية - معلم 1' : 'Vision Timeline - Milestone 1'}</option>
+									<option value="about-milestone-2">{language === 'ar' ? 'الجدول الزمني للرؤية - معلم 2' : 'Vision Timeline - Milestone 2'}</option>
+									<option value="about-milestone-3">{language === 'ar' ? 'الجدول الزمني للرؤية - معلم 3' : 'Vision Timeline - Milestone 3'}</option>
+									<option value="about-milestone-4">{language === 'ar' ? 'الجدول الزمني للرؤية - معلم 4' : 'Vision Timeline - Milestone 4'}</option>
+									<option value="about-feature-1">{language === 'ar' ? 'لماذا تختارنا - ميزة 1' : 'Why Choose Us - Feature 1'}</option>
+									<option value="about-feature-2">{language === 'ar' ? 'لماذا تختارنا - ميزة 2' : 'Why Choose Us - Feature 2'}</option>
+									<option value="about-feature-3">{language === 'ar' ? 'لماذا تختارنا - ميزة 3' : 'Why Choose Us - Feature 3'}</option>
+									<option value="about-feature-4">{language === 'ar' ? 'لماذا تختارنا - ميزة 4' : 'Why Choose Us - Feature 4'}</option>
 								</optgroup>
 							</select>
 						</label>
-						<input className="admin-input" type="file" accept="image/*" aria-label="Choose image file" />
+						<input className="admin-input" type="file" accept="image/*" aria-label={t.admin.images.noFileChosen} />
 						<div className="admin-actions">
-							<button className="btn primary" type="submit">Upload</button>
+							<button className="btn primary" type="submit">{t.admin.images.upload}</button>
 						</div>
 					</form>
 				</div>
 				<div className="admin-panel-card">
-					<h3>Images in Section</h3>
+					<h3>{t.admin.images.imagesInSection}</h3>
 					<div className="divider" />
 					<div className="admin-list">
 						{files.map((f) => (
@@ -915,16 +922,16 @@ function ImagesPanel() {
 								<button 
 									className="btn ghost danger" 
 									data-action="delete"
-									aria-label={`Delete ${f.filename}`} 
+									aria-label={`${t.admin.images.delete} ${f.filename}`} 
 									onClick={() => onDelete(f._id)}
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Delete
+									{t.admin.images.delete}
 								</button>
 							</div>
 						))}
-						{files.length === 0 && !isLoading && <div className="muted">No images yet</div>}
+						{files.length === 0 && !isLoading && <div className="muted">{t.admin.images.noImagesYet}</div>}
 					</div>
 				</div>
 			</div>
@@ -934,6 +941,7 @@ function ImagesPanel() {
 
 // Blog Panel
 function BlogPanel() {
+	const { t, language } = useLanguage();
 	const [posts, setPosts] = useState<BlogPost[]>([]);
 	const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 	const [showModal, setShowModal] = useState(false);
@@ -1237,8 +1245,8 @@ function BlogPanel() {
 	return (
 		<div className="admin-panel" ref={panelRef}>
 			<div className="admin-panel-header">
-				<h2>Blog Management</h2>
-				<p>Create, edit, and manage blog posts</p>
+				<h2>{t.admin.blog.title}</h2>
+				<p>{t.admin.blog.description}</p>
 				<button 
 					className="btn primary" 
 					onClick={() => { setEditingPost(null); setShowModal(true); }}
@@ -1249,23 +1257,23 @@ function BlogPanel() {
 						gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" });
 					}}
 				>
-					+ New Post
+					{t.admin.blog.newPost}
 				</button>
 			</div>
 			<div className="admin-blog-grid">
 				{posts.map((post) => (
 					<div key={post.id} className="admin-blog-card">
 						{post.featuredImage && (
-							<img src={post.featuredImage} alt={post.title} className="admin-blog-image" />
+							<img src={post.featuredImage} alt={language === 'ar' ? post.titleAr : post.title} className="admin-blog-image" />
 						)}
 						<div className="admin-blog-content">
 							<div className="admin-blog-header">
-								<h3>{post.title}</h3>
+								<h3>{language === 'ar' ? post.titleAr : post.title}</h3>
 								<span className={`admin-blog-status ${post.published ? 'published' : 'draft'}`}>
-									{post.published ? 'Published' : 'Draft'}
+									{post.published ? t.admin.blog.published : t.admin.blog.draft}
 								</span>
 							</div>
-							<p className="admin-blog-excerpt">{post.excerpt}</p>
+							<p className="admin-blog-excerpt">{language === 'ar' ? post.excerptAr : post.excerpt}</p>
 							<div className="admin-blog-meta">
 								<span className="admin-blog-category">{post.category}</span>
 								{post.tags && Array.isArray(post.tags) && post.tags.map(tag => (
@@ -1279,7 +1287,7 @@ function BlogPanel() {
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Edit
+									{t.admin.blog.edit}
 								</button>
 								<button 
 									className="btn ghost danger" 
@@ -1288,7 +1296,7 @@ function BlogPanel() {
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Delete
+									{t.admin.blog.delete}
 								</button>
 							</div>
 						</div>
@@ -1296,7 +1304,7 @@ function BlogPanel() {
 				))}
 				{posts.length === 0 && (
 					<div className="admin-empty-state">
-						<p>No blog posts yet. Create your first post!</p>
+						<p>{t.admin.blog.noPostsYet} {t.admin.blog.createFirstPost}</p>
 					</div>
 				)}
 			</div>
@@ -1329,6 +1337,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 	previewMode: boolean;
 	setPreviewMode: (mode: boolean) => void;
 }) {
+	const { t, language } = useLanguage();
 	const [formData, setFormData] = useState<Partial<BlogPost>>({
 		title: post?.title || '',
 		titleAr: post?.titleAr || '',
@@ -1709,7 +1718,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 		<div className="admin-modal-overlay" ref={overlayRef} onClick={handleClose}>
 			<div className="admin-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
 				<div className="admin-modal-header">
-					<h3>{post ? 'Edit Post' : 'New Post'}</h3>
+					<h3>{post ? t.admin.blog.modal.editPost : t.admin.blog.modal.newPost}</h3>
 					<div className="admin-modal-actions">
 						<button 
 							type="button"
@@ -1719,7 +1728,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								setShowLinksSection(false);
 								setPreviewMode(false);
 							}}
-							title="SEO Settings"
+							title={t.admin.blog.modal.seoSettings}
 							onMouseEnter={(e) => {
 								if (!showSEOSection) {
 									gsap.to(e.currentTarget, { scale: 1.05, y: -2, duration: 0.2, ease: "power2.out" });
@@ -1731,7 +1740,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								}
 							}}
 						>
-							<span>SEO</span>
+							<span>{t.admin.blog.modal.seo}</span>
 							{showSEOSection && <span className="admin-modal-tab-indicator"></span>}
 						</button>
 						<button 
@@ -1742,7 +1751,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								setShowSEOSection(false);
 								setPreviewMode(false);
 							}}
-							title="Internal Links"
+							title={t.admin.blog.modal.internalLinks}
 							onMouseEnter={(e) => {
 								if (!showLinksSection) {
 									gsap.to(e.currentTarget, { scale: 1.05, y: -2, duration: 0.2, ease: "power2.out" });
@@ -1754,7 +1763,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								}
 							}}
 						>
-							<span>Links</span>
+							<span>{t.admin.blog.modal.links}</span>
 							{showLinksSection && <span className="admin-modal-tab-indicator"></span>}
 						</button>
 						<button 
@@ -1776,7 +1785,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 								}
 							}}
 						>
-							<span>{previewMode ? 'Edit' : 'Preview'}</span>
+							<span>{previewMode ? t.admin.blog.modal.edit : t.admin.blog.modal.preview}</span>
 							{previewMode && <span className="admin-modal-tab-indicator"></span>}
 						</button>
 						<button 
@@ -1790,297 +1799,299 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 						</button>
 					</div>
 				</div>
-				<form onSubmit={handleSubmit} className="admin-modal-content" ref={contentRef}>
-					{!previewMode ? (
-						<div className="admin-modal-form-content">
-							<label className="admin-field">
-								<span className="admin-label">Title (English)</span>
-								<input 
-									className="admin-input"
-									value={formData.title}
-									onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Title (Arabic)</span>
-								<input 
-									className="admin-input"
-									value={formData.titleAr}
-									onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Excerpt (English)</span>
-								<textarea 
-									className="admin-input"
-									value={formData.excerpt}
-									onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-									rows={3}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Excerpt (Arabic)</span>
-								<textarea 
-									className="admin-input"
-									value={formData.excerptAr}
-									onChange={(e) => setFormData({ ...formData, excerptAr: e.target.value })}
-									rows={3}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Content (English)</span>
-								<textarea 
-									className="admin-input"
-									value={formData.content}
-									onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-									rows={10}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Content (Arabic)</span>
-								<textarea 
-									className="admin-input"
-									value={formData.contentAr}
-									onChange={(e) => setFormData({ ...formData, contentAr: e.target.value })}
-									rows={10}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Category</span>
-								<input 
-									className="admin-input"
-									value={formData.category}
-									onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-									required
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Tags (comma-separated)</span>
-								<input 
-									className="admin-input"
-									value={formData.tags?.join(', ')}
-									onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()) })}
-								/>
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Featured Image</span>
-								<div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+				<form onSubmit={handleSubmit} className="admin-modal-form" ref={contentRef}>
+					<div className="admin-modal-form-scrollable">
+						{!previewMode ? (
+							<div className="admin-modal-form-content">
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.titleEn}</span>
 									<input 
 										className="admin-input"
-										type="text"
-										value={formData.featuredImage}
-										onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
-										placeholder="Enter image URL or upload from device"
-										style={{ flex: 1 }}
+										value={formData.title}
+										onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+										required
 									/>
-									<label 
-										className="btn primary"
-										style={{ 
-											display: 'inline-flex', 
-											alignItems: 'center', 
-											justifyContent: 'center',
-											cursor: 'pointer',
-											margin: 0
-										}}
-										onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
-										onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
-									>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.titleAr}</span>
+									<input 
+										className="admin-input"
+										value={formData.titleAr}
+										onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+										required
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.excerptEn}</span>
+									<textarea 
+										className="admin-input"
+										value={formData.excerpt}
+										onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+										rows={3}
+										required
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.excerptAr}</span>
+									<textarea 
+										className="admin-input"
+										value={formData.excerptAr}
+										onChange={(e) => setFormData({ ...formData, excerptAr: e.target.value })}
+										rows={3}
+										required
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.contentEn}</span>
+									<textarea 
+										className="admin-input"
+										value={formData.content}
+										onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+										rows={10}
+										required
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.contentAr}</span>
+									<textarea 
+										className="admin-input"
+										value={formData.contentAr}
+										onChange={(e) => setFormData({ ...formData, contentAr: e.target.value })}
+										rows={10}
+										required
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.category}</span>
+									<input 
+										className="admin-input"
+										value={formData.category}
+										onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+										required
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.tags}</span>
+									<input 
+										className="admin-input"
+										value={formData.tags?.join(', ')}
+										onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()) })}
+									/>
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.featuredImage}</span>
+									<div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
 										<input 
-											type="file" 
-											accept="image/*" 
-											style={{ display: 'none' }}
-											onChange={async (e) => {
-												const file = e.target.files?.[0];
-												if (!file) return;
-												
-												const formData = new FormData();
-												formData.append('file', file);
-												formData.append('section', 'blog');
-												
-												try {
-													const res = await fetch('/api/images', {
-														method: 'POST',
-														body: formData
-													});
-													
-													if (res.ok) {
-														const data = await res.json();
-														// Normalize and set the featured image URL
-														const imageUrl = normalizeImageUrl(data.id);
-														setFormData(prev => ({ ...prev, featuredImage: imageUrl }));
-													} else {
-														alert('Failed to upload image');
-													}
-												} catch (error) {
-													console.error('Upload error:', error);
-													alert('Error uploading image');
-												}
-												
-												e.target.value = '';
-											}}
+											className="admin-input"
+											type="text"
+											value={formData.featuredImage}
+											onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
+											placeholder="Enter image URL or upload from device"
+											style={{ flex: 1 }}
 										/>
-										Upload
-									</label>
-								</div>
-								{formData.featuredImage && (
-									<div style={{ marginTop: '12px' }}>
-										<img 
-											src={formData.featuredImage} 
-											alt="Preview" 
+										<label 
+											className="btn primary"
 											style={{ 
-												maxWidth: '100%', 
-												maxHeight: '200px', 
-												borderRadius: '8px',
-												boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-											}} 
-										/>
+												display: 'inline-flex', 
+												alignItems: 'center', 
+												justifyContent: 'center',
+												cursor: 'pointer',
+												margin: 0
+											}}
+											onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+											onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+										>
+											<input 
+												type="file" 
+												accept="image/*" 
+												style={{ display: 'none' }}
+												onChange={async (e) => {
+													const file = e.target.files?.[0];
+													if (!file) return;
+													
+													const formData = new FormData();
+													formData.append('file', file);
+													formData.append('section', 'blog');
+													
+													try {
+														const res = await fetch('/api/images', {
+															method: 'POST',
+															body: formData
+														});
+														
+														if (res.ok) {
+															const data = await res.json();
+															// Normalize and set the featured image URL
+															const imageUrl = normalizeImageUrl(data.id);
+															setFormData(prev => ({ ...prev, featuredImage: imageUrl }));
+														} else {
+															alert('Failed to upload image');
+														}
+													} catch (error) {
+														console.error('Upload error:', error);
+														alert('Error uploading image');
+													}
+													
+													e.target.value = '';
+												}}
+											/>
+											{t.admin.blog.modal.upload}
+										</label>
+									</div>
+									{formData.featuredImage && (
+										<div style={{ marginTop: '12px' }}>
+											<img 
+												src={formData.featuredImage} 
+												alt="Preview" 
+												style={{ 
+													maxWidth: '100%', 
+													maxHeight: '200px', 
+													borderRadius: '8px',
+													boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+												}} 
+											/>
+										</div>
+									)}
+								</label>
+								<label className="admin-field">
+									<span className="admin-label">{t.admin.blog.modal.slug}</span>
+									<input 
+										className="admin-input"
+										value={formData.slug || ''}
+										onChange={(e) => {
+											const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+											setFormData({ ...formData, slug });
+										}}
+										placeholder="auto-generated-from-title"
+									/>
+									<small style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '4px', display: 'block' }}>
+										URL: /blog/{formData.slug || 'auto-generated'}
+									</small>
+								</label>
+								<label className="admin-field admin-checkbox-field">
+									<input 
+										type="checkbox"
+										checked={formData.published}
+										onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+									/>
+									<span className="admin-label">{t.admin.blog.modal.published}</span>
+								</label>
+								
+								{/* SEO Section */}
+								{showSEOSection && (
+									<div className="admin-seo-section">
+										<h4 style={{ margin: '20px 0 12px', fontSize: '18px', fontWeight: 700 }}>{t.admin.blog.modal.seoSettings}</h4>
+										<label className="admin-field">
+											<span className="admin-label">{t.admin.blog.modal.seoTitle}</span>
+											<input 
+												className="admin-input"
+												value={formData.seoTitle || ''}
+												onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+												placeholder="Custom SEO title"
+											/>
+										</label>
+										<label className="admin-field">
+											<span className="admin-label">{t.admin.blog.modal.seoDescription}</span>
+											<textarea 
+												className="admin-input"
+												value={formData.seoDescription || ''}
+												onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+												rows={3}
+												placeholder="Custom SEO description (150-160 characters recommended)"
+											/>
+										</label>
+										<label className="admin-field">
+											<span className="admin-label">{t.admin.blog.modal.seoKeywords}</span>
+											<input 
+												className="admin-input"
+												value={formData.seoKeywords?.join(', ') || ''}
+												onChange={(e) => setFormData({ 
+													...formData, 
+													seoKeywords: e.target.value.split(',').map(k => k.trim()).filter(k => k) 
+												})}
+												placeholder="keyword1, keyword2, keyword3"
+											/>
+										</label>
 									</div>
 								)}
-							</label>
-							<label className="admin-field">
-								<span className="admin-label">Slug (URL-friendly)</span>
-								<input 
-									className="admin-input"
-									value={formData.slug || ''}
-									onChange={(e) => {
-										const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-										setFormData({ ...formData, slug });
-									}}
-									placeholder="auto-generated-from-title"
-								/>
-								<small style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '4px', display: 'block' }}>
-									URL: /blog/{formData.slug || 'auto-generated'}
-								</small>
-							</label>
-							<label className="admin-field admin-checkbox-field">
-								<input 
-									type="checkbox"
-									checked={formData.published}
-									onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-								/>
-								<span className="admin-label">Published</span>
-							</label>
-							
-							{/* SEO Section */}
-							{showSEOSection && (
-								<div className="admin-seo-section">
-									<h4 style={{ margin: '20px 0 12px', fontSize: '18px', fontWeight: 700 }}>SEO Settings</h4>
-									<label className="admin-field">
-										<span className="admin-label">SEO Title (optional, defaults to title)</span>
-										<input 
-											className="admin-input"
-											value={formData.seoTitle || ''}
-											onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
-											placeholder="Custom SEO title"
-										/>
-									</label>
-									<label className="admin-field">
-										<span className="admin-label">SEO Description (optional, defaults to excerpt)</span>
-										<textarea 
-											className="admin-input"
-											value={formData.seoDescription || ''}
-											onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
-											rows={3}
-											placeholder="Custom SEO description (150-160 characters recommended)"
-										/>
-									</label>
-									<label className="admin-field">
-										<span className="admin-label">SEO Keywords (comma-separated)</span>
-										<input 
-											className="admin-input"
-											value={formData.seoKeywords?.join(', ') || ''}
-											onChange={(e) => setFormData({ 
-												...formData, 
-												seoKeywords: e.target.value.split(',').map(k => k.trim()).filter(k => k) 
-											})}
-											placeholder="keyword1, keyword2, keyword3"
-										/>
-									</label>
-								</div>
-							)}
-							
-							{/* Internal Links Section */}
-							{showLinksSection && (
-								<div className="admin-links-section">
-									<h4 style={{ margin: '20px 0 12px', fontSize: '18px', fontWeight: 700 }}>Internal Links</h4>
-									<p style={{ fontSize: '14px', color: 'var(--gray-600)', marginBottom: '16px' }}>
-										Add internal links to other blog posts or pages to improve SEO and user navigation.
-									</p>
-									{(formData.internalLinks || []).map((link, index) => (
-										<div key={index} className="admin-link-item" style={{ 
-											display: 'flex', 
-											gap: '8px', 
-											marginBottom: '12px',
-											alignItems: 'flex-start'
-										}}>
-											<div style={{ flex: 1 }}>
-												<input 
-													className="admin-input"
-													value={link.text}
-													onChange={(e) => {
-														const newLinks = [...(formData.internalLinks || [])];
-														newLinks[index].text = e.target.value;
+								
+								{/* Internal Links Section */}
+								{showLinksSection && (
+									<div className="admin-links-section">
+										<h4 style={{ margin: '20px 0 12px', fontSize: '18px', fontWeight: 700 }}>{t.admin.blog.modal.internalLinks}</h4>
+										<p style={{ fontSize: '14px', color: 'var(--gray-600)', marginBottom: '16px' }}>
+											Add internal links to other blog posts or pages to improve SEO and user navigation.
+										</p>
+										{(formData.internalLinks || []).map((link, index) => (
+											<div key={index} className="admin-link-item" style={{ 
+												display: 'flex', 
+												gap: '8px', 
+												marginBottom: '12px',
+												alignItems: 'flex-start'
+											}}>
+												<div style={{ flex: 1 }}>
+													<input 
+														className="admin-input"
+														value={link.text}
+														onChange={(e) => {
+															const newLinks = [...(formData.internalLinks || [])];
+															newLinks[index].text = e.target.value;
+															setFormData({ ...formData, internalLinks: newLinks });
+														}}
+														placeholder="Link text"
+														style={{ marginBottom: '8px' }}
+													/>
+													<input 
+														className="admin-input"
+														value={link.url}
+														onChange={(e) => {
+															const newLinks = [...(formData.internalLinks || [])];
+															newLinks[index].url = e.target.value;
+															setFormData({ ...formData, internalLinks: newLinks });
+														}}
+														placeholder="/blog/post-id or /about"
+													/>
+												</div>
+												<button
+													type="button"
+													className="btn ghost"
+													onClick={() => {
+														const newLinks = (formData.internalLinks || []).filter((_, i) => i !== index);
 														setFormData({ ...formData, internalLinks: newLinks });
 													}}
-													placeholder="Link text"
-													style={{ marginBottom: '8px' }}
-												/>
-												<input 
-													className="admin-input"
-													value={link.url}
-													onChange={(e) => {
-														const newLinks = [...(formData.internalLinks || [])];
-														newLinks[index].url = e.target.value;
-														setFormData({ ...formData, internalLinks: newLinks });
-													}}
-													placeholder="/blog/post-id or /about"
-												/>
+													style={{ padding: '8px 12px', fontSize: '14px' }}
+												>
+													{t.admin.blog.modal.remove}
+												</button>
 											</div>
-											<button
-												type="button"
-												className="btn ghost"
-												onClick={() => {
-													const newLinks = (formData.internalLinks || []).filter((_, i) => i !== index);
-													setFormData({ ...formData, internalLinks: newLinks });
-												}}
-												style={{ padding: '8px 12px', fontSize: '14px' }}
-											>
-												Remove
-											</button>
-										</div>
-									))}
-									<button
-										type="button"
-										className="btn ghost"
-										onClick={() => {
-											setFormData({ 
-												...formData, 
-												internalLinks: [...(formData.internalLinks || []), { text: '', url: '', postId: '' }] 
-											});
-										}}
-										style={{ width: '100%', marginTop: '8px' }}
-									>
-										+ Add Link
-									</button>
-								</div>
-							)}
-						</div>
-					) : (
-						<div className="admin-preview" ref={previewRef}>
-							{formData.featuredImage && (
-								<img src={formData.featuredImage} alt={formData.title || formData.titleAr} />
-							)}
-							<h2>{formData.title || formData.titleAr}</h2>
-							<p className="admin-preview-excerpt">{formData.excerpt || formData.excerptAr}</p>
-							<div className="admin-preview-content">{formData.content || formData.contentAr}</div>
-						</div>
-					)}
+										))}
+										<button
+											type="button"
+											className="btn ghost"
+											onClick={() => {
+												setFormData({ 
+													...formData, 
+													internalLinks: [...(formData.internalLinks || []), { text: '', url: '', postId: '' }] 
+												});
+											}}
+											style={{ width: '100%', marginTop: '8px' }}
+										>
+											{t.admin.blog.modal.addLink}
+										</button>
+									</div>
+								)}
+							</div>
+						) : (
+							<div className="admin-preview" ref={previewRef}>
+								{formData.featuredImage && (
+									<img src={formData.featuredImage} alt={formData.title || formData.titleAr} />
+								)}
+								<h2>{formData.title || formData.titleAr}</h2>
+								<p className="admin-preview-excerpt">{formData.excerpt || formData.excerptAr}</p>
+								<div className="admin-preview-content">{formData.content || formData.contentAr}</div>
+							</div>
+						)}
+					</div>
 					<div className="admin-modal-footer">
 						<button 
 							type="button" 
@@ -2089,7 +2100,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 						>
-							Cancel
+							{t.admin.blog.modal.cancel}
 						</button>
 						<button 
 							type="submit" 
@@ -2097,7 +2108,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 						>
-							Save
+							{t.admin.blog.modal.save}
 						</button>
 					</div>
 				</form>
@@ -2108,6 +2119,7 @@ function BlogModal({ post, onSave, onClose, previewMode, setPreviewMode }: {
 
 // Jobs Panel
 function JobsPanel() {
+	const { t, language } = useLanguage();
 	const [jobs, setJobs] = useState<Job[]>([]);
 	const [editingJob, setEditingJob] = useState<Job | null>(null);
 	const [showModal, setShowModal] = useState(false);
@@ -2182,7 +2194,7 @@ function JobsPanel() {
 			}
 			setEditingJob(null);
 			setShowModal(false);
-			showToast('success', editingJob ? 'Job updated successfully!' : 'Job created successfully!');
+			showToast('success', editingJob ? (language === 'ar' ? 'تم تحديث الوظيفة بنجاح!' : 'Job updated successfully!') : (language === 'ar' ? 'تم إنشاء الوظيفة بنجاح!' : 'Job created successfully!'));
 		} catch (error) {
 			console.error('Error refreshing jobs:', error);
 		}
@@ -2205,13 +2217,13 @@ function JobsPanel() {
 					}));
 					setJobs(jobsWithId);
 				}
-				showToast('success', 'Job deleted successfully!');
+				showToast('success', language === 'ar' ? 'تم حذف الوظيفة بنجاح!' : 'Job deleted successfully!');
 			} else {
-				showToast('error', 'Failed to delete job');
+				showToast('error', language === 'ar' ? 'فشل حذف الوظيفة' : 'Failed to delete job');
 			}
 		} catch (error) {
 			console.error('Error deleting job:', error);
-			showToast('error', 'Error deleting job');
+			showToast('error', language === 'ar' ? 'خطأ في حذف الوظيفة' : 'Error deleting job');
 		}
 	}
 
@@ -2250,8 +2262,8 @@ function JobsPanel() {
 	return (
 		<div className="admin-panel" ref={panelRef}>
 			<div className="admin-panel-header">
-				<h2>Jobs Management</h2>
-				<p>Create, edit, and manage job postings</p>
+				<h2>{t.admin.jobs.title}</h2>
+				<p>{t.admin.jobs.description}</p>
 				<button 
 					className="btn primary" 
 					onClick={() => { setEditingJob(null); setShowModal(true); }}
@@ -2262,23 +2274,23 @@ function JobsPanel() {
 						gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" });
 					}}
 				>
-					+ New Job
+					{t.admin.jobs.newJob}
 				</button>
 			</div>
 			<div className="admin-blog-grid">
 				{jobs.map((job) => (
 					<div key={job.id} className="admin-blog-card">
 						{job.image && (
-							<img src={job.image} alt={job.title} className="admin-blog-image" />
+							<img src={job.image} alt={language === 'ar' ? job.titleAr : job.title} className="admin-blog-image" />
 						)}
 						<div className="admin-blog-content">
 							<div className="admin-blog-header">
-								<h3>{job.title}</h3>
+								<h3>{language === 'ar' ? job.titleAr : job.title}</h3>
 								<span className={`admin-blog-status ${job.published ? 'published' : 'draft'}`}>
-									{job.published ? 'Published' : 'Draft'}
+									{job.published ? t.admin.jobs.published : t.admin.jobs.draft}
 								</span>
 							</div>
-							<p className="admin-blog-excerpt">{job.description.substring(0, 150)}...</p>
+							<p className="admin-blog-excerpt">{(language === 'ar' ? job.descriptionAr : job.description).substring(0, 150)}...</p>
 							<div className="admin-blog-actions">
 								<button 
 									className="btn ghost" 
@@ -2286,7 +2298,7 @@ function JobsPanel() {
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Edit
+									{t.admin.jobs.edit}
 								</button>
 								<button 
 									className="btn ghost danger" 
@@ -2294,7 +2306,7 @@ function JobsPanel() {
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Delete
+									{t.admin.jobs.delete}
 								</button>
 							</div>
 						</div>
@@ -2302,7 +2314,7 @@ function JobsPanel() {
 				))}
 				{jobs.length === 0 && (
 					<div className="admin-empty-state">
-						<p>No jobs yet. Create your first job posting!</p>
+						<p>{t.admin.jobs.noJobsYet} {t.admin.jobs.createFirstJob}</p>
 					</div>
 				)}
 			</div>
@@ -2331,6 +2343,7 @@ function JobModal({ job, onSave, onClose }: {
 	onSave: (job: Job) => void;
 	onClose: () => void;
 }) {
+	const { t, language } = useLanguage();
 	const [formData, setFormData] = useState<Partial<Job>>({
 		title: job?.title || '',
 		titleAr: job?.titleAr || '',
@@ -2464,13 +2477,13 @@ function JobModal({ job, onSave, onClose }: {
 		<div className="admin-modal-overlay" ref={overlayRef} onClick={handleClose}>
 			<div className="admin-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
 				<div className="admin-modal-header">
-					<h3>{job ? 'Edit Job' : 'New Job'}</h3>
+					<h3>{job ? t.admin.jobs.modal.editJob : t.admin.jobs.modal.newJob}</h3>
 					<button className="admin-modal-close" onClick={handleClose}>×</button>
 				</div>
 				<form onSubmit={handleSubmit} className="admin-modal-form">
 					<div className="admin-modal-form-scrollable">
 						<div className="admin-field">
-							<label className="admin-label">Job Title (English)</label>
+							<label className="admin-label">{t.admin.jobs.modal.jobTitleEn}</label>
 							<input
 								className="admin-input"
 								type="text"
@@ -2480,7 +2493,7 @@ function JobModal({ job, onSave, onClose }: {
 							/>
 						</div>
 						<div className="admin-field">
-							<label className="admin-label">Job Title (Arabic)</label>
+							<label className="admin-label">{t.admin.jobs.modal.jobTitleAr}</label>
 							<input
 								className="admin-input"
 								type="text"
@@ -2490,7 +2503,7 @@ function JobModal({ job, onSave, onClose }: {
 							/>
 						</div>
 						<div className="admin-field">
-							<label className="admin-label">Job Description (English)</label>
+							<label className="admin-label">{t.admin.jobs.modal.jobDescriptionEn}</label>
 							<textarea
 								className="admin-input"
 								rows={6}
@@ -2500,7 +2513,7 @@ function JobModal({ job, onSave, onClose }: {
 							/>
 						</div>
 						<div className="admin-field">
-							<label className="admin-label">Job Description (Arabic)</label>
+							<label className="admin-label">{t.admin.jobs.modal.jobDescriptionAr}</label>
 							<textarea
 								className="admin-input"
 								rows={6}
@@ -2510,7 +2523,7 @@ function JobModal({ job, onSave, onClose }: {
 							/>
 						</div>
 						<div className="admin-field">
-							<label className="admin-label">Job Image</label>
+							<label className="admin-label">{t.admin.jobs.modal.jobImage}</label>
 							<input
 								className="admin-input"
 								type="file"
@@ -2530,14 +2543,14 @@ function JobModal({ job, onSave, onClose }: {
 									checked={formData.published}
 									onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
 								/>
-								Published
+								{t.admin.jobs.modal.published}
 							</label>
 						</div>
 					</div>
 					<div className="admin-modal-footer">
-						<button type="button" className="btn ghost" onClick={handleClose} disabled={isSubmitting}>Cancel</button>
+						<button type="button" className="btn ghost" onClick={handleClose} disabled={isSubmitting}>{t.admin.jobs.modal.cancel}</button>
 						<button type="submit" className="btn primary" disabled={isSubmitting}>
-							{isSubmitting ? 'Saving...' : 'Save Job'}
+							{isSubmitting ? (language === 'ar' ? 'جارٍ الحفظ...' : 'Saving...') : t.admin.jobs.modal.save}
 						</button>
 					</div>
 				</form>
@@ -2548,6 +2561,7 @@ function JobModal({ job, onSave, onClose }: {
 
 // Services Panel
 function ServicesPanel() {
+	const { t, language } = useLanguage();
 	const [services, setServices] = useState<Service[]>([]);
 	const [editingService, setEditingService] = useState<Service | null>(null);
 	const [showModal, setShowModal] = useState(false);
@@ -2846,10 +2860,10 @@ function ServicesPanel() {
 	return (
 		<div className="admin-panel" ref={panelRef}>
 			<div className="admin-panel-header">
-				<h2>Services Management</h2>
-				<p>Manage services displayed on the main site</p>
+				<h2>{t.admin.services.title}</h2>
+				<p>{t.admin.services.description}</p>
 				<button className="btn primary" onClick={() => { setEditingService(null); setShowModal(true); }}>
-					+ New Service
+					{t.admin.services.newService}
 				</button>
 			</div>
 			<div className="admin-services-grid">
@@ -2871,11 +2885,11 @@ function ServicesPanel() {
 							</label>
 						</div>
 						{service.image && (
-							<img src={service.image} alt={service.title} className="admin-service-image" />
+							<img src={service.image} alt={language === 'ar' ? service.titleAr : service.title} className="admin-service-image" />
 						)}
 						<div className="admin-service-content">
 							<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-								<h3 style={{ margin: 0 }}>{service.title}</h3>
+								<h3 style={{ margin: 0 }}>{language === 'ar' ? service.titleAr : service.title}</h3>
 								{service.featured && (
 									<span style={{ 
 										background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', 
@@ -2886,11 +2900,11 @@ function ServicesPanel() {
 										fontWeight: 600,
 										textTransform: 'uppercase'
 									}}>
-										Featured
+										{t.admin.services.featured}
 									</span>
 								)}
 							</div>
-							<p>{service.description}</p>
+							<p>{language === 'ar' ? service.descriptionAr : service.description}</p>
 							<div className="admin-service-actions">
 								<button 
 									className="btn ghost" 
@@ -2898,7 +2912,7 @@ function ServicesPanel() {
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Edit
+									{t.admin.services.edit}
 								</button>
 								<button 
 									className="btn ghost danger" 
@@ -2907,7 +2921,7 @@ function ServicesPanel() {
 									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 								>
-									Delete
+									{t.admin.services.delete}
 								</button>
 							</div>
 						</div>
@@ -2915,7 +2929,7 @@ function ServicesPanel() {
 				))}
 				{services.length === 0 && (
 					<div className="admin-empty-state">
-						<p>No services yet. Create your first service!</p>
+						<p>{t.admin.services.noServicesYet} {t.admin.services.createFirstService}</p>
 					</div>
 				)}
 			</div>
@@ -2944,6 +2958,7 @@ function ServiceModal({ service, onSave, onClose }: {
 	onSave: (service: Service) => void;
 	onClose: () => void;
 }) {
+	const { t, language } = useLanguage();
 	const [formData, setFormData] = useState<Partial<Service>>({
 		title: service?.title || '',
 		titleAr: service?.titleAr || '',
@@ -3140,7 +3155,7 @@ function ServiceModal({ service, onSave, onClose }: {
 		<div className="admin-modal-overlay" ref={overlayRef} onClick={handleClose}>
 			<div className="admin-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
 				<div className="admin-modal-header">
-					<h3>{service ? 'Edit Service' : 'New Service'}</h3>
+					<h3>{service ? t.admin.services.modal.editService : t.admin.services.modal.newService}</h3>
 					<button 
 						className="admin-modal-close" 
 						onClick={handleClose}
@@ -3150,47 +3165,48 @@ function ServiceModal({ service, onSave, onClose }: {
 						×
 					</button>
 				</div>
-				<form onSubmit={handleSubmit} className="admin-modal-content" ref={contentRef}>
+				<form onSubmit={handleSubmit} className="admin-modal-form" ref={contentRef}>
+					<div className="admin-modal-form-scrollable">
+						<label className="admin-field">
+							<span className="admin-label">{t.admin.services.modal.titleEn}</span>
+							<input 
+								className="admin-input"
+								value={formData.title}
+								onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+								required
+							/>
+						</label>
+						<label className="admin-field">
+							<span className="admin-label">{t.admin.services.modal.titleAr}</span>
+							<input 
+								className="admin-input"
+								value={formData.titleAr}
+								onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+								required
+							/>
+						</label>
+						<label className="admin-field">
+							<span className="admin-label">{t.admin.services.modal.descriptionEn}</span>
+							<textarea 
+								className="admin-input"
+								value={formData.description}
+								onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+								rows={5}
+								required
+							/>
+						</label>
+						<label className="admin-field">
+							<span className="admin-label">{t.admin.services.modal.descriptionAr}</span>
+							<textarea 
+								className="admin-input"
+								value={formData.descriptionAr}
+								onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
+								rows={5}
+								required
+							/>
+						</label>
 					<label className="admin-field">
-						<span className="admin-label">Title (English)</span>
-						<input 
-							className="admin-input"
-							value={formData.title}
-							onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-							required
-						/>
-					</label>
-					<label className="admin-field">
-						<span className="admin-label">Title (Arabic)</span>
-						<input 
-							className="admin-input"
-							value={formData.titleAr}
-							onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
-							required
-						/>
-					</label>
-					<label className="admin-field">
-						<span className="admin-label">Description (English)</span>
-						<textarea 
-							className="admin-input"
-							value={formData.description}
-							onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-							rows={5}
-							required
-						/>
-					</label>
-					<label className="admin-field">
-						<span className="admin-label">Description (Arabic)</span>
-						<textarea 
-							className="admin-input"
-							value={formData.descriptionAr}
-							onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-							rows={5}
-							required
-						/>
-					</label>
-					<label className="admin-field">
-						<span className="admin-label">Image</span>
+						<span className="admin-label">{t.admin.services.modal.image}</span>
 						{formData.image && (
 							<div style={{ marginBottom: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(226,232,240,0.9)' }}>
 								<img 
@@ -3243,7 +3259,7 @@ function ServiceModal({ service, onSave, onClose }: {
 								}}
 								style={{ whiteSpace: 'nowrap' }}
 							>
-								Clear
+								{t.admin.services.modal.clear}
 							</button>
 						</div>
 						<input 
@@ -3257,7 +3273,7 @@ function ServiceModal({ service, onSave, onClose }: {
 					</label>
 					{/* Icon Upload */}
 					<label className="admin-field">
-						<span className="admin-label">Icon (for service card)</span>
+						<span className="admin-label">{t.admin.services.modal.icon}</span>
 						{formData.icon && (
 							<div style={{ marginBottom: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(226,232,240,0.9)', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
 								<img 
@@ -3310,7 +3326,7 @@ function ServiceModal({ service, onSave, onClose }: {
 								}}
 								style={{ whiteSpace: 'nowrap' }}
 							>
-								Clear
+								{t.admin.services.modal.clear}
 							</button>
 						</div>
 						<input 
@@ -3325,7 +3341,7 @@ function ServiceModal({ service, onSave, onClose }: {
 
 					{/* Slug */}
 					<label className="admin-field">
-						<span className="admin-label">Slug (URL-friendly identifier, e.g., "customs-clearance")</span>
+						<span className="admin-label">{t.admin.services.modal.slug}</span>
 						<input 
 							className="admin-input"
 							value={formData.slug || ''}
@@ -3339,7 +3355,7 @@ function ServiceModal({ service, onSave, onClose }: {
 
 					{/* Detailed Description */}
 					<label className="admin-field">
-						<span className="admin-label">Detailed Description (English) - For service detail page</span>
+						<span className="admin-label">{t.admin.services.modal.detailedDescriptionEn}</span>
 						<textarea 
 							className="admin-input"
 							value={formData.detailedDescription || ''}
@@ -3349,7 +3365,7 @@ function ServiceModal({ service, onSave, onClose }: {
 						/>
 					</label>
 					<label className="admin-field">
-						<span className="admin-label">Detailed Description (Arabic)</span>
+						<span className="admin-label">{t.admin.services.modal.detailedDescriptionAr}</span>
 						<textarea 
 							className="admin-input"
 							value={formData.detailedDescriptionAr || ''}
@@ -3367,7 +3383,7 @@ function ServiceModal({ service, onSave, onClose }: {
 								checked={formData.visible ?? true}
 								onChange={(e) => setFormData({ ...formData, visible: e.target.checked })}
 							/>
-							<span className="admin-label">Visible on Services Page</span>
+							<span className="admin-label">{t.admin.services.modal.visible}</span>
 						</label>
 						<label className="admin-field admin-checkbox-field">
 							<input 
@@ -3375,14 +3391,14 @@ function ServiceModal({ service, onSave, onClose }: {
 								checked={formData.featured ?? false}
 								onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
 							/>
-							<span className="admin-label">Featured on Homepage</span>
+							<span className="admin-label">{t.admin.services.modal.featured}</span>
 						</label>
 					</div>
 
 					{/* Process Steps Section */}
 					<div className="admin-field" style={{ border: '1px solid rgba(226,232,240,0.9)', borderRadius: '8px', padding: '16px', marginTop: '16px' }}>
 						<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-							<span className="admin-label" style={{ fontWeight: 600 }}>Process Steps</span>
+							<span className="admin-label" style={{ fontWeight: 600 }}>{t.admin.services.modal.processSteps}</span>
 							<button
 								type="button"
 								className="btn ghost"
@@ -3398,7 +3414,7 @@ function ServiceModal({ service, onSave, onClose }: {
 									setFormData({ ...formData, processSteps: newSteps });
 								}}
 							>
-								+ Add Step
+								{t.admin.services.modal.addStep}
 							</button>
 						</div>
 						{(formData.processSteps || []).map((step, index) => (
@@ -3415,7 +3431,7 @@ function ServiceModal({ service, onSave, onClose }: {
 											setFormData({ ...formData, processSteps: newSteps });
 										}}
 									>
-										Remove
+										{t.admin.services.modal.remove}
 									</button>
 								</div>
 								<input
@@ -3470,7 +3486,7 @@ function ServiceModal({ service, onSave, onClose }: {
 					{/* Benefits Section */}
 					<div className="admin-field" style={{ border: '1px solid rgba(226,232,240,0.9)', borderRadius: '8px', padding: '16px', marginTop: '16px' }}>
 						<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-							<span className="admin-label" style={{ fontWeight: 600 }}>Benefits</span>
+							<span className="admin-label" style={{ fontWeight: 600 }}>{t.admin.services.modal.benefits}</span>
 							<button
 								type="button"
 								className="btn ghost"
@@ -3485,7 +3501,7 @@ function ServiceModal({ service, onSave, onClose }: {
 									setFormData({ ...formData, benefits: newBenefits });
 								}}
 							>
-								+ Add Benefit
+								{t.admin.services.modal.addBenefit}
 							</button>
 						</div>
 						{(formData.benefits || []).map((benefit, index) => (
@@ -3500,7 +3516,7 @@ function ServiceModal({ service, onSave, onClose }: {
 											setFormData({ ...formData, benefits: newBenefits });
 										}}
 									>
-										Remove
+										{t.admin.services.modal.remove}
 									</button>
 								</div>
 								{benefit.icon && (
@@ -3623,7 +3639,7 @@ function ServiceModal({ service, onSave, onClose }: {
 									setFormData({ ...formData, testimonials: newTestimonials });
 								}}
 							>
-								+ Add Testimonial
+								{t.admin.services.modal.addTestimonial}
 							</button>
 						</div>
 						{(formData.testimonials || []).map((testimonial, index) => (
@@ -3638,7 +3654,7 @@ function ServiceModal({ service, onSave, onClose }: {
 											setFormData({ ...formData, testimonials: newTestimonials });
 										}}
 									>
-										Remove
+										{t.admin.services.modal.remove}
 									</button>
 								</div>
 								<input
@@ -3725,7 +3741,7 @@ function ServiceModal({ service, onSave, onClose }: {
 							</div>
 						))}
 					</div>
-
+					</div>
 					<div className="admin-modal-footer">
 						<button 
 							type="button" 
@@ -3734,7 +3750,7 @@ function ServiceModal({ service, onSave, onClose }: {
 							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 						>
-							Cancel
+							{t.admin.services.modal.cancel}
 						</button>
 						<button 
 							type="submit" 
@@ -3742,7 +3758,7 @@ function ServiceModal({ service, onSave, onClose }: {
 							onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
 							onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
 						>
-							Save
+							{t.admin.services.modal.save}
 						</button>
 					</div>
 				</form>
