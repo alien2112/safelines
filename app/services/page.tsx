@@ -279,10 +279,13 @@ function ServiceModal({ service, onClose, cardRect }: { service: Service; onClos
       const cardTop = cardRect.top + window.scrollY;
       const cardLeft = cardRect.left;
       
-      // Different offsets for mobile and desktop
-      const isMobileView = window.innerWidth <= 768;
+      // Different offsets for mobile, tablet, and desktop
       const viewportWidth = window.innerWidth;
-      const leftOffset = isMobileView ? -20 : -50; // Smaller offset for mobile, larger for desktop
+      const isMobileView = viewportWidth <= 768;
+      const isTabletView = viewportWidth > 768 && viewportWidth <= 1024;
+      
+      // Left offsets: mobile (-20), tablet (-100), desktop (-50)
+      const leftOffset = isMobileView ? -20 : isTabletView ? -350 : -50;
       let adjustedLeft = cardLeft + leftOffset;
       
       // On mobile, ensure modal doesn't go off-screen and adjust width
@@ -296,7 +299,14 @@ function ServiceModal({ service, onClose, cardRect }: { service: Service; onClos
         const availableWidth = viewportWidth - adjustedLeft - 16;
         modalBox.style.maxWidth = `${Math.min(768, availableWidth)}px`;
         modalBox.style.width = 'auto';
+      } else if (isTabletView) {
+        // On tablet, allow larger offset but ensure modal doesn't go completely off-screen
+        const minLeft = 8; // Allow more negative positioning on tablet
+        adjustedLeft = Math.max(minLeft, adjustedLeft);
+        modalBox.style.maxWidth = '768px';
+        modalBox.style.width = '100%';
       } else {
+        // Desktop
         adjustedLeft = Math.max(16, adjustedLeft); // Ensure it doesn't go off-screen on desktop
         modalBox.style.maxWidth = '768px';
         modalBox.style.width = '100%';
@@ -524,7 +534,7 @@ function ServiceModal({ service, onClose, cardRect }: { service: Service; onClos
 
           <div className="srv-modal-right">
             <div style={{ display: 'grid', placeItems: 'center', height: 128, borderRadius: 12, border: '1px solid rgba(226,232,240,0.9)', background: '#fff', color: 'var(--brand-gold)' }}>
-              <FaBoxOpen style={{ fontSize: 24 }} />
+              {service.icon}
             </div>
           </div>
         </div>

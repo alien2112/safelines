@@ -42,9 +42,9 @@ export default function ContactPage() {
               </span>
               <h3 dir={isRTL ? 'rtl' : 'ltr'}>{t.contact.cards.phone.title}</h3>
               <p dir={isRTL ? 'rtl' : 'ltr'}>{t.contact.cards.phone.description}</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <a href="tel:+966555005350">(+966) 555005350</a>
-                <a href="tel:+966920032888">(+966) 920032888</a>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', direction: 'ltr' }}>
+                <a href="tel:+966555005350" dir="ltr">(+966) 555005350</a>
+                <a href="tel:+966920032888" dir="ltr">(+966) 920032888</a>
               </div>
             </div>
             <div className="contact-card">

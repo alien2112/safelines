@@ -63,10 +63,13 @@ export function ServicesSection() {
         const cardTop = clickedCardRect.top + window.scrollY;
         const cardLeft = clickedCardRect.left;
         
-        // Different offsets for mobile and desktop
-        const isMobileView = window.innerWidth <= 768;
+        // Different offsets for mobile, tablet, and desktop
         const viewportWidth = window.innerWidth;
-        const leftOffset = isMobileView ? -20 : -50; // Smaller offset for mobile, larger for desktop
+        const isMobileView = viewportWidth <= 768;
+        const isTabletView = viewportWidth > 768 && viewportWidth <= 1024;
+        
+        // Left offsets: mobile (-20), tablet (-350), desktop (-50)
+        const leftOffset = isMobileView ? -20 : isTabletView ? -350 : -50;
         let adjustedLeft = cardLeft + leftOffset;
         
         // On mobile, ensure modal doesn't go off-screen and adjust width
@@ -80,7 +83,14 @@ export function ServicesSection() {
           const availableWidth = viewportWidth - adjustedLeft - 16;
           modal.style.maxWidth = `${Math.min(600, availableWidth)}px`;
           modal.style.width = 'auto';
+        } else if (isTabletView) {
+          // On tablet, allow larger offset but ensure modal doesn't go completely off-screen
+          const minLeft = 8; // Allow more negative positioning on tablet
+          adjustedLeft = Math.max(minLeft, adjustedLeft);
+          modal.style.maxWidth = '600px';
+          modal.style.width = '100%';
         } else {
+          // Desktop
           adjustedLeft = Math.max(16, adjustedLeft); // Ensure it doesn't go off-screen on desktop
           modal.style.maxWidth = '600px';
           modal.style.width = '100%';

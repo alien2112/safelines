@@ -215,7 +215,7 @@ export default function ServiceDetailPage() {
       const processSteps = processRef.current.querySelectorAll('.process-step');
       
       gsap.set(processTitle, { opacity: 0, y: 50 });
-      // Reverse animation direction for RTL (Arabic) - animate from right side
+      // For RTL, animate from right side (positive x), for LTR from left side (negative x)
       gsap.set(processSteps, { opacity: 0, x: isRTL ? 100 : -100, scale: 0.9 });
 
       ScrollTrigger.create({
@@ -223,20 +223,34 @@ export default function ServiceDetailPage() {
         start: 'top 80%',
         onEnter: () => {
           gsap.to(processTitle, { opacity: 1, y: 0, duration: 1, ease: 'expo.out' });
-          // For RTL, reverse the stagger direction so steps animate from right to left
-          // Convert NodeList to Array for proper reversal
-          const stepsArray = Array.from(processSteps);
-          const orderedSteps = isRTL ? stepsArray.reverse() : stepsArray;
           
-          gsap.to(orderedSteps, {
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: 'power3.out',
-            delay: 0.2
-          });
+          // For RTL, animate from right to left (step 4 -> step 1)
+          // Convert NodeList to Array and reverse for RTL so last step animates first
+          const stepsArray = Array.from(processSteps);
+          if (isRTL) {
+            // Reverse the array so steps animate from rightmost to leftmost
+            stepsArray.reverse();
+            gsap.to(stepsArray, {
+              opacity: 1,
+              x: 0,
+              scale: 1,
+              duration: 0.8,
+              stagger: 0.15,
+              ease: 'power3.out',
+              delay: 0.2
+            });
+          } else {
+            // LTR: animate from left to right (step 1 -> step 4)
+            gsap.to(stepsArray, {
+              opacity: 1,
+              x: 0,
+              scale: 1,
+              duration: 0.8,
+              stagger: 0.15,
+              ease: 'power3.out',
+              delay: 0.2
+            });
+          }
         },
         once: true
       });

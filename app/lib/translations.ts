@@ -1282,7 +1282,7 @@ export const translations: Record<Language, Translations> = {
         ],
       },
       makingEasy: {
-        title: 'جعل المستقبل سهلاً',
+        title: 'نجعل المستقبل سهلاً',
         quote: 'نعرف مشاكلك. نعرف جمهورك المستهدف وكيف يمكنك النمو بسرعة بمساعدة الأتمتة',
         quoteAuthor: 'المؤسس المشارك في landerOS',
         jobOpenings: 'تحقق من جميع الوظائف الشاغرة',
