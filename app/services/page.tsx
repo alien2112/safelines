@@ -167,13 +167,13 @@ export default function ServicesPage() {
               className="srv-card"
             >
               {svc.image && (
-                <div style={{ width: '100%', height: '180px', marginBottom: '16px', overflow: 'hidden', borderRadius: '12px' }}>
+                <div className="srv-card-image-wrapper">
                   <Image
                     src={svc.image}
                     alt=""
                     width={400}
                     height={180}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px', maxWidth: '100%' }}
                     loading="lazy"
                   />
                 </div>
@@ -526,9 +526,6 @@ function ServiceModal({ service, onClose, cardRect }: { service: Service; onClos
               <Link href={`/services/${service.id}`} className="srv-modal-close" onClick={handleCloseWithAnimation} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }} dir={isRTL ? 'rtl' : 'ltr'}>
                 {t.home.services.page.modal.actions.viewDetails} <FaArrowRight />
               </Link>
-              <button onClick={handleCloseWithAnimation} className="srv-modal-close" dir={isRTL ? 'rtl' : 'ltr'}>
-                {t.home.services.page.modal.actions.close}
-              </button>
             </div>
           </div>
 

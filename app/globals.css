@@ -25,7 +25,7 @@
 .srv-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--brand-gold); color: var(--brand-navy); border-radius: 9999px; padding: 12px 20px; font-weight: 600; box-shadow: 0 12px 40px rgba(0,0,0,0.1); text-decoration: none; }
 .srv-cta:hover { transform: translateY(-2px); transition: transform 200ms ease; }
 
-.srv-wrap { max-width: 1120px; margin: -56px auto 0; padding: 24px; position: relative; }
+.srv-wrap { max-width: 1120px; margin: -56px auto 0; padding: 24px; position: relative; box-sizing: border-box; }
 .srv-breadcrumb { margin-bottom: 12px; font-size: 14px; color: #475569; }
 .srv-breadcrumb a { color: var(--brand-navy); text-decoration: none; }
 .srv-breadcrumb a:hover { text-decoration: underline; }
@@ -52,11 +52,11 @@
 .srv-track-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-navy); text-decoration: none; font-weight: 600; white-space: nowrap; }
 .srv-track-link:hover { color: var(--brand-gold); }
 
-.srv-grid { display: grid; gap: 24px; margin-top: 24px; }
-@media (min-width: 640px) { .srv-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-@media (min-width: 1024px) { .srv-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+.srv-grid { display: grid; gap: 24px; margin-top: 24px; justify-content: center; box-sizing: border-box; }
+@media (min-width: 640px) { .srv-grid { grid-template-columns: repeat(2, minmax(0,1fr)); max-width: 800px; margin-left: auto; margin-right: auto; } }
+@media (min-width: 1024px) { .srv-grid { grid-template-columns: repeat(3, minmax(0,1fr)); max-width: 1200px; margin-left: auto; margin-right: auto; } }
 
-.srv-card { position: relative; border-radius: 16px; background: #fff; border: 1px solid rgba(226,232,240,0.8); padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: transform 200ms ease, box-shadow 200ms ease; z-index: 1; }
+.srv-card { position: relative; border-radius: 16px; background: #fff; border: 1px solid rgba(226,232,240,0.8); padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: transform 200ms ease, box-shadow 200ms ease; z-index: 1; box-sizing: border-box; max-width: 100%; }
 .srv-card:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
 .srv-card-top { display: flex; align-items: start; gap: 16px; }
 .srv-card-top > div:last-child { flex: 1; min-width: 0; }
@@ -85,6 +85,7 @@
 .srv-card-actions { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
 .srv-card-btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 9999px; border: 1px solid rgba(11,27,59,0.2); padding: 8px 14px; font-size: 14px; color: var(--brand-navy); background: #fff; text-decoration: none; }
 .srv-card-btn:hover { border-color: var(--brand-gold); color: var(--brand-gold); }
+.srv-card-image-wrapper { width: 100%; height: 180px; margin-bottom: 16px; overflow: hidden; border-radius: 12px; box-sizing: border-box; max-width: 100%; }
 
 .srv-track { margin-top: 32px; border-radius: 16px; background: #fff; border: 1px solid rgba(226,232,240,0.8); box-shadow: 0 4px 12px rgba(0,0,0,0.04); padding: 24px; }
 .srv-track-head { display: flex; gap: 16px; align-items: center; }
@@ -139,9 +140,9 @@
 .srv-modal-tab { border-radius: 9999px; padding: 6px 12px; font-size: 14px; border: 1px solid rgba(11,27,59,0.15); color: var(--brand-navy); background: #fff; cursor: pointer; }
 .srv-modal-tab.active { background: var(--brand-navy); color: #fff; border-color: transparent; }
 .srv-modal-content { margin-top: 16px; min-height: 96px; color: #334155; }
-.srv-modal-actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
-.srv-modal-cta { display: inline-flex; align-items: center; gap: 8px; border-radius: 9999px; background: var(--brand-gold); color: var(--brand-navy); padding: 10px 16px; font-weight: 600; text-decoration: none; }
-.srv-modal-close { border-radius: 9999px; border: 1px solid rgba(226,232,240,0.9); padding: 10px 16px; background: #fff; color: #334155; cursor: pointer; }
+.srv-modal-actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; box-sizing: border-box; }
+.srv-modal-cta { display: inline-flex; align-items: center; gap: 8px; border-radius: 9999px; background: var(--brand-gold); color: var(--brand-navy); padding: 10px 16px; font-weight: 600; text-decoration: none; box-sizing: border-box; max-width: 100%; }
+.srv-modal-close { border-radius: 9999px; border: 1px solid rgba(226,232,240,0.9); padding: 10px 16px; background: #fff; color: #334155; cursor: pointer; box-sizing: border-box; max-width: 100%; }
 
 /* Mobile Responsive Styles for Services Page */
 @media (max-width: 768px) {
@@ -152,12 +153,64 @@
   .srv-filters-wrap { padding: 20px 16px; }
   .srv-tabs { flex-direction: column; align-items: stretch; gap: 16px; }
   .srv-tablist { justify-content: center; width: 100%; }
-  .srv-track-link { width: 100%; justify-content: center; padding: 12px 20px; background: var(--brand-gold); color: var(--brand-navy); border-radius: 9999px; font-weight: 600; }
+  .srv-track-link { 
+    width: 100%; 
+    justify-content: center; 
+    padding: 12px 20px; 
+    background: var(--brand-gold); 
+    color: var(--brand-navy); 
+    border-radius: 9999px; 
+    font-weight: 600; 
+    display: flex;
+    margin: 0 auto;
+    max-width: 300px;
+  }
   .srv-track-link:hover { background: #d4b53a; color: var(--brand-navy); }
   
-  .srv-wrap { padding: 20px 16px; margin-top: 0; }
-  .srv-grid { margin-top: 16px; gap: 16px; }
-  .srv-card { padding: 16px; z-index: 1; }
+  .srv-wrap { padding: 16px 12px; margin-top: 0; max-width: 100vw; box-sizing: border-box; }
+  .srv-grid { 
+    margin-top: 16px; 
+    gap: 12px; 
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .srv-card { 
+    padding: 10px; 
+    z-index: 1; 
+    border-radius: 12px; 
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .srv-card-icon { height: 36px; width: 36px; border-radius: 10px; flex-shrink: 0; }
+  .srv-card-title { font-size: 15px; word-wrap: break-word; overflow-wrap: break-word; }
+  .srv-card-desc { font-size: 12px; margin-top: 4px; word-wrap: break-word; overflow-wrap: break-word; }
+  .srv-card-top { gap: 10px; }
+  .srv-card-actions { margin-top: 10px; }
+  .srv-card-btn { padding: 6px 12px; font-size: 12px; white-space: nowrap; }
+  
+  /* Reduce image height on mobile */
+  .srv-card-image-wrapper { 
+    height: 120px !important; 
+    margin-bottom: 12px !important; 
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  .srv-card-image-wrapper img {
+    max-width: 100% !important;
+    width: 100% !important;
+    object-fit: cover;
+  }
+  
+  /* Ensure section doesn't overflow */
+  section.srv-wrap {
+    overflow-x: hidden;
+    width: 100%;
+  }
   
   /* Modal z-index increased on mobile to appear above cards */
   .srv-modal { 
@@ -179,10 +232,13 @@
     max-height: calc(100vh - 32px);
     min-height: 580px;
     overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
-  .srv-modal-left { width: 100%; }
-  .srv-modal-left h3 { font-size: 20px !important; }
-  .srv-modal-left p { font-size: 14px !important; }
+  .srv-modal-left { width: 100%; max-width: 100%; box-sizing: border-box; overflow-wrap: break-word; word-wrap: break-word; }
+  .srv-modal-left h3 { font-size: 20px !important; word-wrap: break-word; overflow-wrap: break-word; }
+  .srv-modal-left p { font-size: 14px !important; word-wrap: break-word; overflow-wrap: break-word; }
   .srv-modal-tabs { margin-top: 12px; gap: 6px; }
   .srv-modal-tab { font-size: 12px; padding: 6px 10px; }
   .srv-modal-content { 
@@ -208,17 +264,33 @@
     position: sticky;
     bottom: 0;
     background: #fff;
-    padding-top: 12px;
+    padding: 12px 0 0 0;
     border-top: 1px solid rgba(226,232,240,0.5);
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
   }
   .srv-modal-cta, .srv-modal-close { 
     width: 100%; 
+    max-width: 100%;
     justify-content: center; 
     padding: 12px 16px;
     font-size: 14px;
+    box-sizing: border-box;
+    min-width: 0;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
   }
   .srv-modal-actions a, .srv-modal-actions button {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
