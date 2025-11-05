@@ -15,6 +15,7 @@ export default function ContactPage() {
   const isRTL = language === 'ar';
   const { data: services = [], isLoading } = useServices();
   return (
+    <>
     <section className="section-contact" id="contact">
       <GSAPAnimations />
       <VideoBackground src="/2025-11-03 18-02-55.mp4" fixed zIndex={0} scale={1.2} />
@@ -107,6 +108,7 @@ export default function ContactPage() {
       </div>
     </section>
     <Footer />
+    </>
   );
 }
 
