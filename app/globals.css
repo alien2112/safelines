@@ -7848,6 +7848,42 @@ body:not(.page-loaded) .nav-outer {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+.blog-post-share-btn.copied {
+  background: #10b981;
+  color: var(--white);
+  border-color: #10b981;
+}
+
+.blog-post-share-copied-message {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
 .blog-post-sidebar {
   display: flex;
   flex-direction: column;

@@ -126,3 +126,4 @@ feat: Add mobile hamburger menu and improve login page styling
 - Add proper screen size detection and resize handling
 ```
 
+

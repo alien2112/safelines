@@ -61,7 +61,20 @@ export async function GET(req: NextRequest) {
 		// Generate ETag from the latest updatedAt
 		const etag = `"${crypto.createHash('md5').update(String(maxUpdatedAt)).digest('hex').slice(0, 16)}"`;
 		
-		// Check If-None-Match header for cache validation
+		// For admin requests, disable all caching
+		if (includeUnpublished) {
+			return new Response(JSON.stringify(results), {
+				status: 200,
+				headers: {
+					"content-type": "application/json",
+					'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+					'Pragma': 'no-cache',
+					'Expires': '0',
+				},
+			});
+		}
+		
+		// Check If-None-Match header for cache validation (only for non-admin requests)
 		const ifNoneMatch = req.headers.get('if-none-match');
 		if (ifNoneMatch === etag) {
 			return new Response(null, {
