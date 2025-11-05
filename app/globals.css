@@ -1360,12 +1360,11 @@ p {
 
 /* Back side - Content */
 .flip-card-content {
-  padding: 40px 32px 80px; /* Increased bottom padding for more scroll area */
+  padding: 40px 32px -60px;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -1563,7 +1562,7 @@ p {
   }
   
   .flip-card-content {
-    padding: 32px 24px 110px; /* Increased bottom padding for more scroll area on mobile */
+    padding: 32px 24px -10px; /* Increased bottom padding for more scroll area on mobile */
   }
   
   .flip-card-overlay {
