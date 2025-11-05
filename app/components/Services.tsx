@@ -84,10 +84,28 @@ export function ServicesSection() {
           modal.style.maxWidth = `${Math.min(600, availableWidth)}px`;
           modal.style.width = 'auto';
         } else if (isTabletView) {
-          // On tablet, allow larger offset but ensure modal doesn't go completely off-screen
+          // On tablet, allow larger offset but ensure modal doesn't go off-screen
           const minLeft = 8; // Allow more negative positioning on tablet
+          const modalMaxWidth = 600;
+          const padding = 16;
+          const maxRight = viewportWidth - padding;
+          
+          // First ensure it doesn't go off the left edge
           adjustedLeft = Math.max(minLeft, adjustedLeft);
-          modal.style.maxWidth = '600px';
+          
+          // Then ensure it doesn't go off the right edge
+          // Calculate the right edge of the modal
+          const modalRightEdge = adjustedLeft + modalMaxWidth;
+          if (modalRightEdge > maxRight) {
+            // Adjust left position to keep modal within viewport
+            adjustedLeft = maxRight - modalMaxWidth;
+            // If that makes it go off the left edge, center it or use minimum
+            adjustedLeft = Math.max(minLeft, adjustedLeft);
+          }
+          
+          // Calculate available width and set modal width accordingly
+          const availableWidth = viewportWidth - adjustedLeft - padding;
+          modal.style.maxWidth = `${Math.min(modalMaxWidth, availableWidth)}px`;
           modal.style.width = '100%';
         } else {
           // Desktop

@@ -339,10 +339,28 @@ function ServiceModal({ service, onClose, cardRect }: { service: Service; onClos
         modalBox.style.maxWidth = `${Math.min(768, availableWidth)}px`;
         modalBox.style.width = 'auto';
       } else if (isTabletView) {
-        // On tablet, allow larger offset but ensure modal doesn't go completely off-screen
+        // On tablet, allow larger offset but ensure modal doesn't go off-screen
         const minLeft = 8; // Allow more negative positioning on tablet
+        const modalMaxWidth = 768;
+        const padding = 16;
+        const maxRight = viewportWidth - padding;
+        
+        // First ensure it doesn't go off the left edge
         adjustedLeft = Math.max(minLeft, adjustedLeft);
-        modalBox.style.maxWidth = '768px';
+        
+        // Then ensure it doesn't go off the right edge
+        // Calculate the right edge of the modal
+        const modalRightEdge = adjustedLeft + modalMaxWidth;
+        if (modalRightEdge > maxRight) {
+          // Adjust left position to keep modal within viewport
+          adjustedLeft = maxRight - modalMaxWidth;
+          // If that makes it go off the left edge, center it or use minimum
+          adjustedLeft = Math.max(minLeft, adjustedLeft);
+        }
+        
+        // Calculate available width and set modal width accordingly
+        const availableWidth = viewportWidth - adjustedLeft - padding;
+        modalBox.style.maxWidth = `${Math.min(modalMaxWidth, availableWidth)}px`;
         modalBox.style.width = '100%';
       } else {
         // Desktop
