@@ -1,12 +1,17 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { gsap } from "gsap";
 import { FaArrowRight, FaBoxOpen, FaClipboardList, FaSearch, FaWarehouse } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useServices } from "../lib/swr-config";
+
+const Footer = dynamic(() => import("../components/Footer"), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
 
 type AdminService = {
   id: string;
@@ -276,6 +281,7 @@ export default function ServicesPage() {
           cardRect={clickedCardRect}
         />
       )}
+      <Footer />
     </main>
   );
 }

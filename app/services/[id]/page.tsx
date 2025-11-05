@@ -1,12 +1,17 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { FaCheckCircle, FaArrowRight, FaStar, FaUser, FaClock, FaShieldAlt, FaRocket, FaHandshake, FaHeadset, FaChartLine } from "react-icons/fa";
+
+const Footer = dynamic(() => import("../../components/Footer"), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -641,6 +646,7 @@ export default function ServiceDetailPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

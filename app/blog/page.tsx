@@ -1,11 +1,16 @@
 "use client";
 
 import React, { useEffect, useRef, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useBlogs } from '../lib/swr-config';
+
+const Footer = dynamic(() => import('../components/Footer'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -343,6 +348,7 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
@@ -9,6 +10,10 @@ import Image from 'next/image';
 import { GSAPAnimations } from '../components/GSAPAnimations';
 import VideoBackground from '../components/VideoBackground';
 import { useLanguage } from '../contexts/LanguageContext';
+
+const Footer = dynamic(() => import('../components/Footer'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -374,6 +379,7 @@ export default function JobsPage() {
           }}
         />
       )}
+      <Footer />
     </main>
   );
 }

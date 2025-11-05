@@ -1,9 +1,14 @@
 "use client";
 
+import dynamic from 'next/dynamic';
 import VideoBackground from '../components/VideoBackground';
 import { GSAPAnimations } from '../components/GSAPAnimations';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useServices } from '../lib/swr-config';
+
+const Footer = dynamic(() => import('../components/Footer'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
 
 export default function ContactPage() {
   const { language, t } = useLanguage();
@@ -101,6 +106,7 @@ export default function ContactPage() {
         </form>
       </div>
     </section>
+    <Footer />
   );
 }
 

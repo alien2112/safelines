@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLanguage } from '../contexts/LanguageContext';
 import HeroBanner from '../components/HeroBanner';
 import DynamicImage from '../components/DynamicImage';
+
+const Footer = dynamic(() => import('../components/Footer'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -391,6 +396,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }
