@@ -28,6 +28,7 @@ export function ServicesSection() {
   const isRTL = language === 'ar';
   const [selectedService, setSelectedService] = useState<AdminService | null>(null);
   const [clickedServiceIndex, setClickedServiceIndex] = useState<number | null>(null);
+  const [clickedCardRect, setClickedCardRect] = useState<DOMRect | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -46,14 +47,6 @@ export function ServicesSection() {
       _id: undefined,
     }));
   }, [servicesData]);
-  
-  // Modal position offsets in pixels (adjust these values to control modal position)
-  // Y-axis (vertical) offsets
-  const MODAL_TOP_OFFSET_MOBILE = 5000; // For phones and tablets (screens < 1024px)
-  const MODAL_TOP_OFFSET_DESKTOP = 4500; // For larger devices (screens >= 1024px)
-  // X-axis (horizontal) offsets - positive values move right, negative values move left
-  const MODAL_LEFT_OFFSET_MOBILE = 0; // For phones and tablets (screens < 1024px)
-  const MODAL_LEFT_OFFSET_DESKTOP = 600; // For larger devices (screens >= 1024px)
 
   // Enhanced modal opening animation
   useEffect(() => {
@@ -65,38 +58,41 @@ export function ServicesSection() {
       const overlay = overlayRef.current;
       const content = contentRef.current;
       
-      // Determine screen size and use appropriate pixel positions (absolute from top-left)
-      const isMobileOrTablet = window.innerWidth < 1024;
-      let topPosition = isMobileOrTablet ? MODAL_TOP_OFFSET_MOBILE : MODAL_TOP_OFFSET_DESKTOP;
-      const leftPosition = isMobileOrTablet ? MODAL_LEFT_OFFSET_MOBILE : MODAL_LEFT_OFFSET_DESKTOP;
-      
-      // For mobile only: calculate height of previous cards and add to offset
-      if (isMobileOrTablet && clickedServiceIndex !== null && servicesGridRef.current) {
-        const cards = servicesGridRef.current.querySelectorAll('.svc-card');
-        let cardsHeight = 0;
+      // Position modal over the clicked card
+      if (clickedCardRect) {
+        const cardTop = clickedCardRect.top + window.scrollY;
+        const cardLeft = clickedCardRect.left;
         
-        // Sum the height of all cards before the clicked one
-        for (let i = 0; i < clickedServiceIndex && i < cards.length; i++) {
-          const cardRect = cards[i].getBoundingClientRect();
-          cardsHeight += cardRect.height;
-          // Add gap between cards (if any)
-          if (i < clickedServiceIndex - 1) {
-            // Check computed gap (usually from grid gap)
-            const computedStyle = window.getComputedStyle(servicesGridRef.current);
-            const gap = parseFloat(computedStyle.gap) || 24; // Default 24px if gap not found
-            cardsHeight += gap;
-          }
+        // Different offsets for mobile and desktop
+        const isMobileView = window.innerWidth <= 768;
+        const viewportWidth = window.innerWidth;
+        const leftOffset = isMobileView ? -20 : -50; // Smaller offset for mobile, larger for desktop
+        let adjustedLeft = cardLeft + leftOffset;
+        
+        // On mobile, ensure modal doesn't go off-screen and adjust width
+        if (isMobileView) {
+          // Ensure modal stays within viewport with padding
+          const minLeft = 16;
+          const maxRight = viewportWidth - 16;
+          adjustedLeft = Math.max(minLeft, Math.min(adjustedLeft, maxRight - 300)); // Assume modal is at least 300px wide
+          
+          // Calculate max width to prevent overflow
+          const availableWidth = viewportWidth - adjustedLeft - 16;
+          modal.style.maxWidth = `${Math.min(600, availableWidth)}px`;
+          modal.style.width = 'auto';
+        } else {
+          adjustedLeft = Math.max(16, adjustedLeft); // Ensure it doesn't go off-screen on desktop
+          modal.style.maxWidth = '600px';
+          modal.style.width = '100%';
         }
         
-        // Add the cards height to the mobile offset
-        topPosition += cardsHeight;
+        // Apply positioning to modal
+        modal.style.position = 'absolute';
+        modal.style.left = `${adjustedLeft}px`;
+        modal.style.top = `${cardTop}px`;
+        modal.style.transform = 'none';
+        modal.style.margin = '0';
       }
-      
-      // Position modal using pixel values (with mobile calculation if applicable)
-      modal.style.position = 'fixed';
-      modal.style.top = `${topPosition}px`;
-      modal.style.left = `${leftPosition}px`;
-      modal.style.transform = 'none';
       
       // Set initial states for animation
       gsap.set(overlay, { opacity: 0, backdropFilter: 'blur(0px)' });
@@ -104,7 +100,6 @@ export function ServicesSection() {
         opacity: 0, 
         scale: 0.85, 
         filter: 'blur(10px)',
-        // Keep transform translate for centering - use left/top for positioning
         clearProps: 'x,y'
       });
       
@@ -113,7 +108,7 @@ export function ServicesSection() {
       
       // Animate overlay with blur (higher opacity)
       tl.to(overlay, {
-        opacity: 0.85,
+        opacity: 0.95,
         backdropFilter: 'blur(8px)',
         duration: 0.4,
         ease: "power3.out"
@@ -147,7 +142,7 @@ export function ServicesSection() {
       // Unlock body scroll
       document.body.style.overflow = '';
     }
-  }, [selectedService]);
+  }, [selectedService, clickedCardRect]);
 
   // Enhanced closing animation - useCallback to prevent recreation
   const handleClose = useCallback(() => {
@@ -159,15 +154,15 @@ export function ServicesSection() {
         onComplete: () => {
           setSelectedService(null);
           setClickedServiceIndex(null);
+          setClickedCardRect(null);
           document.body.style.overflow = '';
         }
       });
       
-      // Animate modal exit
+      // Animate modal exit - scale down at current position
       tl.to(modal, {
         opacity: 0,
         scale: 0.9,
-        y: '-50%',
         filter: 'blur(5px)',
         duration: 0.3,
         ease: "power3.in"
@@ -182,6 +177,7 @@ export function ServicesSection() {
       }, "-=0.2");
     } else {
       setSelectedService(null);
+      setClickedCardRect(null);
       document.body.style.overflow = '';
     }
   }, []);
@@ -297,7 +293,10 @@ export function ServicesSection() {
           {allServices.map((service, index) => (
               <button
                 key={service.id}
-                onClick={() => {
+                onClick={(e) => {
+                  const cardElement = e.currentTarget;
+                  const rect = cardElement.getBoundingClientRect();
+                  setClickedCardRect(rect);
                   setClickedServiceIndex(index);
                   setSelectedService(service);
                 }}
@@ -335,7 +334,7 @@ export function ServicesSection() {
         </div>
       </div>
 
-      {/* Centered Modal */}
+      {/* Modal positioned over clicked card */}
       {selectedService && (
         <div
           ref={overlayRef}
@@ -344,11 +343,12 @@ export function ServicesSection() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.85)',
+            background: 'rgba(0, 0, 0, 0.95)',
             backdropFilter: 'blur(8px)',
             zIndex: 9999,
             overflow: 'auto',
             willChange: 'opacity, backdrop-filter',
+            pointerEvents: 'auto',
           }}
         >
           <div
@@ -356,15 +356,16 @@ export function ServicesSection() {
             onClick={(e) => e.stopPropagation()}
             className="svc-modal-content"
             style={{
+              position: 'absolute',
               background: '#fff',
               borderRadius: '16px',
               maxWidth: '600px',
-              width: '100%',
               maxHeight: '90vh',
               overflow: 'auto',
               boxShadow: '0 24px 64px rgba(0, 0, 0, 0.3)',
               willChange: 'transform, opacity, filter',
               transformStyle: 'preserve-3d',
+              pointerEvents: 'auto',
             }}
           >
             <button

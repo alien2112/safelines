@@ -3,10 +3,12 @@
 import VideoBackground from '../components/VideoBackground';
 import { GSAPAnimations } from '../components/GSAPAnimations';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useServices } from '../lib/swr-config';
 
 export default function ContactPage() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
+  const { data: services = [], isLoading } = useServices();
   return (
     <section className="section-contact" id="contact">
       <GSAPAnimations />
@@ -73,6 +75,23 @@ export default function ContactPage() {
           <label>
             <span dir={isRTL ? 'rtl' : 'ltr'}>{t.contact.form.subject}</span>
             <input type="text" placeholder={t.contact.form.subjectPlaceholder} dir={isRTL ? 'rtl' : 'ltr'} />
+          </label>
+          <label>
+            <span dir={isRTL ? 'rtl' : 'ltr'}>الخدمة المطلوبة</span>
+            <select 
+              dir={isRTL ? 'rtl' : 'ltr'} 
+              required
+            >
+              <option value="">{isRTL ? 'اختر الخدمة المطلوبة' : 'Select Required Service'}</option>
+              {services
+                .filter((service: any) => service.visible !== false)
+                .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
+                .map((service: any) => (
+                  <option key={service._id || service.id} value={isRTL ? service.titleAr : service.title}>
+                    {isRTL ? service.titleAr : service.title}
+                  </option>
+                ))}
+            </select>
           </label>
           <label>
             <span dir={isRTL ? 'rtl' : 'ltr'}>{t.contact.form.message}</span>

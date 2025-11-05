@@ -1,7 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Navbar } from './components/Navbar';
-import { LoadingScreen } from './components/LoadingScreen';
+// import { LoadingScreen } from './components/LoadingScreen';
+import { PageLoader } from './components/PageLoader';
 import ScrollToTop from './components/ScrollToTop';
 import { Playpen_Sans } from 'next/font/google';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -28,7 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={playpen.variable}>
       <body>
-        <LoadingScreen />
+        {/* <LoadingScreen /> */}
+        <PageLoader />
         <LanguageProvider>
           <Navbar />
           {children}

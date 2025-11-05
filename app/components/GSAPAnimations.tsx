@@ -31,7 +31,6 @@ export function GSAPAnimations() {
     if (heroTag && heroHeadline && heroCta) {
       // Set initial states
       gsap.set(heroTag, { opacity: 0, y: 20 });
-      gsap.set(heroHeadline, { opacity: 0, y: 40 });
       gsap.set(heroCta, { opacity: 0, scale: 0.9 });
       
       const tl = gsap.timeline({ delay: 0.3 });
@@ -42,12 +41,6 @@ export function GSAPAnimations() {
         duration: 0.8,
         ease: 'power2.out'
       })
-      .to(heroHeadline, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'expo.out'
-      }, '-=0.4')
       .to(heroCta, {
         opacity: 1,
         scale: 1,
@@ -169,7 +162,7 @@ export function GSAPAnimations() {
     });
 
     // 3D Hover Effects for Cards with Tilt
-    const cards3D = document.querySelectorAll('.service-card, .svc-card, .testi-card, .pricing-card, .contact-card, .easy-card, .strategy-card, .comm-card-inner');
+    const cards3D = document.querySelectorAll('.svc-card, .testi-card, .pricing-card, .contact-card, .easy-card, .strategy-card, .comm-card-inner');
     
     cards3D.forEach((card) => {
       const cardEl = card as HTMLElement;
@@ -210,7 +203,7 @@ export function GSAPAnimations() {
     // Parallax Effect for Hero Section Elements
     const heroSection = document.querySelector('.hero');
     if (heroSection) {
-      const heroElements = document.querySelectorAll('.hero-headline, .hero-tag, .hero-cta');
+      const heroElements = document.querySelectorAll('.hero-tag, .hero-cta');
       heroElements.forEach((el) => {
         const trigger = ScrollTrigger.create({
           trigger: heroSection,

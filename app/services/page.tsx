@@ -48,6 +48,7 @@ export default function ServicesPage() {
   const [adminServices, setAdminServices] = useState<AdminService[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [modalService, setModalService] = useState<Service | null>(null);
+  const [clickedCardRect, setClickedCardRect] = useState<DOMRect | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
 
@@ -122,33 +123,37 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Category Tabs */}
-      <section id="catalog" className="srv-wrap">
-        <div className="srv-tabs">
-          <div className="srv-tablist">
-            {CATEGORIES.map((c) => {
-              const active = c.key === activeCategory;
-              return (
-                <button
-                  key={c.key}
-                  onClick={() => setActiveCategory(c.key)}
-                  className={`srv-tab${active ? ' active' : ''}`}
-                  aria-pressed={active}
-                >
-                  {c.label}
-                  {active && (
-                    <span className="srv-tab-underline" aria-hidden />
-                  )}
-                </button>
-              );
-            })}
+      {/* Filters and Track/Request Button - Under Banner */}
+      <section className="srv-filters-wrap">
+        <div className="srv-filters-container">
+          <div className="srv-tabs">
+            <div className="srv-tablist">
+              {CATEGORIES.map((c) => {
+                const active = c.key === activeCategory;
+                return (
+                  <button
+                    key={c.key}
+                    onClick={() => setActiveCategory(c.key)}
+                    className={`srv-tab${active ? ' active' : ''}`}
+                    aria-pressed={active}
+                  >
+                    {c.label}
+                    {active && (
+                      <span className="srv-tab-underline" aria-hidden />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <a href="#track" className="srv-track-link" dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.home.services.page.track.link} <FaArrowRight />
+            </a>
           </div>
-          <a href="#track" className="srv-track-link" dir={isRTL ? 'rtl' : 'ltr'}>
-            {t.home.services.page.track.link} <FaArrowRight />
-          </a>
         </div>
+      </section>
 
-        {/* Grid */}
+      {/* Services Grid */}
+      <section id="catalog" className="srv-wrap">
         <div ref={cardsRef} className="srv-grid">
           {filtered.length === 0 && (
             <div style={{ color: '#475569' }} dir={isRTL ? 'rtl' : 'ltr'}>
@@ -184,7 +189,14 @@ export default function ServicesPage() {
               </div>
               <div className="srv-card-actions">
                 <button
-                  onClick={() => setModalService(svc)}
+                  onClick={(e) => {
+                    const cardElement = e.currentTarget.closest('.srv-card') as HTMLElement;
+                    if (cardElement) {
+                      const rect = cardElement.getBoundingClientRect();
+                      setClickedCardRect(rect);
+                    }
+                    setModalService(svc);
+                  }}
                   className="srv-card-btn"
                   dir={isRTL ? 'rtl' : 'ltr'}
                 >
@@ -221,12 +233,21 @@ export default function ServicesPage() {
       </section>
 
       {/* Modal */}
-      {modalService && (<ServiceModal service={modalService} onClose={() => setModalService(null)} />)}
+      {modalService && (
+        <ServiceModal 
+          service={modalService} 
+          onClose={() => {
+            setModalService(null);
+            setClickedCardRect(null);
+          }}
+          cardRect={clickedCardRect}
+        />
+      )}
     </main>
   );
 }
 
-function ServiceModal({ service, onClose }: { service: Service; onClose: () => void }) {
+function ServiceModal({ service, onClose, cardRect }: { service: Service; onClose: () => void; cardRect?: DOMRect | null }) {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const [tab, setTab] = useState<string>("overview");
@@ -235,25 +256,73 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
   const modalBoxRef = useRef<HTMLDivElement | null>(null);
   const processStepsRef = useRef<HTMLDivElement | null>(null);
 
-  // Enhanced opening animation
+  // Enhanced opening animation with card positioning
   useEffect(() => {
     if (!containerRef.current || !overlayRef.current || !modalBoxRef.current) return;
     
     const overlay = overlayRef.current;
     const modalBox = modalBoxRef.current;
     const content = containerRef.current.querySelector('.srv-modal-inner');
+    const isMobileView = window.innerWidth <= 768;
     
     // Lock body scroll
     document.body.style.overflow = 'hidden';
+    
+    // Calculate modal position - open directly over the card
+    let initialX = 0;
+    let initialY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    
+    if (cardRect) {
+      // Get the card's position relative to viewport
+      const cardTop = cardRect.top + window.scrollY;
+      const cardLeft = cardRect.left;
+      
+      // Different offsets for mobile and desktop
+      const isMobileView = window.innerWidth <= 768;
+      const viewportWidth = window.innerWidth;
+      const leftOffset = isMobileView ? -20 : -50; // Smaller offset for mobile, larger for desktop
+      let adjustedLeft = cardLeft + leftOffset;
+      
+      // On mobile, ensure modal doesn't go off-screen and adjust width
+      if (isMobileView) {
+        // Ensure modal stays within viewport with padding
+        const minLeft = 16;
+        const maxRight = viewportWidth - 16;
+        adjustedLeft = Math.max(minLeft, Math.min(adjustedLeft, maxRight - 300)); // Assume modal is at least 300px wide
+        
+        // Calculate max width to prevent overflow
+        const availableWidth = viewportWidth - adjustedLeft - 16;
+        modalBox.style.maxWidth = `${Math.min(768, availableWidth)}px`;
+        modalBox.style.width = 'auto';
+      } else {
+        adjustedLeft = Math.max(16, adjustedLeft); // Ensure it doesn't go off-screen on desktop
+        modalBox.style.maxWidth = '768px';
+        modalBox.style.width = '100%';
+      }
+      
+      // Position modal at the card's location (slightly to the left)
+      initialX = adjustedLeft;
+      initialY = cardTop;
+      targetX = adjustedLeft;
+      targetY = cardTop;
+      
+      // Apply positioning to modalBox
+      modalBox.style.position = 'absolute';
+      modalBox.style.left = `${adjustedLeft}px`;
+      modalBox.style.top = `${cardTop}px`;
+      modalBox.style.transform = 'none';
+      modalBox.style.margin = '0';
+    }
     
     // Set initial states
     gsap.set(overlay, { opacity: 0, backdropFilter: 'blur(0px)' });
     gsap.set(modalBox, { 
       opacity: 0, 
-      scale: 0.85, 
+      scale: isMobileView ? 0.95 : 0.85, 
       filter: 'blur(10px)',
-      rotationY: 15,
-      y: 30
+      rotationY: isMobileView ? 0 : 15,
     });
     
     // Create timeline for coordinated animation
@@ -262,18 +331,17 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
     // Animate overlay with blur
     tl.to(overlay, {
       opacity: 1,
-      backdropFilter: 'blur(8px)',
+      backdropFilter: isMobileView ? 'blur(4px)' : 'blur(8px)',
       duration: 0.4,
       ease: "power3.out"
     });
     
-    // Animate modal entrance with more fancy effects
+    // Animate modal entrance
     tl.to(modalBox, {
       opacity: 1,
       scale: 1,
       filter: 'blur(0px)',
       rotationY: 0,
-      y: 0,
       duration: 0.6,
       ease: "expo.out"
     }, "-=0.2");
@@ -297,7 +365,7 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
     return () => {
       tl.kill();
     };
-  }, []);
+  }, [cardRect]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -329,6 +397,7 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
     if (overlayRef.current && modalBoxRef.current) {
       const overlay = overlayRef.current;
       const modalBox = modalBoxRef.current;
+      const isMobileView = window.innerWidth <= 768;
       
       const tl = gsap.timeline({
         onComplete: () => {
@@ -337,13 +406,12 @@ function ServiceModal({ service, onClose }: { service: Service; onClose: () => v
         }
       });
       
-      // Animate modal exit
+      // Animate modal exit - scale down at current position
       tl.to(modalBox, {
         opacity: 0,
-        scale: 0.9,
+        scale: isMobileView ? 0.95 : 0.9,
         filter: 'blur(5px)',
-        rotationY: -10,
-        y: -20,
+        rotationY: isMobileView ? 0 : -10,
         duration: 0.35,
         ease: "power3.in"
       });

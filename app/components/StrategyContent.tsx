@@ -49,7 +49,20 @@ export default function StrategyContentSection() {
 
         <div className="strategy-grid">
           <div className="strategy-card left" style={{ position: 'relative' }}>
-            <div className="ab-toggle" role="tablist" aria-label="Before After toggle">
+            <div className="strategy-bars">
+              {metrics.map((m) => {
+                const width = showAfter ? m.after : m.before;
+                const valueLabel = showAfter ? m.afterLabel : m.beforeLabel;
+                return (
+                  <div key={m.label} className="strategy-bar-row">
+                    <div className={`strategy-bar ${m.color}`} style={{ width: `${width}%` }}>
+                      <span className="strategy-bar-label" dir={isRTL ? 'rtl' : 'ltr'}>{m.label} {valueLabel}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="ab-toggle" role="tablist" aria-label="Before After toggle" style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
               <button
                 type="button"
                 role="tab"
@@ -70,23 +83,6 @@ export default function StrategyContentSection() {
               >
                 {t.home.strategy.after}
               </button>
-            </div>
-            <div className="strategy-bars">
-              {metrics.map((m) => {
-                const width = showAfter ? m.after : m.before;
-                const valueLabel = showAfter ? m.afterLabel : m.beforeLabel;
-                return (
-                  <div key={m.label} className="strategy-bar-row">
-                    <div className={`strategy-bar ${m.color}`} style={{ width: `${width}%` }}>
-                      <span className="strategy-bar-label" dir={isRTL ? 'rtl' : 'ltr'}>{m.label} {valueLabel}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="ab-row" dir={isRTL ? 'rtl' : 'ltr'}>
-              <span className={`ab ab-after ${showAfter ? "active" : ""}`}>{t.home.strategy.after}</span>
-              <span className={`ab ab-before ${!showAfter ? "active" : ""}`}>{t.home.strategy.before}</span>
             </div>
           </div>
           <div className="strategy-card right">

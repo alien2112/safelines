@@ -811,11 +811,11 @@ export const translations: Record<Language, Translations> = {
       community: {
         tag: 'COMMUNITY',
         title: 'Check our community',
-        subtitle: 'Participate in our Discord group to network with other individuals. Here, you\'re invited to inquire, discuss, and open support requests.',
+        subtitle: 'Participate in our Instagram group to network with other individuals. Here, you\'re invited to inquire, discuss, and open support requests.',
         socials: 'Socials :',
         discord: {
-          title: 'Discord',
-          description: 'Join our Discord and connect with social media creators, enthusiasts, share ideas, and grow together.',
+          title: 'Instagram',
+          description: 'Join our Instagram and connect with social media creators, enthusiasts, share ideas, and grow together.',
           members: '15k members',
           community: 'Community',
         },
@@ -1025,7 +1025,7 @@ export const translations: Record<Language, Translations> = {
         cards: [
           {
             title: 'الشحن البحري',
-            description: 'يتم الشحن عن طريق البحر بواسطة السفن والباخرات بأحجام مختلفة. يتم نقل البضائع في حاويات، وهي صناديق كبيرة مصنوعة من مواد قوية ومقاومة للطقس',
+            description: 'يتم الشحن البحري بواسطة السفن والبواخر بأحجام مختلفة. يتم نقل البضائع في حاويات، وهي صناديق كبيرة مصنوعة من مواد قوية ومقاومة للعوامل الجوية',
           },
           {
             title: 'الشحن البري',
@@ -1037,7 +1037,7 @@ export const translations: Record<Language, Translations> = {
           },
           {
             title: 'الشحن الجوي',
-            description: 'الشحن الجوي هو عملية نقل البضائع والسلع باستخدام الطائرات المتخصصة لهذه الأغراض.',
+            description: 'الشحن الجوي هو عملية نقل البضائع والبضائع باستخدام الطائرات المتخصصة لهذه الأغراض.',
           },
         ],
         stats: [
@@ -1303,11 +1303,11 @@ export const translations: Record<Language, Translations> = {
       community: {
         tag: 'المجتمع',
         title: 'تحقق من مجتمعنا',
-        subtitle: 'شارك في مجموعة Discord الخاصة بنا للتواصل مع أفراد آخرين. هنا، أنت مدعو للاستفسار والمناقشة وفتح طلبات الدعم.',
+        subtitle: 'شارك في مجموعة Instagram الخاصة بنا للتواصل مع أفراد آخرين. هنا، أنت مدعو للاستفسار والمناقشة وفتح طلبات الدعم.',
         socials: 'وسائل التواصل:',
         discord: {
-          title: 'Discord',
-          description: 'انضم إلى Discord الخاص بنا وتواصل مع منشئي وسائل التواصل الاجتماعي والهواة، وشارك الأفكار، ونم معًا.',
+          title: 'Instagram',
+          description: 'انضم إلى Instagram الخاص بنا وتواصل مع منشئي وسائل التواصل الاجتماعي والهواة، وشارك الأفكار، ونم معًا.',
           members: '15k عضو',
           community: 'المجتمع',
         },

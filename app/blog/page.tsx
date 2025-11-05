@@ -61,44 +61,6 @@ export default function BlogPage() {
   }, [adminPosts, language]);
 
   useEffect(() => {
-    // Split Text Animation for Hero
-    const heroTitle = document.querySelector('.blog-hero-title');
-    const heroSubtitle = document.querySelector('.blog-hero-subtitle');
-
-    if (heroTitle) {
-      const text = heroTitle.textContent || '';
-      const words = text.split(' ');
-      heroTitle.innerHTML = words
-        .map(
-          (word) =>
-            `<span class="blog-word" style="display: inline-block; overflow: hidden;"><span style="display: inline-block;">${word}</span></span>`
-        )
-        .join(' ');
-
-      const wordSpans = heroTitle.querySelectorAll('.blog-word span');
-      gsap.set(wordSpans, { y: '100%', opacity: 0 });
-
-      const tl = gsap.timeline({ delay: 0.3 });
-      tl.to(wordSpans, {
-        y: '0%',
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.08,
-        ease: 'power3.out',
-      });
-    }
-
-    if (heroSubtitle) {
-      gsap.set(heroSubtitle, { opacity: 0, y: 20 });
-      gsap.to(heroSubtitle, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        delay: 0.8,
-        ease: 'expo.out',
-      });
-    }
-
     // Blog Cards Animation with Rotation and Stagger
     const blogCards = document.querySelectorAll('.blog-card');
     const handlers: Array<{ card: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];

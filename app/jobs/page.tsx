@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LoadingScreen } from '../components/LoadingScreen';
+// import { LoadingScreen } from '../components/LoadingScreen';
 import { GSAPAnimations } from '../components/GSAPAnimations';
 import VideoBackground from '../components/VideoBackground';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -253,9 +253,9 @@ export default function JobsPage() {
     };
   }, [jobs, loading, isLoadingPage, language]);
 
-  if (isLoadingPage) {
-    return <LoadingScreen />;
-  }
+  // if (isLoadingPage) {
+  //   return <LoadingScreen />;
+  // }
 
   return (
     <main className="jobs-page" dir={isRTL ? 'rtl' : 'ltr'}>

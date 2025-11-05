@@ -38,34 +38,6 @@ export default function MakingEasySection() {
           </div>
         </div>
 
-        {/* Lower two cards */}
-        <div className="easy-mini-grid">
-          <div className="easy-mini-card">
-            <div className="mini-header" aria-label="open">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 17l10-10" />
-                <path d="M14 7h3v3" />
-              </svg>
-            </div>
-            <div className="mini-body">
-              <span className="mini-pill" />
-              <span className="mini-pill" />
-            </div>
-          </div>
-          <div className="easy-mini-card">
-            <div className="mini-header" aria-label="open">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 17l10-10" />
-                <path d="M14 7h3v3" />
-              </svg>
-            </div>
-            <div className="mini-body">
-              <span className="mini-pill" />
-              <span className="mini-pill" />
-            </div>
-          </div>
-        </div>
-
         {/* Actions row */}
         <div className="easy-actions">
           <Link className="cta-btn-secondary" href="/jobs" dir={isRTL ? 'rtl' : 'ltr'}>

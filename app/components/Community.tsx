@@ -36,7 +36,7 @@ export default function CommunitySection() {
         </div>
 
         <div className="community-grid">
-          <a className="community-card" href="https://discord.com/" target="_blank" rel="noreferrer">
+          <a className="community-card" href="https://www.instagram.com/" target="_blank" rel="noreferrer">
             <div className="comm-card-inner">
               <span className="comm-arrow" aria-hidden>
                 <svg className="arrow-a" viewBox="0 0 24 24" fill="none">
@@ -49,11 +49,11 @@ export default function CommunitySection() {
                 </svg>
               </span>
               <div className="comm-header">
-                <span className="comm-avatar" aria-hidden>
+                <span className="comm-avatar" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M7.5 7.8c2.2-1.6 6.8-1.6 9 0 .5 1.5.8 3 .8 4.5-1 1-2.1 1.7-3.3 2 .2-.7.3-1.4.3-2.1-1 .1-2 .1-3 .1s-2 0-3-.1c0 .7.1 1.4.3 2.1-1.2-.3-2.3-1-3.3-2 0-1.5.3-3 .9-4.5z" stroke="#311081" strokeWidth="1.6"/>
-                    <circle cx="9" cy="13.5" r=".8" fill="#311081"/>
-                    <circle cx="15" cy="13.5" r=".8" fill="#311081"/>
+                    <rect x="3" y="3" width="18" height="18" rx="5" stroke="#311081" strokeWidth="2" />
+                    <circle cx="12" cy="12" r="4" stroke="#311081" strokeWidth="2" />
+                    <circle cx="17.5" cy="6.5" r="1.2" fill="#311081" />
                   </svg>
                 </span>
                 <h3 className="comm-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.discord.title}</h3>

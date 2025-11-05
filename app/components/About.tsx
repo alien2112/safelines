@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Blob from './Blob';
-import { FaShip, FaTruck, FaCogs, FaPlane } from 'react-icons/fa';
+import { FaTruck, FaCogs, FaShip, FaPlane } from 'react-icons/fa';
 import { useLanguage } from '../contexts/LanguageContext';
 
 if (typeof window !== 'undefined') {
@@ -199,13 +199,17 @@ export function AboutSection() {
           <div className="about-cards-frame">
             <div className="about-cards">
             {t.home.about.cards.map((card, index) => {
-              const icons = [<FaShip key="ship" />, <FaTruck key="truck" />, <FaCogs key="cogs" />, <FaPlane key="plane" />];
+              const icons = [
+                <FaShip key="ship" />,
+                <FaTruck key="truck" />,
+                <FaCogs key="cogs" />,
+                <FaPlane key="plane" />
+              ];
               return (
                 <div key={card.title} className="service-card">
                   <div className="card-icon" aria-hidden>{icons[index]}</div>
                   <h3 dir={isRTL ? 'rtl' : 'ltr'}>{card.title}</h3>
                   <p dir={isRTL ? 'rtl' : 'ltr'}>{card.description}</p>
-                  <div className="card-pill" />
                 </div>
               );
             })}

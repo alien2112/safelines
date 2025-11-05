@@ -122,7 +122,7 @@ export default function HomePage() {
       />
       {/* Place questions (FAQ) and pricing directly under the customer section */}
       <FAQSection />
-      <PricingShippingSection />
+      {/* <PricingShippingSection /> */}
       <MakingEasySection />
       <StrategyContentSection />
       <CommunitySection />
