@@ -540,7 +540,13 @@
 .svc-chip .chip-label { font-size: 14px; font-weight: 700; color: #0F172A; }
 
 @media (max-width: 1200px) { .services-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-@media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { 
+  .services-grid { grid-template-columns: 1fr; }
+  /* Hide close button (X) on mobile for services modal */
+  .svc-modal-close-btn {
+    display: none !important;
+  }
+}
 /* Typography base */
 :root {
   /* Colors from desgin.json */

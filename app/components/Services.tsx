@@ -379,6 +379,7 @@ export function ServicesSection() {
             }}
           >
             <button
+              className="svc-modal-close-btn"
               onClick={handleClose}
               style={{
                 position: 'absolute',
