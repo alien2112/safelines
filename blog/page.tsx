@@ -1,0 +1,354 @@
+"use client";
+
+import React, { useEffect, useRef, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Link from 'next/link';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useBlogs } from '../lib/swr-config';
+
+const Footer = dynamic(() => import('../components/Footer'), {
+  loading: () => <div style={{ minHeight: '200px' }} />
+});
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+type BlogPost = {
+  id: string;
+  title: string;
+  titleAr: string;
+  excerpt: string;
+  excerptAr: string;
+  author: string;
+  date: string;
+  category: string;
+  image: string;
+  readTime: string;
+  slug?: string;
+};
+
+
+export default function BlogPage() {
+  const { language, t } = useLanguage();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const isRTL = language === 'ar';
+  
+  // Use SWR for data fetching
+  const { data: adminPosts, isLoading } = useBlogs();
+
+  // Transform and memoize blog posts
+  const blogPosts = useMemo(() => {
+    if (!adminPosts) return [];
+    
+    return adminPosts
+      .map((post: any) => ({
+        id: post._id?.toString() || post.id,
+        title: language === 'ar' ? (post.titleAr || post.title) : (post.title || ''),
+        titleAr: post.titleAr || post.title || '',
+        excerpt: language === 'ar' ? (post.excerptAr || post.excerpt) : (post.excerpt || ''),
+        excerptAr: post.excerptAr || post.excerpt || '',
+        author: 'Safe Lines Team',
+        date: new Date(post.createdAt).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }),
+        category: post.category,
+        image: post.featuredImage || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop',
+        readTime: '5 min read',
+        slug: post.slug,
+      }))
+      .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [adminPosts, language]);
+
+  useEffect(() => {
+    // Blog Cards Animation with Rotation and Stagger
+    const blogCards = document.querySelectorAll('.blog-card');
+    const handlers: Array<{ card: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
+    
+    // Magnetic Cursor Effect for Blog Cards
+    blogCards.forEach((card) => {
+      const cardEl = card as HTMLElement;
+      
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = cardEl.getBoundingClientRect();
+        const isInside =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+
+        if (isInside) {
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const deltaX = (e.clientX - centerX) * 0.15;
+          const deltaY = (e.clientY - centerY) * 0.15;
+
+          gsap.to(cardEl, {
+            x: deltaX,
+            y: deltaY,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+        }
+      };
+      
+      const handleMouseLeave = () => {
+        gsap.to(cardEl, {
+          x: 0,
+          y: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+        });
+      };
+
+      cardEl.addEventListener('mousemove', handleMouseMove);
+      cardEl.addEventListener('mouseleave', handleMouseLeave);
+      
+      handlers.push({ card: cardEl, move: handleMouseMove, leave: handleMouseLeave });
+    });
+    blogCards.forEach((card, index) => {
+      gsap.set(card, {
+        opacity: 0,
+        rotationY: -15,
+        y: 60,
+        scale: 0.9,
+      });
+
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 85%',
+        onEnter: () => {
+          gsap.to(card, {
+            opacity: 1,
+            rotationY: 0,
+            y: 0,
+            scale: 1,
+            duration: 1,
+            delay: index * 0.1,
+            ease: 'power3.out',
+          });
+        },
+        once: true,
+      });
+
+      // Parallax for blog card images
+      const cardImage = card.querySelector('.blog-card-image');
+      if (cardImage) {
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            gsap.set(cardImage, {
+              y: progress * -30,
+              scale: 1 + progress * 0.1,
+            });
+          },
+        });
+      }
+    });
+
+    // Parallax for background elements
+    const parallaxElements = document.querySelectorAll('.blog-parallax-bg');
+    parallaxElements.forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          gsap.set(el, {
+            y: progress * 50,
+            opacity: 0.3 + progress * 0.2,
+          });
+        },
+      });
+    });
+
+    // Card hover effects (lift and shadow/image zoom)
+    blogCards.forEach((card) => {
+      const cardEl = card as HTMLElement;
+      const cardImage = card.querySelector('.blog-card-image') as HTMLElement;
+      const cardShadow = card.querySelector('.blog-card-shadow') as HTMLElement;
+
+      const handleMouseEnter = () => {
+        gsap.to(cardEl, {
+          y: -8,
+          duration: 0.4,
+          ease: 'power2.out',
+        });
+        if (cardShadow) {
+          gsap.to(cardShadow, {
+            scale: 1.1,
+            opacity: 0.3,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+        }
+        if (cardImage) {
+          gsap.to(cardImage, {
+            scale: 1.1,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+        }
+      };
+
+      const handleMouseLeaveHover = () => {
+        gsap.to(cardEl, {
+          y: 0,
+          duration: 0.4,
+          ease: 'power2.out',
+        });
+        if (cardShadow) {
+          gsap.to(cardShadow, {
+            scale: 1,
+            opacity: 0.15,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+        }
+        if (cardImage) {
+          gsap.to(cardImage, {
+            scale: 1,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+        }
+      };
+
+      cardEl.addEventListener('mouseenter', handleMouseEnter);
+      cardEl.addEventListener('mouseleave', handleMouseLeaveHover);
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      handlers.forEach(({ card, move, leave }) => {
+        card.removeEventListener('mousemove', move);
+        card.removeEventListener('mouseleave', leave);
+      });
+    };
+  }, []);
+
+  return (
+    <main className="blog-page">
+      {/* Hero Section */}
+      <section className="blog-hero">
+        <div className="blog-parallax-bg" />
+        <div className="container">
+          <div className="blog-hero-content">
+            <h1 className="blog-hero-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.blog.hero.title}</h1>
+            <p className="blog-hero-subtitle" dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.blog.hero.subtitle}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Posts Grid */}
+      <section className="blog-posts-section">
+        <div className="container">
+          <div ref={cardsRef} className="blog-grid">
+            {isLoading ? (
+              // Skeleton Loaders
+              Array.from({ length: 6 }).map((_, index) => (
+                <article key={`skeleton-${index}`} className="blog-card blog-card-skeleton">
+                  <div className="blog-card-image-wrapper">
+                    <div className="blog-card-image skeleton-shimmer" />
+                    <div className="blog-card-category skeleton-shimmer" style={{ width: '80px', height: '24px', borderRadius: '9999px' }} />
+                  </div>
+                  <div className="blog-card-content">
+                    <div className="blog-card-meta">
+                      <span className="skeleton-shimmer" style={{ width: '100px', height: '14px', borderRadius: '4px' }} />
+                      <span className="skeleton-shimmer" style={{ width: '70px', height: '14px', borderRadius: '4px' }} />
+                    </div>
+                    <div className="skeleton-shimmer" style={{ width: '100%', height: '28px', borderRadius: '4px', marginBottom: '12px' }} />
+                    <div className="skeleton-shimmer" style={{ width: '100%', height: '20px', borderRadius: '4px', marginBottom: '8px' }} />
+                    <div className="skeleton-shimmer" style={{ width: '80%', height: '20px', borderRadius: '4px', marginBottom: '20px' }} />
+                    <div className="blog-card-footer">
+                      <span className="skeleton-shimmer" style={{ width: '120px', height: '14px', borderRadius: '4px' }} />
+                      <span className="skeleton-shimmer" style={{ width: '80px', height: '14px', borderRadius: '4px' }} />
+                    </div>
+                  </div>
+                </article>
+              ))
+            ) : blogPosts.length === 0 ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px' }}>
+                <p style={{ color: 'var(--gray-500)', fontSize: '18px' }}>No blog posts available yet.</p>
+              </div>
+            ) : (
+              blogPosts.map((post) => (
+              <article key={post.id} className="blog-card">
+                <div className="blog-card-shadow" />
+                <div className="blog-card-image-wrapper">
+                  <div
+                    className="blog-card-image"
+                    style={{ backgroundImage: `url(${post.image})` }}
+                  />
+                  <div className="blog-card-category">{post.category}</div>
+                </div>
+                <div className="blog-card-content">
+                  <div className="blog-card-meta">
+                    <span className="blog-card-date">{post.date}</span>
+                    <span className="blog-card-read">{post.readTime}</span>
+                  </div>
+                  <h2 className="blog-card-title">{post.title}</h2>
+                  <p className="blog-card-excerpt">{post.excerpt}</p>
+                  <div className="blog-card-footer">
+                    <span className="blog-card-author">By {post.author}</span>
+                    <Link href={`/blog/${post.slug || post.id}`} className="blog-card-link">
+                      {t.common.readMore}
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              </article>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="blog-newsletter">
+        <div className="container">
+          <div className="blog-newsletter-content">
+            <h2 className="blog-newsletter-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.blog.newsletter.title}</h2>
+            <p className="blog-newsletter-text" dir={isRTL ? 'rtl' : 'ltr'}>
+              {t.blog.newsletter.text}
+            </p>
+            <form className="blog-newsletter-form">
+              <input
+                type="email"
+                placeholder={t.blog.newsletter.emailPlaceholder}
+                className="blog-newsletter-input"
+                dir={isRTL ? 'rtl' : 'ltr'}
+              />
+              <button type="submit" className="blog-newsletter-button" dir={isRTL ? 'rtl' : 'ltr'}>
+                {t.blog.newsletter.subscribe}
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </main>
+  );
+}
