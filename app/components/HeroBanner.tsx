@@ -23,7 +23,7 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 
 	if (isLoading) {
 		return (
-			<section className="hero-banner" aria-label="Hero banner loading">
+			<section className="hero-banner">
 				<div className="banner-container">
 					{children}
 				</div>
@@ -35,21 +35,14 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 		// Fallback to default image if no banner is uploaded
 		const defaultImage = section === "hero-home" ? "/hero-banner.webp" : "/upscaled_image_high_quality.webp";
 		return (
-			<section className="hero-banner" aria-label="Hero banner">
+			<section className="hero-banner">
 				<Image
 					src={defaultImage}
-					alt={alt || "Safe Lines Customs Clearance - Professional logistics and freight services"}
+					alt={alt}
 					priority
 					fill
 					sizes="100vw"
-					quality={85}
-					placeholder="blur"
-					blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA="
-					style={{ 
-						objectFit: 'cover', 
-						objectPosition,
-					}}
-					fetchPriority="high"
+					style={{ objectFit: 'cover', objectPosition }}
 				/>
 				<div className="banner-container">
 					{children}
@@ -59,10 +52,10 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 	}
 
 	return (
-		<section className="hero-banner" aria-label="Hero banner">
+		<section className="hero-banner">
 			<Image
 				src={`/api/images/${imageId}`}
-				alt={alt || "Safe Lines Customs Clearance - Professional logistics and freight services"}
+				alt={alt}
 				fill
 				priority
 				style={{ 
@@ -70,10 +63,7 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 					objectPosition,
 				}}
 				sizes="100vw"
-				quality={85}
-				placeholder="blur"
-				blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA="
-				fetchPriority="high"
+				quality={100}
 			/>
 			<div className="banner-container">
 				{children}

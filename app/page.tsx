@@ -63,9 +63,9 @@ export default function HomePage() {
   const isRTL = language === 'ar';
 
   return (
-    <main role="main">
+    <main>
       <GSAPAnimations />
-      <HeroBanner section="hero-home" alt="Safe Lines Customs Clearance - Professional logistics and freight services" objectPosition="50% 66%">
+      <HeroBanner section="hero-home" alt="Hero Banner" objectPosition="50% 66%">
         <div className="banner-card" dir={isRTL ? 'rtl' : 'ltr'}>
           <p>{t.home.hero.trust}</p>
         </div>
@@ -74,27 +74,19 @@ export default function HomePage() {
         <div className="separator-wave-layer separator-wave-1"></div>
         <div className="separator-wave-layer separator-wave-2"></div>
       </div>
-      <section className="hero" aria-label="Main hero section">
+      <section className="hero">
         <VideoBackground src="/hero-animations.mp4" scale={1} />
         <div className="container hero-row">
           <div style={{ marginTop: 80 }}>
-            <div className="hero-tag" role="status" aria-label="Service status" dir={isRTL ? 'rtl' : 'ltr'}>
-              <span 
-                style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} 
-                aria-hidden="true"
-              />
+            <div className="hero-tag" aria-label="tag" dir={isRTL ? 'rtl' : 'ltr'}>
+              <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
               {t.home.hero.tag}
             </div>
 
             <h1 className="hero-headline" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.hero.title}</h1>
             {/* subheadline removed per request */}
 
-            <Link 
-              className="hero-cta" 
-              href="/contact" 
-              dir={isRTL ? 'rtl' : 'ltr'}
-              aria-label="Contact us to get started with our services"
-            >
+            <Link className="hero-cta" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>
               {t.home.hero.cta}
             </Link>
           </div>

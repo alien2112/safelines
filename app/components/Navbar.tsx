@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -49,40 +48,26 @@ export function Navbar() {
   const currentNavLinks = navLinks[language];
   return (
     <div className="nav-outer">
-      <nav className="nav-container" role="navigation" aria-label="Main navigation">
+      <nav className="nav-container">
         <div className="nav-left">
-          <Link href="/" className="nav-logo" aria-label="Safe Lines - Go to homepage">
-            <Image 
-              src="/safelines_logo-removebg-preview.png" 
-              alt="Safe Lines Customs Clearance logo" 
-              width={120}
-              height={40}
-              className="nav-logo-img"
-              priority
-              quality={90}
-            />
+          <Link href="/" className="nav-logo" aria-label="Go to homepage">
+            <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-logo-img" />
           </Link>
           <span className="nav-separator" aria-hidden="true"></span>
         </div>
-        <button 
-          className="nav-menu-btn" 
-          aria-label={open ? "Close menu" : "Open menu"} 
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span aria-hidden="true">
+        <button className="nav-menu-btn" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+          <span aria-hidden>
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 12h18M3 6h18" />
             </svg>
           </span>
         </button>
-        <ul className="nav-links" role="list">
-          <li><Link href="/" className="nav-link">{currentNavLinks.home}</Link></li>
-          <li><Link href="/about" className="nav-link">{currentNavLinks.about}</Link></li>
-          <li><Link href="/services" className="nav-link">{currentNavLinks.services}</Link></li>
-          <li><Link href="/blog" className="nav-link">{currentNavLinks.blog}</Link></li>
-          <li><Link href="/contact" className="nav-link">{currentNavLinks.contactUs}</Link></li>
+        <ul className="nav-links" role="menubar">
+          <li role="none"><Link role="menuitem" href="/" className="nav-link">{currentNavLinks.home}</Link></li>
+          <li role="none"><Link role="menuitem" href="/about" className="nav-link">{currentNavLinks.about}</Link></li>
+          <li role="none"><Link role="menuitem" href="/services" className="nav-link">{currentNavLinks.services}</Link></li>
+          <li role="none"><Link role="menuitem" href="/blog" className="nav-link">{currentNavLinks.blog}</Link></li>
+          <li role="none"><Link role="menuitem" href="/contact" className="nav-link">{currentNavLinks.contactUs}</Link></li>
         </ul>
         <div className="nav-right">
           <button
@@ -104,21 +89,14 @@ export function Navbar() {
         </div>
       </nav>
       {open && (
-        <div 
-          className="nav-mobile" 
-          role="dialog" 
-          aria-modal="true"
-          aria-label="Mobile navigation menu"
-          id="mobile-menu"
-          onClick={() => setOpen(false)}
-        >
+        <div className="nav-mobile" role="dialog" aria-modal="true" onClick={() => setOpen(false)}>
           <div className="nav-mobile-card" onClick={(e) => e.stopPropagation()}>
             <div className="nav-mobile-header">
               <button 
                 type="button"
                 className="nav-mobile-logo" 
                 onClick={(e) => handleMobileLinkClick(e, '/')} 
-                aria-label="Safe Lines - Go to homepage"
+                aria-label="Go to homepage"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -126,14 +104,7 @@ export function Navbar() {
                   cursor: 'pointer'
                 }}
               >
-                <Image 
-                  src="/safelines_logo-removebg-preview.png" 
-                  alt="Safe Lines Customs Clearance logo" 
-                  width={120}
-                  height={40}
-                  className="nav-mobile-logo-img"
-                  quality={90}
-                />
+                <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-mobile-logo-img" />
               </button>
               <button 
                 type="button"

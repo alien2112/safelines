@@ -110,7 +110,19 @@ export default function AdminPage() {
 	const [authError, setAuthError] = useState<string | null>(null);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const [activePanel, setActivePanel] = useState<ActivePanel>("images");
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+	// Initialize sidebar state based on screen size
+	const [sidebarOpen, setSidebarOpen] = useState(() => {
+		if (typeof window !== 'undefined') {
+			return window.innerWidth > 1024; // Open on desktop, closed on mobile/tablet
+		}
+		return true; // Default to open for SSR
+	});
+	const [isMobile, setIsMobile] = useState(() => {
+		if (typeof window !== 'undefined') {
+			return window.innerWidth <= 1024;
+		}
+		return false;
+	});
 
 	// Login refs for animations
 	const loginContainerRef = useRef<HTMLDivElement>(null);
@@ -130,6 +142,25 @@ export default function AdminPage() {
 			}
 		} catch {}
 	}, []);
+
+	// Handle screen resize for mobile detection
+	useEffect(() => {
+		const handleResize = () => {
+			const mobile = window.innerWidth <= 1024;
+			setIsMobile(mobile);
+			
+			// Update sidebar state based on screen size
+			if (!mobile && !sidebarOpen) {
+				setSidebarOpen(true); // Force open on desktop
+			}
+		};
+
+		// Initial check
+		handleResize();
+
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, [sidebarOpen]);
 
 	// Login page animations
 	useEffect(() => {
@@ -313,13 +344,25 @@ export default function AdminPage() {
 	// Dashboard
 	return (
 		<div className="admin admin-dashboard" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-			{sidebarOpen && (
+			{sidebarOpen && isMobile && (
 				<div 
 					className="admin-sidebar-overlay" 
 					onClick={() => setSidebarOpen(false)}
 					aria-label="Close sidebar"
 				/>
 			)}
+			
+			{/* Mobile Hamburger Menu */}
+			<button
+				className={`admin-hamburger-menu ${sidebarOpen ? 'active' : ''}`}
+				onClick={() => setSidebarOpen(!sidebarOpen)}
+				aria-label={sidebarOpen ? 'Close menu' : 'Open menu'}
+			>
+				<span className="hamburger-line"></span>
+				<span className="hamburger-line"></span>
+				<span className="hamburger-line"></span>
+			</button>
+			
 			<AdminSidebar 
 				ref={sidebarRef}
 				activePanel={activePanel}
@@ -329,17 +372,6 @@ export default function AdminPage() {
 				setOpen={setSidebarOpen}
 			/>
 			<div className="admin-dashboard-content" ref={dashboardRef}>
-				<button
-					className="admin-mobile-menu-toggle"
-					onClick={() => setSidebarOpen(!sidebarOpen)}
-					aria-label={t.admin.sidebar.toggleSidebar}
-				>
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-						<line x1="3" y1="6" x2="21" y2="6"/>
-						<line x1="3" y1="12" x2="21" y2="12"/>
-						<line x1="3" y1="18" x2="21" y2="18"/>
-					</svg>
-				</button>
 				{activePanel === "images" && <ImagesPanel />}
 				{activePanel === "blog" && <BlogPanel />}
 				{activePanel === "services" && <ServicesPanel />}
@@ -388,22 +420,57 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 		}
 	}, []);
 
+	// Ensure sidebar is always open on desktop
+	useEffect(() => {
+		const handleResize = () => {
+			if (typeof window !== 'undefined') {
+				if (window.innerWidth > 1024) {
+					// Force sidebar to be open on desktop
+					if (!open) {
+						setOpen(true);
+					}
+				} else {
+					// Clear GSAP properties on mobile
+					if (sidebarRef.current) {
+						gsap.set(sidebarRef.current, { clearProps: "all" });
+					}
+				}
+			}
+		};
+
+		// Check on mount
+		handleResize();
+
+		// Add resize listener
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, [open, setOpen]);
+
 	// Set initial state for labels after refs are ready
 	useEffect(() => {
+		// Skip GSAP setup on mobile/tablet - CSS handles it
+		if (typeof window !== 'undefined' && window.innerWidth <= 1024) {
+			// Clear any GSAP transforms on mobile
+			if (sidebarRef.current) {
+				gsap.set(sidebarRef.current, { clearProps: "all" });
+			}
+			return;
+		}
+		
 		// Use a small delay to ensure refs are populated
 		const timer = setTimeout(() => {
 			if (logoTextRef.current) {
-				gsap.set(logoTextRef.current, { opacity: open ? 1 : 0, x: open ? 0 : -15, scale: open ? 1 : 0.9 });
+				gsap.set(logoTextRef.current, { opacity: 1, x: 0, scale: 1 });
 			}
 			const labels = Array.from(labelRefs.current.values());
 			labels.forEach(label => {
 				if (label) {
-					gsap.set(label, { opacity: open ? 1 : 0, x: open ? 0 : -15, scale: open ? 1 : 0.9 });
+					gsap.set(label, { opacity: 1, x: 0, scale: 1 });
 				}
 			});
-			// Set initial sidebar width
+			// Set initial sidebar width (only on desktop - always 260px)
 			if (sidebarRef.current) {
-				gsap.set(sidebarRef.current, { width: open ? 260 : 80 });
+				gsap.set(sidebarRef.current, { width: 260, clearProps: "transform" });
 			}
 		}, 50);
 		
@@ -412,6 +479,12 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 
 	// Enhanced sidebar collapse/expand animation
 	useEffect(() => {
+		// Skip animations on mobile/tablet - CSS handles it
+		if (typeof window !== 'undefined' && window.innerWidth <= 1024) {
+			previousOpenState.current = open;
+			return;
+		}
+		
 		// Skip if this is the initial render
 		if (previousOpenState.current === open) {
 			previousOpenState.current = open;
@@ -544,6 +617,10 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 
 	// Handle toggle with animation
 	const handleToggle = () => {
+		// Only allow toggle on mobile/tablet (max-width: 1024px)
+		if (typeof window !== 'undefined' && window.innerWidth > 1024) {
+			return; // Prevent toggle on desktop
+		}
 		setOpen(!open);
 	};
 
@@ -606,6 +683,11 @@ const AdminSidebar = React.forwardRef<HTMLDivElement, {
 								});
 							}
 							setActivePanel(item.id);
+							
+							// Close sidebar on mobile after selecting
+							if (typeof window !== 'undefined' && window.innerWidth <= 1024) {
+								setOpen(false);
+							}
 						}}
 						data-sidebar-item={item.id}
 						onMouseEnter={(e) => {
