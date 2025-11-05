@@ -1,10 +1,12 @@
 "use client";
 import Blob from './Blob';
 import { useLanguage } from '../contexts/LanguageContext';
+import React from 'react';
 
 export function ProjectsSection() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
+  const [flipped, setFlipped] = React.useState<Record<string, boolean>>({});
   
   // Create projects from the two main services
   const projects = [
@@ -37,7 +39,20 @@ export function ProjectsSection() {
 
         <div className="projects-flip-grid">
           {projects.map(project => (
-            <div key={project.id} className="project-flip-card">
+            <div 
+              key={project.id} 
+              className={`project-flip-card project-${project.id} ${flipped[project.id] ? 'is-flipped' : ''}`}
+              onClick={() => setFlipped(prev => ({ ...prev, [project.id]: !prev[project.id] }))}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setFlipped(prev => ({ ...prev, [project.id]: !prev[project.id] }));
+                }
+              }}
+              aria-label={project.name}
+            >
               <div className="flip-card-inner">
                 {/* Front side - Image */}
                 <div className="flip-card-front">

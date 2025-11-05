@@ -83,7 +83,7 @@ export default function HomePage() {
               {t.home.hero.tag}
             </div>
 
-            <h1 className="hero-headline" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.hero.title}</h1>
+            <h1 className="hero-headline" dir={isRTL ? 'rtl' : 'ltr'} style={{ whiteSpace: 'nowrap' }}>{t.home.hero.title}</h1>
             {/* subheadline removed per request */}
 
             <Link className="hero-cta" href="/contact" dir={isRTL ? 'rtl' : 'ltr'}>

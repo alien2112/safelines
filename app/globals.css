@@ -448,7 +448,25 @@
 .svc-mini-card-back {
   transform: rotateY(180deg);
 }
-.svc-card .svc-title { margin: 0 0 8px; font-size: 18px; color: var(--gray-900); }
+.svc-card .svc-title { 
+  margin: 0 0 8px; 
+  font-size: 18px; 
+  color: var(--gray-900); 
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* two lines on desktop/tablet */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.svc-card .svc-desc { margin: 0; color: var(--gray-700); }
+
+@media (max-width: 768px) {
+  .svc-card .svc-title {
+    -webkit-line-clamp: 1; /* one line on mobile */
+    white-space: nowrap;
+  }
+}
 .svc-card .svc-desc { margin: 0; color: var(--gray-700); }
 
 /* Service Card Image */
@@ -1256,8 +1274,14 @@ p {
 /* Flip Card Container */
 .project-flip-card {
   perspective: 1000px;
-  height: 500px;
+  height: 600px;
   cursor: pointer;
+}
+
+/* Per-card adjustments for more scroll area */
+/* Customs: more space on desktop */
+.project-flip-card.project-customs {
+  height: 600px;
 }
 
 .flip-card-inner {
@@ -1270,6 +1294,10 @@ p {
 }
 
 .project-flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+/* Ensure accessibility on touch and keyboard: flip when class present */
+.project-flip-card.is-flipped .flip-card-inner {
   transform: rotateY(180deg);
 }
 
@@ -1332,11 +1360,13 @@ p {
 
 /* Back side - Content */
 .flip-card-content {
-  padding: 40px 32px;
+  padding: 40px 32px 80px; /* Increased bottom padding for more scroll area */
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .flip-card-back-title {
@@ -1354,6 +1384,9 @@ p {
   flex-direction: column;
   gap: 20px;
   flex: 1;
+  /* Add min-height to ensure more scroll area for content */
+  min-height: calc(100% + 100px);
+  padding-bottom: 40px;
 }
 
 .flip-card-service-item {
@@ -1503,13 +1536,22 @@ p {
   }
   
   .project-flip-card {
-    height: 450px;
+    height: 560px;
   }
 }
 
 @media (max-width: 768px) {
   .project-flip-card {
-    height: 400px;
+    height: 540px;
+  }
+
+  /* Transportation: more space on mobile */
+  .project-flip-card.project-transportation {
+    height: 600px;
+  }
+  /* Customs: even more space on mobile */
+  .project-flip-card.project-customs {
+    height: 600px;
   }
   
   .flip-card-title {
@@ -1521,7 +1563,7 @@ p {
   }
   
   .flip-card-content {
-    padding: 32px 24px;
+    padding: 32px 24px 110px; /* Increased bottom padding for more scroll area on mobile */
   }
   
   .flip-card-overlay {

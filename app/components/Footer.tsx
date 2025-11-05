@@ -344,18 +344,29 @@ export default function Footer() {
               <h4 className="footer-section-title">{t.home.footer.social.title}</h4>
               <div className="footer-social" aria-label="Social media links">
                 <a 
-                  href="https://twitter.com" 
+                  href="https://www.tiktok.com/@safe.lines.cc?_r=1&_t=ZS-919CqwjHVxv" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="footer-social-icon"
-                  aria-label="Twitter"
+                  aria-label="TikTok"
                 >
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 4l16 16M20 4L4 20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                    <path d="M14 3c.6 2.5 2.4 4.1 5 4.5v3.1c-1.7-.1-3.2-.7-4.6-1.7v6.2c0 3-2.3 5.4-5.3 5.6-3.2.2-5.9-2.4-5.9-5.6 0-3.2 2.6-5.6 5.8-5.6.4 0 .8 0 1.2.1v3a3 3 0 0 0-1.2-.2c-1.5 0-2.8 1.2-2.8 2.7s1.3 2.7 2.8 2.7 2.8-1.2 2.8-2.7V3h1.2z" fill="currentColor"/>
                   </svg>
                 </a>
                 <a 
-                  href="https://instagram.com" 
+                  href="https://www.facebook.com/share/1QGEmUCJEo/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="footer-social-icon"
+                  aria-label="Facebook"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 9h2.5V6.5H14c-2 0-3 1.3-3 3V12H8v2.5h3V21h2.5v-6.5H17V12h-3V9z" fill="currentColor"/>
+                  </svg>
+                </a>
+                <a 
+                  href="https://www.instagram.com/safelinescc?utm_source=qr&igsh=eXowdHc1aXRuNzV1" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="footer-social-icon"
@@ -368,27 +379,25 @@ export default function Footer() {
                   </svg>
                 </a>
                 <a 
-                  href="https://facebook.com" 
+                  href="https://x.com/Safelinescc?t=b38UQ50-9o1wZM18Kg3-jQ&s=09" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="footer-social-icon"
-                  aria-label="Facebook"
+                  aria-label="X (Twitter)"
                 >
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 9h2.5V6.5H14c-2 0-3 1.3-3 3V12H8v2.5h3V21h2.5v-6.5H17V12h-3V9z" fill="currentColor"/>
+                    <path d="M4 4l16 16M20 4L4 20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
                   </svg>
                 </a>
                 <a 
-                  href="https://linkedin.com" 
+                  href="https://www.snapchat.com/@lkhtwtlamnhlltk?share_id=NPjZZrZHtaw&locale=ar-SA" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="footer-social-icon"
-                  aria-label="LinkedIn"
+                  aria-label="Snapchat"
                 >
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                    <rect x="2" y="9" width="4" height="12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                    <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 3c3 0 5 2.2 5 5.2 0 1.9 1.2 3.6 3 4.1-.4 1.2-1.7 1.9-3 1.9-.3 1.2-1.6 2.4-3.2 2.7-1 .2-1.7.4-1.8.9-.1.6.6 1.1 2.3 1.3-.6.8-1.8 1.3-3.3 1.3s-2.7-.5-3.3-1.3c1.7-.2 2.4-.7 2.3-1.3-.1-.5-.8-.7-1.8-.9-1.6-.3-2.9-1.5-3.2-2.7-1.3 0-2.6-.7-3-1.9 1.8-.5 3-2.2 3-4.1C7 5.2 9 3 12 3z" fill="currentColor"/>
                   </svg>
                 </a>
               </div>

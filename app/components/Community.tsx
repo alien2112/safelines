@@ -124,17 +124,7 @@ export default function CommunitySection() {
               </svg>
             </span>
           </a>
-          <span className="social-sep" />
-          <a className="social-pill" href="https://dribbble.com/" target="_blank" rel="noreferrer" aria-label="Dribbble">
-            <span className="social-icon">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-                <circle cx="12" cy="12" r="9" stroke="#311081" strokeWidth="2" />
-                <path d="M5 9c3 .5 9 .3 14-3" stroke="#311081" strokeWidth="2" />
-                <path d="M6 17c3-5 6-7 12-6" stroke="#311081" strokeWidth="2" />
-                <path d="M9 4c3 3 6 9 6 16" stroke="#311081" strokeWidth="2" />
-              </svg>
-            </span>
-          </a>
+          
         </div>
       </div>
     </section>
