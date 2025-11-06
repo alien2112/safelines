@@ -1899,6 +1899,9 @@ p {
   padding: 96px 0;
   transition: background-color 0.3s ease;
 }
+.section-title-row { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.section-title-row .side-line { flex: 1; height: 2px; background: rgba(0,0,0,0.18); border-radius: 1px; max-width: 220px; }
+.section-about .section-title-row .side-line { height: 3px; background: #0E00A6; box-shadow: 0 0 0 3px rgba(14, 0, 166, 0.08); }
 .about-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
 .about-title { margin: 0 0 16px; }
 .about-subtext { max-width: 650px; }
@@ -2001,33 +2004,19 @@ p {
 /* About header with side blue lines */
 .about-header { text-align: center; margin-bottom: 24px; position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .about-header .hero-tag { margin-left: auto; margin-right: auto; }
-.about-header::before,
-.about-header::after {
-  content: "";
-  position: absolute;
-  top: 50%; /* align with middle of the heading */
-  transform: translateY(-50%);
-  height: 3px; /* thicker */
-  width: clamp(120px, 20vw, 220px);
-  background: #0E00A6; /* darker blue per request */
-  box-shadow: 0 0 0 3px rgba(14, 0, 166, 0.08);
-}
-.about-header::before { left: 0; }
-.about-header::after { right: 0; }
 .about-title { margin: 0 0 8px; }
 .about-subtext { color: var(--gray-500); margin: 0; }
 
 /* Hide decorative lines on mobile */
 @media (max-width: 768px) {
-  .about-header::before,
-  .about-header::after {
-    display: none !important;
-  }
   .strategy-side,
   .community-side {
     display: none !important;
   }
   .testimonials-side-line {
+    display: none !important;
+  }
+  .section-title-row .side-line {
     display: none !important;
   }
 }
@@ -3435,7 +3424,6 @@ html[dir="rtl"] body {
 .community-header { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 20px; }
 .community-title { margin: 0; text-align: center; }
 .community-sub { max-width: 860px; margin: 8px auto 0; text-align: center; }
-.community-side { flex: 1; height: 2px; background: rgba(0,0,0,0.18); border-radius: 1px; max-width: 220px; }
 .community-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .community-card { text-decoration: none; color: inherit; }
 .comm-card-inner { position: relative; background: linear-gradient(180deg, rgba(248,250,252,0.85) 0%, rgba(255,255,255,0.98) 100%); border: 1px solid rgba(226,232,240,0.9); border-radius: 16px; box-shadow: 0 12px 30px rgba(2,8,23,0.08); padding: 22px; display: flex; flex-direction: column; gap: 12px; }

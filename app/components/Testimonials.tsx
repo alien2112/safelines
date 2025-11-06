@@ -58,17 +58,18 @@ export function TestimonialsSection({
       />
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-        {/* Section header with black low-opacity side lines (like About) */}
+        {/* Section header with side lines aligned to title */}
         <div style={{ textAlign: 'center', marginBottom: 40, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <div className="hero-tag" aria-label="tag" style={{ marginBottom: 16 }} dir={isRTL ? 'rtl' : 'ltr'}>
             <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
             {t.home.testimonials.tag}
           </div>
-          <h2 style={{ margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>{t.home.testimonials.title}</h2>
+          <div className="section-title-row">
+            <span className="side-line" aria-hidden="true" />
+            <h2 style={{ margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>{t.home.testimonials.title}</h2>
+            <span className="side-line" aria-hidden="true" />
+          </div>
           <p style={{ maxWidth: 820, margin: '8px auto 0' }} dir={isRTL ? 'rtl' : 'ltr'}>{t.home.testimonials.subtitle}</p>
-          {/* side lines */}
-          <span className="testimonials-side-line testimonials-side-line-left" style={{ position: 'absolute', top: '50%', left: 0, width: 'clamp(120px, 20vw, 220px)', height: 2, background: 'rgba(0,0,0,0.25)', transform: 'translateY(-50%)', borderRadius: 1 }} />
-          <span className="testimonials-side-line testimonials-side-line-right" style={{ position: 'absolute', top: '50%', right: 0, width: 'clamp(120px, 20vw, 220px)', height: 2, background: 'rgba(0,0,0,0.25)', transform: 'translateY(-50%)', borderRadius: 1 }} />
         </div>
 
         {/* Cards grid (responsive) */}
