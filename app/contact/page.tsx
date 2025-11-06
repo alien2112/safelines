@@ -154,12 +154,12 @@ export default function ContactPage() {
             <input type="text" placeholder={t.contact.form.subjectPlaceholder} dir={isRTL ? 'rtl' : 'ltr'} />
           </label>
           <label>
-            <span dir={isRTL ? 'rtl' : 'ltr'}>الخدمة المطلوبة</span>
+            <span dir={isRTL ? 'rtl' : 'ltr'}>{t.contact.form.requiredService}</span>
             <select 
               dir={isRTL ? 'rtl' : 'ltr'} 
               required
             >
-              <option value="">{isRTL ? 'اختر الخدمة المطلوبة' : 'Select Required Service'}</option>
+              <option value="">{t.contact.form.requiredServicePlaceholder}</option>
               {services
                 .filter((service: any) => service.visible !== false)
                 .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))

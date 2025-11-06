@@ -83,6 +83,8 @@ export interface Translations {
       emailPlaceholder: string;
       subject: string;
       subjectPlaceholder: string;
+      requiredService: string;
+      requiredServicePlaceholder: string;
       message: string;
       messagePlaceholder: string;
       submit: string;
@@ -602,6 +604,8 @@ export const translations: Record<Language, Translations> = {
         emailPlaceholder: 'example@email.com',
         subject: 'Subject',
         subjectPlaceholder: 'Inquiry subject',
+        requiredService: 'Required Service',
+        requiredServicePlaceholder: 'Select Required Service',
         message: 'Message',
         messagePlaceholder: 'Write your message here...',
         submit: 'Send',
@@ -1229,6 +1233,8 @@ export const translations: Record<Language, Translations> = {
         emailPlaceholder: 'example@email.com',
         subject: 'موضوع الرسالة',
         subjectPlaceholder: 'موضوع الاستفسار',
+        requiredService: 'الخدمة المطلوبة',
+        requiredServicePlaceholder: 'اختر الخدمة المطلوبة',
         message: 'الرسالة',
         messagePlaceholder: 'اكتب رسالتك هنا...',
         submit: 'إرسال',
