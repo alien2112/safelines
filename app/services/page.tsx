@@ -227,6 +227,21 @@ export default function ServicesPage() {
               <div className="srv-card-actions">
                 <button
                   onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const cardElement = e.currentTarget.closest('.srv-card') as HTMLElement;
+                    if (cardElement) {
+                      const rect = cardElement.getBoundingClientRect();
+                      setClickedCardRect(rect);
+                    }
+                    setModalService(svc);
+                  }}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const cardElement = e.currentTarget.closest('.srv-card') as HTMLElement;
                     if (cardElement) {
                       const rect = cardElement.getBoundingClientRect();
@@ -236,6 +251,7 @@ export default function ServicesPage() {
                   }}
                   className="srv-card-btn"
                   dir={isRTL ? 'rtl' : 'ltr'}
+                  type="button"
                 >
                   {t.home.services.page.learnMore} <FaArrowRight />
                 </button>

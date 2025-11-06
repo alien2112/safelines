@@ -58,16 +58,16 @@ export function TestimonialsSection({
       />
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-        {/* Section header with side lines aligned to title */}
-        <div style={{ textAlign: 'center', marginBottom: 40, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        {/* Section header with black low-opacity side lines (like About) */}
+        <div className="testimonials-header" style={{ textAlign: 'center', marginBottom: 40, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <div className="hero-tag" aria-label="tag" style={{ marginBottom: 16 }} dir={isRTL ? 'rtl' : 'ltr'}>
             <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
             {t.home.testimonials.tag}
           </div>
-          <div className="section-title-row">
-            <span className="side-line" aria-hidden="true" />
+          <div className="testimonials-title-wrapper">
+            <span className="testimonials-side-line testimonials-side-line-left" />
             <h2 style={{ margin: 0 }} dir={isRTL ? 'rtl' : 'ltr'}>{t.home.testimonials.title}</h2>
-            <span className="side-line" aria-hidden="true" />
+            <span className="testimonials-side-line testimonials-side-line-right" />
           </div>
           <p style={{ maxWidth: 820, margin: '8px auto 0' }} dir={isRTL ? 'rtl' : 'ltr'}>{t.home.testimonials.subtitle}</p>
         </div>

@@ -174,10 +174,10 @@ export function AboutSection() {
             <span style={{ width: 8, height: 8, background: 'var(--color-primary)', borderRadius: 9999, display: 'inline-block' }} />
             {t.home.about.tag}
           </div>
-          <div className="section-title-row">
-            <span className="side-line" aria-hidden="true" />
+          <div className="about-title-wrapper">
+            <span className="about-side-line about-side-line-left" />
             <h2 className="about-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.about.title}</h2>
-            <span className="side-line" aria-hidden="true" />
+            <span className="about-side-line about-side-line-right" />
           </div>
           <p className="about-subtext" dir={isRTL ? 'rtl' : 'ltr'}>
             {t.home.about.subtitle}

@@ -26,13 +26,15 @@ export default function CommunitySection() {
       />
       <div className="container">
         <div className="community-header">
-          <div className="hero-tag" aria-label="tag" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.tag}</div>
-          <div className="section-title-row">
-            <span className="side-line" aria-hidden="true" />
-            <h2 className="community-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.title}</h2>
-            <span className="side-line" aria-hidden="true" />
+          <div className="community-content">
+            <div className="hero-tag" aria-label="tag" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.tag}</div>
+            <div className="community-title-wrapper">
+              <span className="community-side left" />
+              <h2 className="community-title" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.title}</h2>
+              <span className="community-side right" />
+            </div>
+            <p className="community-sub" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.subtitle}</p>
           </div>
-          <p className="community-sub" dir={isRTL ? 'rtl' : 'ltr'}>{t.home.community.subtitle}</p>
         </div>
 
         <div className="community-grid">
