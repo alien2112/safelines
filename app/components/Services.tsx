@@ -423,7 +423,7 @@ export function ServicesSection() {
                 e.currentTarget.style.background = 'transparent';
                 gsap.to(e.currentTarget, { scale: 1, rotation: 0, duration: 0.2, ease: "power2.out" });
               }}
-              aria-label="Close modal"
+              aria-label={t.home.services.page.modal.actions.close}
             >
               <FaTimes size={20} />
             </button>
@@ -469,14 +469,14 @@ export function ServicesSection() {
                   className="srv-modal-cta"
                   style={{ textDecoration: 'none' }}
                 >
-                  Request this Service
+                  {t.home.services.page.modal.actions.request}
                 </Link>
                 <Link
                   href={`/services/${selectedService.slug || selectedService.id}`}
                   className="srv-modal-close"
                   style={{ textDecoration: 'none', display: 'inline-block' }}
                 >
-                  View Full Details
+                  {t.home.services.page.modal.actions.viewDetails}
                 </Link>
               </div>
             </div>

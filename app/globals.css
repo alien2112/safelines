@@ -82,8 +82,8 @@
   -webkit-box-orient: vertical;
   line-height: 1.5;
 }
-.srv-card-actions { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
-.srv-card-btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 9999px; border: 1px solid rgba(11,27,59,0.2); padding: 8px 14px; font-size: 14px; color: var(--brand-navy); background: #fff; text-decoration: none; }
+.srv-card-actions { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+.srv-card-btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 9999px; border: 1px solid rgba(11,27,59,0.2); padding: 8px 14px; font-size: 14px; color: var(--brand-navy); background: #fff; text-decoration: none; position: relative; z-index: 3; pointer-events: auto; touch-action: manipulation; }
 .srv-card-btn:hover { border-color: var(--brand-gold); color: var(--brand-gold); }
 .srv-card-image-wrapper { width: 100%; height: 180px; margin-bottom: 16px; overflow: hidden; border-radius: 12px; box-sizing: border-box; max-width: 100%; }
 
@@ -201,8 +201,9 @@
   .srv-card-title { font-size: 15px; word-wrap: break-word; overflow-wrap: break-word; }
   .srv-card-desc { font-size: 12px; margin-top: 4px; word-wrap: break-word; overflow-wrap: break-word; }
   .srv-card-top { gap: 10px; }
-  .srv-card-actions { margin-top: 10px; }
-  .srv-card-btn { padding: 6px 12px; font-size: 12px; white-space: nowrap; }
+  .srv-card-actions { margin-top: 10px; position: relative; z-index: 2; }
+  .srv-card-btn { padding: 6px 12px; font-size: 12px; white-space: nowrap; position: relative; z-index: 3; pointer-events: auto; touch-action: manipulation; }
+  .srv-grid { position: relative; z-index: 1; }
   
   /* Reduce image height on mobile */
   .srv-card-image-wrapper { 
