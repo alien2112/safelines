@@ -3352,7 +3352,7 @@ html[dir='rtl'] .scroll-to-top-btn {
 }
 .cta-btn-secondary {
   background: #FFFFFF;
-  color: var(--color-primary);
+  color: #1D4ED8; /* Darker blue for better contrast (4.5:1 ratio) */
   box-shadow:
     0 10px 20px rgba(59, 130, 246, 0.15), /* drop */
     inset 0 1px 0 rgba(255,255,255,0.1), /* inner highlight */

@@ -51,7 +51,8 @@ export function ProjectsSection() {
                   setFlipped(prev => ({ ...prev, [project.id]: !prev[project.id] }));
                 }
               }}
-              aria-label={project.name}
+              aria-label={`${project.name} - ${flipped[project.id] ? 'Show image' : 'Show details'}`}
+              aria-pressed={flipped[project.id]}
             >
               <div className="flip-card-inner">
                 {/* Front side - Image */}

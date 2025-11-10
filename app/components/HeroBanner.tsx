@@ -43,6 +43,9 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 					fill
 					sizes="100vw"
 					style={{ objectFit: 'cover', objectPosition }}
+					quality={85}
+					loading="eager"
+					fetchPriority="high"
 				/>
 				<div className="banner-container">
 					{children}
@@ -63,7 +66,9 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 					objectPosition,
 				}}
 				sizes="100vw"
-				quality={100}
+				quality={85}
+				loading="eager"
+				fetchPriority="high"
 			/>
 			<div className="banner-container">
 				{children}

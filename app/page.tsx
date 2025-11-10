@@ -53,9 +53,10 @@ const Footer = dynamic(() => import('./components/Footer'), {
   loading: () => <div style={{ minHeight: '200px' }} />
 });
 
-// GSAP animations loaded without SSR
+// GSAP animations loaded without SSR and with delay for better initial load
 const GSAPAnimations = dynamic(() => import('./components/GSAPAnimations').then(mod => ({ default: mod.GSAPAnimations })), {
-  ssr: false
+  ssr: false,
+  loading: () => null
 });
 
 export default function HomePage() {

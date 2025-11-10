@@ -949,7 +949,7 @@ export const translations: Record<Language, Translations> = {
           { text: '10k+ people trust us' },
         ],
         actions: {
-          more: 'MORE',
+          more: 'Learn More',
           contact: 'Contact Sales Now',
         },
       },

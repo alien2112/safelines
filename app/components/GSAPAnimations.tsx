@@ -161,38 +161,64 @@ export function GSAPAnimations() {
       }
     });
 
-    // 3D Hover Effects for Cards with Tilt
+    // 3D Hover Effects for Cards with Tilt - Optimized to reduce forced reflows
     const cards3D = document.querySelectorAll('.svc-card, .testi-card, .pricing-card, .contact-card, .easy-card, .strategy-card, .comm-card-inner');
     
     cards3D.forEach((card) => {
       const cardEl = card as HTMLElement;
+      let cachedRect: DOMRect | null = null;
+      let rafId: number | null = null;
+      
+      const updateCachedRect = () => {
+        cachedRect = cardEl.getBoundingClientRect();
+      };
+      
+      // Cache rect on mouseenter to avoid repeated getBoundingClientRect calls
+      cardEl.addEventListener('mouseenter', updateCachedRect);
       
       const handleMouseMove = (e: MouseEvent) => {
-        const rect = cardEl.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        if (!cachedRect) return;
         
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
+        // Cancel previous animation frame if still pending
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
         
-        const rotateX = (y - centerY) / 15;
-        const rotateY = (centerX - x) / 15;
-        
-        gsap.to(cardEl, {
-          rotationX: rotateX,
-          rotationY: rotateY,
-          transformPerspective: 1000,
-          duration: 0.3,
-          ease: 'power2.out'
+        // Use RAF to batch DOM reads/writes
+        rafId = requestAnimationFrame(() => {
+          const x = e.clientX - cachedRect!.left;
+          const y = e.clientY - cachedRect!.top;
+          
+          const centerX = cachedRect!.width / 2;
+          const centerY = cachedRect!.height / 2;
+          
+          const rotateX = (y - centerY) / 15;
+          const rotateY = (centerX - x) / 15;
+          
+          gsap.to(cardEl, {
+            rotationX: rotateX,
+            rotationY: rotateY,
+            transformPerspective: 1000,
+            duration: 0.3,
+            ease: 'power2.out',
+            force3D: true // Force GPU acceleration
+          });
+          rafId = null;
         });
       };
       
       const handleMouseLeave = () => {
+        cachedRect = null;
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
         gsap.to(cardEl, {
           rotationX: 0,
           rotationY: 0,
           duration: 0.5,
-          ease: 'power2.out'
+          ease: 'power2.out',
+          force3D: true
         });
       };
       

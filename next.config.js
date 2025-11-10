@@ -19,6 +19,10 @@ const nextConfig = {
   compress: true,
   // Optimize production builds with SWC minifier
   swcMinify: true,
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   // Performance headers
   async headers() {
     return [
@@ -32,6 +36,54 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
+        ],
+      },
+      // Cache static assets aggressively
+      {
+        source: '/public/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // Cache images
+      {
+        source: '/:path*.{jpg,jpeg,png,gif,webp,avif,ico,svg}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // Cache videos
+      {
+        source: '/:path*.{mp4,webm}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // Cache fonts
+      {
+        source: '/:path*.{woff,woff2,ttf,otf,eot}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
