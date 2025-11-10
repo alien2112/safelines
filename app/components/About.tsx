@@ -204,10 +204,10 @@ export function AboutSection() {
             <div className="about-cards">
             {t.home.about.cards.map((card, index) => {
               const icons = [
-                <FaShip key="ship" />,
                 <FaTruck key="truck" />,
-                <FaCogs key="cogs" />,
-                <FaPlane key="plane" />
+                <FaShip key="ship" />,
+                <FaPlane key="plane" />,
+                <FaCogs key="cogs" />
               ];
               return (
                 <div key={card.title} className="service-card">

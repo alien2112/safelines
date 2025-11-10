@@ -805,20 +805,20 @@ export const translations: Record<Language, Translations> = {
         subtitle: 'We have long experience in our field, so we can provide you with distinguished services',
         cards: [
           {
-            title: 'Sea freight',
-            description: 'Shipping by sea is done by ships and steamers of different sizes. Goods are transported in containers, which are large boxes made of strong and weather-resistant materials',
-          },
-          {
             title: 'Land freight',
             description: 'The most important means of transportation between neighboring countries and within the country itself, as it is characterized by speed and efficiency in transporting large goods with heavy weights',
           },
           {
-            title: 'customs clearance',
-            description: 'Customs clearance is the process of completing customs procedures related to imports of goods into or exports of goods',
+            title: 'Sea freight',
+            description: 'Shipping by sea is done by ships and steamers of different sizes. Goods are transported in containers, which are large boxes made of strong and weather-resistant materials',
           },
           {
             title: 'Air freight',
             description: 'Air freight is the process of transporting goods and merchandise using aircraft specialized for these purposes.',
+          },
+          {
+            title: 'customs clearance',
+            description: 'Customs clearance is the process of completing customs procedures related to imports of goods into or exports of goods',
           },
         ],
         stats: [
@@ -890,7 +890,6 @@ export const translations: Record<Language, Translations> = {
           { label: '24/7 Support' },
           { label: 'Expert Team' },
           { label: 'Comprehensive Services' },
-          { label: 'Cost Effective' },
         ],
         page: {
           hero: {
@@ -1434,20 +1433,20 @@ export const translations: Record<Language, Translations> = {
         subtitle: 'لدينا خبرة طويلة في مجالنا، لذا يمكننا تقديم خدمات متميزة لك',
         cards: [
           {
-            title: 'الشحن البحري',
-            description: 'يتم الشحن البحري بواسطة السفن والبواخر بأحجام مختلفة. يتم نقل البضائع في حاويات، وهي صناديق كبيرة مصنوعة من مواد قوية ومقاومة للعوامل الجوية',
-          },
-          {
             title: 'الشحن البري',
             description: 'أهم وسائل النقل بين الدول المجاورة وداخل الدولة نفسها، حيث يتميز بالسرعة والكفاءة في نقل البضائع الكبيرة ذات الأوزان الثقيلة',
           },
           {
-            title: 'التخليص الجمركي',
-            description: 'التخليص الجمركي هو عملية إتمام الإجراءات الجمركية المتعلقة باستيراد البضائع أو تصديرها',
+            title: 'الشحن البحري',
+            description: 'يتم الشحن البحري بواسطة السفن والبواخر بأحجام مختلفة. يتم نقل البضائع في حاويات، وهي صناديق كبيرة مصنوعة من مواد قوية ومقاومة للعوامل الجوية',
           },
           {
             title: 'الشحن الجوي',
             description: 'الشحن الجوي هو عملية نقل البضائع والبضائع باستخدام الطائرات المتخصصة لهذه الأغراض.',
+          },
+          {
+            title: 'التخليص الجمركي',
+            description: 'التخليص الجمركي هو عملية إتمام الإجراءات الجمركية المتعلقة باستيراد البضائع أو تصديرها',
           },
         ],
         stats: [
@@ -1515,11 +1514,10 @@ export const translations: Record<Language, Translations> = {
           ],
         },
         chips: [
-          { label: 'توصيل سريع وآمن' },
+          { label: 'نقل سريع وآمن' },
           { label: 'دعم على مدار الساعة' },
           { label: 'فريق خبراء' },
           { label: 'خدمات شاملة' },
-          { label: 'فعال من حيث التكلفة' },
         ],
         page: {
           hero: {
@@ -1673,7 +1671,7 @@ export const translations: Record<Language, Translations> = {
       },
       testimonials: {
         tag: 'العملاء',
-        title: 'عملاؤنا يحبوننا',
+        title: 'شركاء النجاح',
         subtitle: 'تعليقات حقيقية من الشركات والأفراد الذين يعتمدون على خدماتنا في التخليص الجمركي واللوجستيات لتشغيل أعمالهم',
         totalReviews: 'أكثر من 15,725+ شخص قدموا لنا مراجعة',
         items: [

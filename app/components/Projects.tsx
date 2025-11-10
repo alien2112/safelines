@@ -11,16 +11,16 @@ export function ProjectsSection() {
   // Create projects from the two main services
   const projects = [
     { 
-      id: 'transportation', 
-      name: t.home.services.transportation.title, 
-      imageUrl: '/AdobeStock_244807532-2048x1024.webp',
-      services: t.home.services.transportation.services
-    },
-    { 
       id: 'customs', 
       name: t.home.services.customs.title, 
       imageUrl: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop',
       services: t.home.services.customs.services
+    },
+    { 
+      id: 'transportation', 
+      name: t.home.services.transportation.title, 
+      imageUrl: '/AdobeStock_244807532-2048x1024.webp',
+      services: t.home.services.transportation.services
     },
   ];
 
