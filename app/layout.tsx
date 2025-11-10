@@ -4,10 +4,14 @@ import { Navbar } from './components/Navbar';
 // import { LoadingScreen } from './components/LoadingScreen';
 import { PageLoader } from './components/PageLoader';
 import ScrollToTop from './components/ScrollToTop';
-import { Playpen_Sans } from 'next/font/google';
+import { Tajawal } from 'next/font/google';
 import { LanguageProvider } from './contexts/LanguageContext';
 
-const playpen = Playpen_Sans({ subsets: ['latin'], weight: ['400','600','700'], variable: '--font-playpen' });
+const tajawal = Tajawal({
+  subsets: ['latin', 'arabic'],
+  weight: ['300', '400', '500', '700', '800'],
+  variable: '--font-body',
+});
 
 export const metadata: Metadata = {
   title: 'Safe Lines Customs Clearance - Professional Logistics & Freight Services',
@@ -59,11 +63,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={playpen.variable}>
+    <html lang="en" className={tajawal.variable}>
       <head>
         {/* Preconnect to external origins for faster resource loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Droid+Arabic+Kufi:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
         <link rel="dns-prefetch" href="https://vercel.app" />
       </head>
       <body>
