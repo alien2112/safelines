@@ -37,7 +37,7 @@
   background: #fff; 
   padding: 24px; 
   position: relative; 
-  z-index: 10;
+  z-index: 12;
   box-shadow: 0 4px 12px rgba(0,0,0,0.04);
   pointer-events: none;
 }
@@ -47,15 +47,16 @@
 .srv-filters-container { 
   max-width: 1120px; 
   margin: 0 auto; 
+  pointer-events: auto;
 }
 
-.srv-tabs { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.srv-tablist { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.srv-tab { position: relative; border-radius: 9999px; padding: 8px 14px; font-size: 14px; border: 1px solid rgba(11,27,59,0.15); color: var(--brand-navy); background: #fff; cursor: pointer; }
+.srv-tabs { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; pointer-events: auto; }
+.srv-tablist { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; pointer-events: auto; }
+.srv-tab { position: relative; border-radius: 9999px; padding: 8px 14px; font-size: 14px; border: 1px solid rgba(11,27,59,0.15); color: var(--brand-navy); background: #fff; cursor: pointer; pointer-events: auto; }
 .srv-tab:hover { border-color: rgba(11,27,59,0.3); }
 .srv-tab.active { background: var(--brand-navy); color: #fff; border-color: transparent; }
 .srv-tab-underline { position: absolute; left: 16.66%; bottom: -1px; height: 2px; width: 66.66%; background: var(--brand-gold); border-radius: 2px; }
-.srv-track-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-navy); text-decoration: none; font-weight: 600; white-space: nowrap; }
+.srv-track-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-navy); text-decoration: none; font-weight: 600; white-space: nowrap; pointer-events: auto; }
 .srv-track-link:hover { color: var(--brand-gold); }
 
 .srv-grid { display: grid; gap: 24px; margin-top: 24px; justify-content: center; box-sizing: border-box; }
