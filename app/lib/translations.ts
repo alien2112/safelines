@@ -1043,7 +1043,7 @@ export const translations: Record<Language, Translations> = {
       },
       testimonials: {
         tag: 'CUSTOMERS',
-        title: 'Our customers love us',
+        title: 'Partners of success',
         subtitle: 'Real feedback from businesses and individuals who rely on our customs clearance and logistics services to power their operations',
         totalReviews: 'Over 15,725+ people gave us review',
         items: [

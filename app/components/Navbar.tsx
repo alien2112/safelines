@@ -107,11 +107,33 @@ export function Navbar() {
 
   return (
     <div className="nav-outer">
-      <nav className="nav-container">
+      <nav className="nav-container" dir="rtl">
         <div className="nav-left">
-          <Link href="/" className="nav-logo" aria-label="Go to homepage">
-            <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-logo-img" />
-          </Link>
+          <div className="nav-social">
+            {socialLinks.map((social, index) => (
+              <a
+                key={index}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-social-link"
+                aria-label={social.name}
+                title={social.name}
+              >
+                <span className="nav-social-icon">{social.icon}</span>
+              </a>
+            ))}
+          </div>
+          <div className="nav-lang-wrapper">
+            <button
+              className="nav-lang-toggle"
+              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
+              aria-label="Toggle language"
+              title={language === 'ar' ? 'English' : 'العربية'}
+            >
+              <span className="nav-lang-text">{language === 'ar' ? 'عربي' : 'AR'}</span>
+            </button>
+          </div>
         </div>
         <button className="nav-menu-btn" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
           <span aria-hidden>
@@ -168,37 +190,25 @@ export function Navbar() {
           </li>
         </ul>
         <div className="nav-right">
-          <div className="nav-social">
-            {socialLinks.map((social, index) => (
-              <a
-                key={index}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-social-link"
-                aria-label={social.name}
-                title={social.name}
-              >
-                <span className="nav-social-icon">{social.icon}</span>
-              </a>
-            ))}
-          </div>
-          <div className="nav-lang-wrapper">
-            <button
-              className="nav-lang-toggle"
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              aria-label="Toggle language"
-              title={language === 'ar' ? 'English' : 'العربية'}
-            >
-              <span className="nav-lang-text">{language === 'ar' ? 'عربي' : 'AR'}</span>
-            </button>
-          </div>
+          <Link href="/" className="nav-logo" aria-label="Go to homepage">
+            <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-logo-img" />
+          </Link>
         </div>
       </nav>
       {open && (
         <div className="nav-mobile" role="dialog" aria-modal="true" onClick={() => setOpen(false)}>
           <div className="nav-mobile-card" onClick={(e) => e.stopPropagation()}>
-            <div className="nav-mobile-header">
+            <div className="nav-mobile-header" dir="rtl">
+              <button 
+                type="button"
+                className="nav-mobile-close" 
+                aria-label="Close menu" 
+                onClick={handleCloseMenu}
+              >
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
               <button 
                 type="button"
                 className="nav-mobile-logo" 
@@ -212,16 +222,6 @@ export function Navbar() {
                 }}
               >
                 <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-mobile-logo-img" />
-              </button>
-              <button 
-                type="button"
-                className="nav-mobile-close" 
-                aria-label="Close menu" 
-                onClick={handleCloseMenu}
-              >
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
               </button>
             </div>
             <nav className="nav-mobile-links">

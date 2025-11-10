@@ -1686,6 +1686,13 @@ p {
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  direction: rtl; /* Force RTL layout for navbar regardless of global direction */
+}
+
+/* Ensure navbar layout is not affected by global direction */
+html[dir="ltr"] .nav-container,
+html[dir="rtl"] .nav-container {
+  direction: rtl;
 }
 
 @media (min-width: 1920px) {
@@ -1725,6 +1732,9 @@ p {
   align-items: center; 
   flex-shrink: 0;
   min-width: 56px;
+  gap: 12px;
+  direction: rtl; /* Keep RTL for proper alignment */
+  order: 3; /* Social/lang on left in RTL layout */
 }
 
 .nav-links {
@@ -1738,6 +1748,7 @@ p {
   justify-content: center;
   min-width: 0;
   flex-wrap: nowrap;
+  order: 2; /* Navigation links in middle */
 }
 
 .nav-link {
@@ -1824,7 +1835,8 @@ p {
   align-items: center; 
   gap: 12px; 
   flex-shrink: 0;
-  margin-left: auto;
+  direction: ltr; /* Logo should display normally */
+  order: 1; /* Logo on right in RTL layout */
 }
 
 .nav-social {
@@ -2049,7 +2061,20 @@ p {
   animation: slideDown 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 @keyframes slideDown { from { transform: translateY(-16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.nav-mobile-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid rgba(226,232,240,0.5); }
+.nav-mobile-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 20px 24px; 
+  border-bottom: 1px solid rgba(226,232,240,0.5); 
+  direction: rtl; /* Force RTL layout for mobile header */
+}
+
+/* Ensure mobile header layout is not affected by global direction */
+html[dir="ltr"] .nav-mobile-header,
+html[dir="rtl"] .nav-mobile-header {
+  direction: rtl;
+}
 .nav-mobile-logo { display: flex; align-items: center; }
 .nav-mobile-logo-img { width: 48px; height: 48px; object-fit: contain; border-radius: 50%; }
 .nav-mobile-close { 
