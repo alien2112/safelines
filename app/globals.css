@@ -3,8 +3,37 @@
   --brand-navy: #0B1B3B;
   --brand-gold: #C9A227;
   --brand-accent: #1D4ED8;
+  /* Typography - Tajawal for body text, Droid Arabic Kufi for headings */
+  /* --font-body is set by Next.js font loader in layout.tsx */
   --font-body-fallback: "Tajawal", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   --font-heading: "Droid Arabic Kufi", "Tajawal", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Typography scale - refined for better hierarchy and readability */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;   /* 30px */
+  --font-size-4xl: 2.25rem;    /* 36px */
+  --font-size-5xl: 3rem;       /* 48px */
+  --font-size-6xl: 3.75rem;    /* 60px */
+  
+  /* Line heights */
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  
+  /* Letter spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
 }
 
 /* Skeleton Loader Animation */
@@ -706,6 +735,10 @@ html, body {
   padding: 0;
   margin: 0;
   font-family: var(--font-body, var(--font-body-fallback));
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  font-weight: 400;
   background: var(--white);
   color: var(--gray-500);
   overflow-x: hidden; /* prevent horizontal overflow on mobile */
@@ -715,6 +748,12 @@ html, body {
   position: relative; /* prevent transform issues */
 }
 
+/* Typography - Body text uses Tajawal */
+p, span, div, a, li, td, th, label, input, textarea, select, button {
+  font-family: var(--font-body, var(--font-body-fallback));
+}
+
+/* Typography - Headings use Droid Arabic Kufi */
 h1,
 h2,
 h3,
@@ -724,10 +763,75 @@ h6,
 .font-heading,
 .heading-font {
   font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--brand-navy);
 }
 
+/* Heading sizes with refined typography */
+h1 {
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-tight);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-tighter);
+  margin: 0 0 1rem 0;
+}
+
+h2 {
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-tight);
+  margin: 0 0 0.875rem 0;
+}
+
+h3 {
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-snug);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-tight);
+  margin: 0 0 0.75rem 0;
+}
+
+h4 {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-snug);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-normal);
+  margin: 0 0 0.625rem 0;
+}
+
+h5 {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-normal);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-normal);
+  margin: 0 0 0.5rem 0;
+}
+
+h6 {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-normal);
+  margin: 0 0 0.5rem 0;
+}
+
+/* Paragraph typography */
+p {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  letter-spacing: var(--letter-spacing-normal);
+  margin: 0 0 1rem 0;
+}
+
+/* Title and heading classes */
 :is([class$='-title'], [class$='-heading'], .title, .section-title, .section-heading, .card-title, .hero-title, .modal-title) {
   font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
 }
 
 /* Enable hardware acceleration for animations */
