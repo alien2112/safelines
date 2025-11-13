@@ -827,7 +827,7 @@ function ImagesPanel() {
 	const refresh = React.useCallback(async () => {
 		setIsLoading(true);
 		try {
-			const res = await fetch(`/api/images?section=${activeSection}`, { cache: "no-store" });
+			const res = await fetch(`/api/images?section=${activeSection}&noCache=1`, { cache: "no-store" });
 			const data = await res.json();
 			setFiles(data);
 		} finally {
@@ -914,7 +914,7 @@ function ImagesPanel() {
 					<div className="admin-list">
 						{files.map((f) => (
 							<div key={f._id} className="admin-list-item">
-								<img className="admin-list-thumb" src={`/api/images/${f._id}`} alt={f.filename} />
+								<img className="admin-list-thumb" src={`/api/images/${f._id}?v=${f.uploadDate ? new Date(f.uploadDate).getTime() : f._id}`} alt={f.filename} />
 								<div className="admin-list-meta">
 									<div className="admin-list-fn">{f.filename}</div>
 									<div className="admin-list-date">{new Date(f.uploadDate).toLocaleString()}</div>

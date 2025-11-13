@@ -103,17 +103,23 @@ export default function StrategyContentSection() {
 const StrategyRightImage = React.memo(function StrategyRightImage() {
   const { data: imagesData } = useImages('strategy-right');
   
-  const imageId = React.useMemo(() => {
+  const imageMeta = React.useMemo(() => {
     if (!imagesData || !Array.isArray(imagesData) || imagesData.length === 0) return null;
-    return imagesData[0]._id;
+    return imagesData[0];
   }, [imagesData]);
   
-  if (!imageId) {
+  const imageSrc = React.useMemo(() => {
+    if (!imageMeta?._id) return null;
+    const uploadedAt = imageMeta.uploadDate ? new Date(imageMeta.uploadDate).getTime() : Date.now();
+    return `/api/images/${imageMeta._id}?v=${uploadedAt}`;
+  }, [imageMeta]);
+  
+  if (!imageSrc) {
     return null;
   }
   return (
     <Image
-      src={`/api/images/${imageId}`}
+      src={imageSrc}
       alt="Strategy & Content"
       fill
       style={{ objectFit: 'cover', borderRadius: 12 }}

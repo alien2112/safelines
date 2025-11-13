@@ -9,9 +9,29 @@ export const runtime = "nodejs";
 export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url);
 	const section = searchParams.get("section") as ImageSection | null;
+	const noCacheParam = searchParams.get("noCache");
+	const noCache = noCacheParam === "1" || noCacheParam === "true";
 	const db = await getDb();
 	const files = db.collection("images.files");
 	const query = section ? { "metadata.section": section } : {};
+
+	if (noCache) {
+		const results = await files
+			.find(query, { projection: { filename: 1, length: 1, uploadDate: 1, contentType: 1, metadata: 1 } })
+			.sort({ uploadDate: -1 })
+			.limit(50)
+			.toArray();
+
+		return new Response(JSON.stringify(results), {
+			status: 200,
+			headers: {
+				"content-type": "application/json",
+				"cache-control": "no-store, no-cache, must-revalidate",
+				"pragma": "no-cache",
+				"expires": "0",
+			},
+		});
+	}
 	
 	// Get the latest uploadDate for cache busting
 	const latestUpload = await files

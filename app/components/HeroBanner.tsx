@@ -15,11 +15,17 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 	// Use SWR for data fetching
 	const { data: imagesData, isLoading } = useImages(section);
 	
-	// Memoize image ID extraction
-	const imageId = useMemo(() => {
+	// Memoize image metadata extraction so we can build a cache-busting URL
+	const heroImage = useMemo(() => {
 		if (!imagesData || !Array.isArray(imagesData) || imagesData.length === 0) return null;
-		return imagesData[0]._id;
+		return imagesData[0];
 	}, [imagesData]);
+
+	const imageSrc = useMemo(() => {
+		if (!heroImage?._id) return null;
+		const uploadedAt = heroImage.uploadDate ? new Date(heroImage.uploadDate).getTime() : Date.now();
+		return `/api/images/${heroImage._id}?v=${uploadedAt}`;
+	}, [heroImage]);
 
 	if (isLoading) {
 		return (
@@ -31,7 +37,7 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 		);
 	}
 
-	if (!imageId) {
+	if (!imageSrc) {
 		// Fallback to default image if no banner is uploaded
 		const defaultImage = section === "hero-home" ? "/hero-banner.webp" : "/upscaled_image_high_quality.webp";
 		return (
@@ -57,7 +63,7 @@ const HeroBanner = React.memo(function HeroBanner({ section, alt, objectPosition
 	return (
 		<section className="hero-banner">
 			<Image
-				src={`/api/images/${imageId}`}
+				src={imageSrc}
 				alt={alt}
 				fill
 				priority

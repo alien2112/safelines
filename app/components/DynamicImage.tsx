@@ -16,12 +16,17 @@ export default function DynamicImage({ section, className, style, alt }: Dynamic
 	React.useEffect(() => {
 		(async () => {
 			try {
-				const res = await fetch(`/api/images?section=${section}`, { 
-					cache: 'default' // Use default browser caching (respects cache-control headers)
+				const res = await fetch(`/api/images?section=${encodeURIComponent(section)}&noCache=1`, { 
+					cache: 'no-store',
+					headers: {
+						'cache-control': 'no-cache',
+						'pragma': 'no-cache',
+					},
 				});
 				const data = await res.json();
 				if (Array.isArray(data) && data.length > 0) {
-					setImageUrl(`/api/images/${data[0]._id}`);
+					const uploadDate = data[0]?.uploadDate ? new Date(data[0].uploadDate).getTime() : Date.now();
+					setImageUrl(`/api/images/${data[0]._id}?v=${uploadDate}`);
 				}
 			} catch {
 				// ignore

@@ -62,17 +62,23 @@ export default function MakingEasySection() {
 const MakingEasyImage = React.memo(function MakingEasyImage() {
   const { data: imagesData } = useImages('making-easy');
   
-  const imageId = React.useMemo(() => {
+  const imageMeta = React.useMemo(() => {
     if (!imagesData || !Array.isArray(imagesData) || imagesData.length === 0) return null;
-    return imagesData[0]._id;
+    return imagesData[0];
   }, [imagesData]);
+
+  const imageSrc = React.useMemo(() => {
+    if (!imageMeta?._id) return null;
+    const uploadedAt = imageMeta.uploadDate ? new Date(imageMeta.uploadDate).getTime() : Date.now();
+    return `/api/images/${imageMeta._id}?v=${uploadedAt}`;
+  }, [imageMeta]);
   
-  if (!imageId) {
+  if (!imageSrc) {
     return <div className="easy-image" aria-label="image placeholder" />;
   }
   return (
     <Image
-      src={`/api/images/${imageId}`}
+      src={imageSrc}
       alt="Making future easy"
       fill
       style={{ objectFit: 'cover', borderRadius: 12 }}

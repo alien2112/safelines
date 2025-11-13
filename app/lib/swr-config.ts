@@ -4,7 +4,13 @@ import useSWR, { SWRConfiguration } from 'swr';
 
 // Shared fetcher function
 export const fetcher = async (url: string) => {
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    cache: 'no-store',
+    headers: {
+      'cache-control': 'no-cache',
+      'pragma': 'no-cache',
+    },
+  });
   if (!res.ok) {
     const error: any = new Error('An error occurred while fetching the data.');
     error.status = res.status;
@@ -57,6 +63,11 @@ export function useImages(section: string | null) {
     }
   );
 }
+
+
+
+
+
 
 
 
