@@ -262,7 +262,7 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <main className="about-page">
+    <main className="about-page page-about">
       {/* Banner Section */}
       <HeroBanner section="hero-about" alt="About Us Banner" objectPosition="50% 50%" />
       {/* Hero Section */}

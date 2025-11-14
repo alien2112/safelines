@@ -95,7 +95,7 @@ export default function HomePage() {
   }), []);
 
   return (
-    <main>
+    <main className="page-home">
       <GSAPAnimations />
       <HeroBanner section="hero-home" alt="Hero Banner" objectPosition="50% 66%">
         <div className="banner-card" dir={isRTL ? 'rtl' : 'ltr'}>

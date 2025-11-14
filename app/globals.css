@@ -750,13 +750,20 @@ html, body {
 
 /* Add padding-top to body to prevent content from being cut off by fixed navbar */
 body {
-  padding-top: 35px; /* navbar height: 14px padding + 48px logo + 14px padding */
+  padding-top: 40px; /* navbar height: 14px padding + 48px logo + 14px padding */
 }
 
 /* Ensure main content starts after navbar on all pages */
 main {
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 1025px) {
+  .page-home,
+  .page-about {
+    margin-top: -14px;
+  }
 }
 
 /* Admin pages also need spacing */
@@ -766,7 +773,7 @@ main {
 
 @media (max-width: 1400px) {
   body {
-    padding-top: 50px; /* 14px + 48px + 14px */
+    padding-top: 60px; /* 14px + 48px + 14px */
   }
 }
 
@@ -778,19 +785,19 @@ main {
 
 @media (max-width: 1024px) {
   body {
-    padding-top: 35px; /* 12px + 44px + 12px */
+    padding-top: 60px; /* 12px + 44px + 12px */
   }
 }
 
 @media (max-width: 768px) {
   body {
-    padding-top: 35px; /* 10px + 42px + 10px */
+    padding-top: 40px; /* 10px + 42px + 10px */
   }
 }
 
 @media (max-width: 480px) {
   body {
-    padding-top: 35px; /* 8px + 38px + 8px */
+    padding-top: 60px; /* 8px + 38px + 8px */
   }
 }
 
