@@ -4396,7 +4396,8 @@ html[dir="rtl"] body {
   .cta-btn, .cta-btn-secondary { width: 100%; max-width: 100%; }
 
   /* Sections spacing */
-  .section-services, .section-projects, .section-about, .section-faq, .section-strategy, .section-community, .section-contact, .section-cta, .section-pricing, .section-easy { padding: 56px 0; }
+  .section-services, .section-projects, .section-about, .section-faq, .section-strategy, .section-community, .section-cta, .section-pricing, .section-easy { padding: 56px 0; }
+  .section-contact { padding: 66px 0; }
 
   /* Projects */
   .projects-grid { gap: 16px; }

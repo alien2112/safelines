@@ -12,7 +12,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>('ar');
 
   useEffect(() => {
     // Only run in browser
@@ -24,10 +24,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     
     if (savedLanguage && (savedLanguage === 'ar' || savedLanguage === 'en')) {
       setLanguageState(savedLanguage);
-    } else if (browserLanguage === 'ar') {
-      setLanguageState('ar');
     } else {
-      setLanguageState('en');
+      setLanguageState('ar'); // Default to Arabic
     }
   }, []);
 
