@@ -1,6 +1,7 @@
 "use client";
 import Blob from './Blob';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useImages } from '../lib/swr-config';
 import React from 'react';
 
 export function ProjectsSection() {
@@ -8,18 +9,34 @@ export function ProjectsSection() {
   const isRTL = language === 'ar';
   const [flipped, setFlipped] = React.useState<Record<string, boolean>>({});
   
+  // Fetch images from admin
+  const { data: customsImages } = useImages('core-service-customs');
+  const { data: transportationImages } = useImages('core-service-transportation');
+  
+  // Get image URLs from API or fallback to static
+  const getImageUrl = (images: any[] | undefined, fallback: string) => {
+    if (images && Array.isArray(images) && images.length > 0) {
+      const imageMeta = images[0];
+      if (imageMeta?._id) {
+        const uploadDate = imageMeta.uploadDate ? new Date(imageMeta.uploadDate).getTime() : Date.now();
+        return `/api/images/${imageMeta._id}?v=${uploadDate}`;
+      }
+    }
+    return fallback;
+  };
+  
   // Create projects from the two main services
   const projects = [
     { 
       id: 'customs', 
       name: t.home.services.customs.title, 
-      imageUrl: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop',
+      imageUrl: getImageUrl(customsImages, 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop'),
       services: t.home.services.customs.services
     },
     { 
       id: 'transportation', 
       name: t.home.services.transportation.title, 
-      imageUrl: '/AdobeStock_244807532-2048x1024.webp',
+      imageUrl: getImageUrl(transportationImages, '/AdobeStock_244807532-2048x1024.webp'),
       services: t.home.services.transportation.services
     },
   ];

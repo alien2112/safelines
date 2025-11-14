@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
 		"making-easy", "strategy-right", "blog", "hero-home", "hero-about",
 		"about-milestone-1", "about-milestone-2", "about-milestone-3", "about-milestone-4",
 		"about-feature-1", "about-feature-2", "about-feature-3", "about-feature-4",
-		"services", "jobs"
+		"services", "jobs", "core-service-customs", "core-service-transportation"
 	];
 	if (!section || !validSections.includes(section)) {
 		return new Response("invalid section", { status: 400 });

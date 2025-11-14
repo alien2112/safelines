@@ -815,7 +815,8 @@ AdminSidebar.displayName = "AdminSidebar";
 type ImageSectionType = 
 	"making-easy" | "strategy-right" | "hero-home" | "hero-about" |
 	"about-milestone-1" | "about-milestone-2" | "about-milestone-3" | "about-milestone-4" |
-	"about-feature-1" | "about-feature-2" | "about-feature-3" | "about-feature-4";
+	"about-feature-1" | "about-feature-2" | "about-feature-3" | "about-feature-4" |
+	"core-service-customs" | "core-service-transportation";
 
 function ImagesPanel() {
 	const { t, language } = useLanguage();
@@ -888,6 +889,8 @@ function ImagesPanel() {
 									<option value="making-easy">{language === 'ar' ? 'جعل المستقبل سهلاً (يسار)' : 'Making future easy (left)'}</option>
 									<option value="strategy-right">{language === 'ar' ? 'الإستراتيجية والمحتوى (يمين)' : 'Strategy & Content (right)'}</option>
 									<option value="hero-home">{language === 'ar' ? 'لافتة البطل - الصفحة الرئيسية' : 'Hero Banner - Home Page'}</option>
+									<option value="core-service-customs">{language === 'ar' ? 'خدمة التخليص الجمركي - خدماتنا الأساسية' : 'Customs Clearance - Core Services'}</option>
+									<option value="core-service-transportation">{language === 'ar' ? 'خدمة النقل - خدماتنا الأساسية' : 'Transportation - Core Services'}</option>
 								</optgroup>
 								<optgroup label={t.admin.images.sectionAboutPage}>
 									<option value="hero-about">{language === 'ar' ? 'لافتة البطل - صفحة من نحن' : 'Hero Banner - About Page'}</option>
