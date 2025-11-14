@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useLanguage } from './contexts/LanguageContext';
@@ -63,6 +64,36 @@ export default function HomePage() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
 
+  // Memoize testimonials data to prevent recreation on every render
+  const testimonialsData = React.useMemo(() => 
+    t.home.testimonials.items.map((item) => ({
+      avatarSrc: '/safelines-logo.png',
+      name: item.name,
+      source: item.source,
+      review: item.review,
+    })),
+    [t.home.testimonials.items]
+  );
+
+  // Memoize review users array
+  const reviewUsers = React.useMemo(() => [
+    '/safelines-logo.png',
+    '/safelines-logo.png',
+    '/safelines-logo.png',
+    '/safelines-logo.png',
+    '/safelines-logo.png',
+  ], []);
+
+  // Memoize blob config
+  const blobConfig = React.useMemo(() => ({
+    intensity: 0.60,
+    colors: {
+      primary: 'rgba(236,72,153,0.55)',
+      mid: 'rgba(244,114,182,0.35)',
+      outer: 'rgba(253,164,175,0.2)',
+    },
+  }), []);
+
   return (
     <main>
       <GSAPAnimations />
@@ -99,27 +130,9 @@ export default function HomePage() {
       <AboutSection />
       <ServicesSection />
       <TestimonialsSection
-        testimonials={t.home.testimonials.items.map((item) => ({
-          avatarSrc: '/safelines-logo.png',
-          name: item.name,
-          source: item.source,
-          review: item.review,
-        }))}
-        reviewUsers={[
-          '/safelines-logo.png',
-          '/safelines-logo.png',
-          '/safelines-logo.png',
-          '/safelines-logo.png',
-          '/safelines-logo.png',
-        ]}
-        blob={{
-          intensity: 0.60,
-          colors: {
-            primary: 'rgba(236,72,153,0.55)',
-            mid: 'rgba(244,114,182,0.35)',
-            outer: 'rgba(253,164,175,0.2)',
-          },
-        }}
+        testimonials={testimonialsData}
+        reviewUsers={reviewUsers}
+        blob={blobConfig}
       />
       {/* Place questions (FAQ) and pricing directly under the customer section */}
       <FAQSection />

@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export function Navbar() {
+const Navbar = React.memo(function Navbar() {
   const [open, setOpen] = React.useState(false);
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
@@ -191,7 +192,16 @@ export function Navbar() {
         </ul>
         <div className="nav-right">
           <Link href="/" className="nav-logo" aria-label="Go to homepage">
-            <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-logo-img" />
+            <Image 
+              src="/safelines_logo-removebg-preview.png" 
+              alt="Safelines logo" 
+              width={96}
+              height={32}
+              className="nav-logo-img"
+              priority
+              quality={90}
+              style={{ width: 'auto', height: 'auto' }}
+            />
           </Link>
         </div>
       </nav>
@@ -221,7 +231,16 @@ export function Navbar() {
                   cursor: 'pointer'
                 }}
               >
-                <img src="/safelines_logo-removebg-preview.png" alt="Safelines logo" className="nav-mobile-logo-img" />
+                <Image 
+                  src="/safelines_logo-removebg-preview.png" 
+                  alt="Safelines logo" 
+                  width={96}
+                  height={32}
+                  className="nav-mobile-logo-img"
+                  priority
+                  quality={90}
+                  style={{ width: 'auto', height: 'auto' }}
+                />
               </button>
             </div>
             <nav className="nav-mobile-links">
@@ -343,6 +362,8 @@ export function Navbar() {
       )}
     </div>
   );
-}
+});
+
+export { Navbar };
 
 

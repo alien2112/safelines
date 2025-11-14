@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { useImages } from '../lib/swr-config';
 
 interface DynamicImageProps {
 	section: string;
@@ -9,32 +10,16 @@ interface DynamicImageProps {
 	alt?: string;
 }
 
-export default function DynamicImage({ section, className, style, alt }: DynamicImageProps) {
-	const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-	const [isLoading, setIsLoading] = React.useState(true);
-
-	React.useEffect(() => {
-		(async () => {
-			try {
-				const res = await fetch(`/api/images?section=${encodeURIComponent(section)}&noCache=1`, { 
-					cache: 'no-store',
-					headers: {
-						'cache-control': 'no-cache',
-						'pragma': 'no-cache',
-					},
-				});
-				const data = await res.json();
-				if (Array.isArray(data) && data.length > 0) {
-					const uploadDate = data[0]?.uploadDate ? new Date(data[0].uploadDate).getTime() : Date.now();
-					setImageUrl(`/api/images/${data[0]._id}?v=${uploadDate}`);
-				}
-			} catch {
-				// ignore
-			} finally {
-				setIsLoading(false);
-			}
-		})();
-	}, [section]);
+const DynamicImage = React.memo(function DynamicImage({ section, className, style, alt }: DynamicImageProps) {
+	const { data: imagesData, isLoading } = useImages(section);
+	
+	const imageUrl = React.useMemo(() => {
+		if (!imagesData || !Array.isArray(imagesData) || imagesData.length === 0) return null;
+		const imageMeta = imagesData[0];
+		if (!imageMeta?._id) return null;
+		const uploadDate = imageMeta.uploadDate ? new Date(imageMeta.uploadDate).getTime() : Date.now();
+		return `/api/images/${imageMeta._id}?v=${uploadDate}`;
+	}, [imagesData]);
 
 	// Don't render anything if no image is available
 	if (!imageUrl && !isLoading) {
@@ -52,5 +37,7 @@ export default function DynamicImage({ section, className, style, alt }: Dynamic
 			aria-label={alt || "Image"}
 		/>
 	);
-}
+});
+
+export default DynamicImage;
 

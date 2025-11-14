@@ -74,6 +74,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link rel="dns-prefetch" href="https://vercel.app" />
+        {/* Preload critical video for hero section */}
+        <link rel="preload" href="/api/videos/hero-animations.mp4" as="video" type="video/mp4" />
+        {/* Preload critical logo */}
+        <link rel="preload" href="/safelines_logo-removebg-preview.png" as="image" type="image/png" />
       </head>
       <body>
         {/* <LoadingScreen /> */}

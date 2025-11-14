@@ -42,6 +42,13 @@ const VideoBackground = React.memo(function VideoBackground({
   const videoSrc = isCachedVideo ? `/api/videos/${encodeURIComponent(fileName)}` : src;
   const videoRef = React.useRef<HTMLVideoElement>(null);
   
+  // Preload video metadata for faster playback start
+  React.useEffect(() => {
+    if (videoRef.current && videoSrc) {
+      videoRef.current.load();
+    }
+  }, [videoSrc]);
+  
   const wrapperStyle: React.CSSProperties = fixed
     ? { position: 'fixed', inset: 0, zIndex }
     : undefined;
@@ -53,7 +60,7 @@ const VideoBackground = React.memo(function VideoBackground({
         muted={muted}
         loop={loop}
         playsInline={playsInline}
-        preload="auto"
+        preload="metadata"
         poster={poster}
         controls={false}
         controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
@@ -62,7 +69,11 @@ const VideoBackground = React.memo(function VideoBackground({
         tabIndex={-1}
         aria-hidden="true"
         draggable={false}
-        style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}
+        style={{ 
+          transform: `scale(${scale})`, 
+          transformOrigin: 'center center',
+          willChange: 'transform',
+        }}
       >
         <source src={videoSrc} type={mimeType} />
       </video>

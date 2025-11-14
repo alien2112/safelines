@@ -23,6 +23,14 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // Production optimizations
+  poweredByHeader: false,
+  // Optimize fonts
+  optimizeFonts: true,
+  // Experimental features for better performance
+  experimental: {
+    optimizeCss: true,
+  },
   // Performance headers
   async headers() {
     return [
