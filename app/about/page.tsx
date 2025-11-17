@@ -301,11 +301,11 @@ export default function AboutPage() {
           </p>
           <div className="about-team-grid">
             {t.about.whyChoose.features.map((feature, index) => (
-              <div key={feature.name} className="about-team-card">
+                <div key={feature.name} className="about-team-card">
                 <div className="about-team-card-image-wrapper">
                   <DynamicImage
-                    section={`about-feature-${index + 1}`}
-                    className="about-team-card-image"
+                      section={`about-feature-${index + 1}`}
+                      className="about-team-card-image"
                   />
                 </div>
                 <div className="about-team-card-content" dir={isRTL ? 'rtl' : 'ltr'}>
