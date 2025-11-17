@@ -750,7 +750,7 @@ html, body {
 
 /* Ensure main content starts after fixed navbar */
 body {
-  padding-top: 100px;
+  padding-top: 110px;
 }
 
 main {
@@ -1689,6 +1689,8 @@ p {
   justify-content: flex-end;
   pointer-events: auto;
   transition: transform 0.3s ease;
+  transform-origin: center;
+  will-change: transform;
 }
 
 .nav-top-logo-img {
@@ -1698,7 +1700,7 @@ p {
 }
 
 .nav-top-logo:hover {
-  transform: scale(1.04);
+  transform: scale(1.15);
 }
 
 /* Projects section */
@@ -2111,11 +2113,11 @@ html[dir="rtl"] .nav-container {
 
 .nav-link {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: -0.01em;
   font-weight: 600;
   text-decoration: none;
-  padding: 10px 16px;
+  padding: 12px 20px;
   border-radius: 8px;
   display: inline-flex;
   align-items: center;
@@ -2123,6 +2125,9 @@ html[dir="rtl"] .nav-container {
   position: relative;
   white-space: nowrap;
   overflow: hidden;
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+  will-change: transform;
 }
 
 .nav-link::before {
@@ -2151,7 +2156,7 @@ html[dir="rtl"] .nav-container {
 
 .nav-link:hover {
   color: var(--brand-gold);
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.12);
 }
 
 .nav-link:hover::before {
@@ -2211,8 +2216,8 @@ html[dir="rtl"] .nav-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -2222,6 +2227,9 @@ html[dir="rtl"] .nav-container {
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+  will-change: transform;
 }
 
 .nav-social-link::before {
@@ -2237,8 +2245,8 @@ html[dir="rtl"] .nav-container {
 .nav-social-link:hover {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-3px) scale(1.1);
-  box-shadow: 0 6px 16px rgba(9, 18, 36, 0.35), 0 2px 4px rgba(9, 18, 36, 0.2);
+  transform: translateY(-4px) scale(1.22);
+  box-shadow: 0 10px 22px rgba(9, 18, 36, 0.4), 0 4px 8px rgba(9, 18, 36, 0.25);
 }
 
 .nav-social-link:hover::before {
@@ -2263,8 +2271,8 @@ html[dir="rtl"] .nav-container {
 }
 
 .nav-social-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
