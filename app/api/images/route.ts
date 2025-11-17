@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { getDb } from "../../lib/mongodb";
+import type { Sort } from "mongodb";
 import { getBucket, uploadImageToGridFS, ImageSection } from "../../lib/gridfs";
 import crypto from "crypto";
 
@@ -13,12 +14,13 @@ export async function GET(req: NextRequest) {
 	const noCache = noCacheParam === "1" || noCacheParam === "true";
 	const db = await getDb();
 	const files = db.collection("images.files");
+	const sortOrder: Sort = { "metadata.order": 1, uploadDate: -1 };
 	const query = section ? { "metadata.section": section } : {};
 
 	if (noCache) {
 		const results = await files
 			.find(query, { projection: { filename: 1, length: 1, uploadDate: 1, contentType: 1, metadata: 1 } })
-			.sort({ uploadDate: -1 })
+			.sort(sortOrder)
 			.limit(50)
 			.toArray();
 
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
 	// Get the latest uploadDate for cache busting
 	const latestUpload = await files
 		.find(query)
-		.sort({ uploadDate: -1 })
+		.sort(sortOrder)
 		.limit(1)
 		.project({ uploadDate: 1 })
 		.toArray();
@@ -61,7 +63,7 @@ export async function GET(req: NextRequest) {
 	
 	const results = await files
 		.find(query, { projection: { filename: 1, length: 1, uploadDate: 1, contentType: 1, metadata: 1 } })
-		.sort({ uploadDate: -1 })
+		.sort(sortOrder)
 		.limit(50)
 		.toArray();
 	return new Response(JSON.stringify(results), { 
