@@ -1465,14 +1465,18 @@ p {
   align-items: center;
   justify-items: center;
   text-align: center;
-  margin-top: 60px;
-  position: absolute;
-  right: 0;
-  bottom: -400px;
-  width: 100%;
+  margin-top: clamp(32px, 6vh, 96px);
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  width: min(1100px, 100%);
   max-width: 100%;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: clamp(20px, 4vw, 48px);
+  padding-right: clamp(20px, 4vw, 48px);
+  padding-bottom: clamp(24px, 4vh, 64px);
   box-sizing: border-box;
   overflow: visible;
 }
@@ -1483,6 +1487,31 @@ p {
   box-sizing: border-box;
   padding-left: 0;
   padding-right: 0;
+}
+
+.hero-row .hero-tag,
+.hero-row .hero-headline,
+.hero-row .hero-cta {
+  justify-self: center;
+}
+
+@media (max-width: 1366px) {
+  .hero {
+    min-height: auto;
+    padding-top: 72px;
+    padding-bottom: 56px;
+  }
+  .hero-headline {
+    font-size: 56px;
+    line-height: 64px;
+  }
+  .hero-row {
+    width: 100%;
+    padding-left: 32px;
+    padding-right: 32px;
+    padding-bottom: 48px;
+    margin-top: 48px;
+  }
 }
 
 .hero-media {
@@ -1551,8 +1580,13 @@ p {
   }
   .hero-row { 
     grid-template-columns: 1fr; 
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-top: 36px;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
     overflow: visible;
   }
   .hero-media { width: 100%; max-width: 100%; margin-top: 24px; }
@@ -1605,11 +1639,11 @@ p {
     overflow: visible;
   }
   .hero-row {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 16px; /* near end of first section on mobile */
-    margin-top: 0;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin-top: 28px;
     justify-items: center;
     text-align: center;
     padding-left: 20px;
