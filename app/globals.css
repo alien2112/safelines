@@ -4131,6 +4131,22 @@ html[dir="rtl"] body {
   .easy-grid { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 640px) {
+  .easy-header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  .easy-title {
+    font-size: 28px;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .easy-side {
+    width: 100%;
+  }
+}
+
 /* Lower cards and actions in Making Easy */
 .easy-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
 .easy-mini-card { 
