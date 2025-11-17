@@ -27,7 +27,7 @@ export default function MakingEasySection() {
             </div>
           </div>
           {/* Right: quote over background video */}
-          <div className="easy-card quote">
+          {/* <div className="easy-card quote">
             <div className="easy-surface">
               <VideoBackground src="/2025-11-03 18-45-55.mp4" scale={1.8} />
               <div className="easy-quote" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -35,7 +35,7 @@ export default function MakingEasySection() {
                 <div className="eq-author">{t.home.makingEasy.quoteAuthor}</div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Actions row */}
