@@ -15,13 +15,19 @@ export async function uploadImageToGridFS(
 	buffer: Buffer,
 	filename: string,
 	section: ImageSection,
-	mimeType?: string
+	mimeType?: string,
+	extraMetadata: Record<string, unknown> = {}
 ): Promise<ObjectId> {
 	const bucket = await getBucket();
+	const baseMetadata = {
+		section,
+		order: Date.now(),
+	};
+	const metadata = { ...baseMetadata, ...extraMetadata, section };
 	return await new Promise((resolve, reject) => {
 		const uploadStream = bucket.openUploadStream(filename, {
 			contentType: mimeType,
-			metadata: { section },
+			metadata,
 		});
 		uploadStream.end(buffer, (err?: Error | null) => {
 			if (err) return reject(err);

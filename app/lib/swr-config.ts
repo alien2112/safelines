@@ -52,9 +52,18 @@ export function useBlogs() {
 }
 
 // Custom hook for images by section
-export function useImages(section: string | null) {
+type UseImagesOptions = {
+  disableCache?: boolean;
+};
+
+export function useImages(section: string | null, options: UseImagesOptions = {}) {
+  const { disableCache = false } = options;
+  const queryKey = section
+    ? `/api/images?section=${encodeURIComponent(section)}${disableCache ? "&noCache=1" : ""}`
+    : null;
+
   return useSWR(
-    section ? `/api/images?section=${section}` : null,
+    queryKey,
     fetcher,
     {
       ...swrConfig,

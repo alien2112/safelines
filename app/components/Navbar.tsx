@@ -54,9 +54,14 @@ const Navbar = React.memo(function Navbar() {
   };
 
   const currentNavLinks = navLinks[language];
+
+  const trackCtaLabels = {
+    en: 'Track Shipments',
+    ar: 'تتبع الشحنات',
+  };
   
   // Social media links with SVG icons - matching footer links
-  const socialLinks = [
+const socialLinks = [
     { 
       name: 'TikTok', 
       url: 'https://www.tiktok.com/@safe.lines.cc?_r=1&_t=ZS-919CqwjHVxv', 
@@ -91,7 +96,7 @@ const Navbar = React.memo(function Navbar() {
       url: 'https://x.com/Safelinescc?t=b38UQ50-9o1wZM18Kg3-jQ&s=09', 
       icon: (
         <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
-          <path d="M4 4l16 16M20 4L4 20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+          <path d="M19.6 4h-3.5l-3 4-2.3-4H4.4l5.3 7.3L4 20h3.5l3.2-4.2L14 20h5.9l-5.8-8.1L19.6 4Z" />
         </svg>
       )
     },
@@ -99,8 +104,27 @@ const Navbar = React.memo(function Navbar() {
       name: 'Snapchat', 
       url: 'https://www.snapchat.com/@lkhtwtlamnhlltk?share_id=NPjZZrZHtaw&locale=ar-SA', 
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
-          <path d="M12 3c3 0 5 2.2 5 5.2 0 1.9 1.2 3.6 3 4.1-.4 1.2-1.7 1.9-3 1.9-.3 1.2-1.6 2.4-3.2 2.7-1 .2-1.7.4-1.8.9-.1.6.6 1.1 2.3 1.3-.6.8-1.8 1.3-3.3 1.3s-2.7-.5-3.3-1.3c1.7-.2 2.4-.7 2.3-1.3-.1-.5-.8-.7-1.8-.9-1.6-.3-2.9-1.5-3.2-2.7-1.3 0-2.6-.7-3-1.9 1.8-.5 3-2.2 3-4.1C7 5.2 9 3 12 3z"/>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+          <path
+            d="M12 3.5c-3 0-5.5 2.4-5.5 5.4V10c0 1.6-.9 3.1-2.3 3.9-.2.1-.3.3-.2.5.3.8 1.2 1.3 2.3 1.4.2 1.2 1.2 2.4 2.6 3 .5.2.8.4.8.6 0 .3-.3.5-.9.6-.6.1-.9.4-.9.7 0 .2.1.4.3.6.9.7 2.4 1.1 3.8 1.1s2.9-.4 3.8-1.1c.2-.2.3-.4.3-.6 0-.3-.3-.6-.9-.7-.6-.1-.9-.3-.9-.6 0-.2.3-.4.8-.6 1.4-.6 2.4-1.8 2.6-3 1.2-.1 2-.6 2.3-1.4.1-.2 0-.4-.2-.5-1.4-.8-2.3-2.3-2.3-3.9V8.9c0-3-2.5-5.4-5.5-5.4Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle cx="9.6" cy="11.2" r="0.8" fill="currentColor" />
+          <circle cx="14.4" cy="11.2" r="0.8" fill="currentColor" />
+          <path d="M10.3 14.9c.5.5 1.1.7 1.7.7s1.2-.2 1.7-.7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </svg>
+      )
+    },
+    { 
+      name: 'WhatsApp', 
+      url: 'https://wa.me/966555005350', 
+      icon: (
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M12 2.5a9.5 9.5 0 0 0-8.3 14.4L3 21l4.1-1.3A9.5 9.5 0 1 0 12 2.5Z" stroke="currentColor" strokeWidth="1.6" fill="none" />
+          <path d="M15.5 13.8c-.2-.1-1.3-.6-1.4-.7s-.3-.1-.5.1c-.2.2-.6.7-.7.8-.1.1-.3.1-.5 0-.2-.1-1-.3-1.8-1.1-.7-.7-1.1-1.4-1.2-1.6-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.2.2-.3 0-.1 0-.2 0-.4s-.4-1.1-.6-1.6c-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.5.1-.6.3-.2.2-.8.8-.8 1.9 0 1.1.8 2.1.9 2.3.1.2 1.5 2.3 3.5 3.2.5.2.9.4 1.2.4.5.1.9.1 1.3.1.4 0 1.2-.5 1.4-1 .2-.5.2-1 .2-1-.1-.1-.2-.2-.4-.3Z" fill="currentColor" />
         </svg>
       )
     },
@@ -108,6 +132,39 @@ const Navbar = React.memo(function Navbar() {
 
   return (
     <div className="nav-outer">
+      <div className="nav-top-bar" dir="ltr">
+        <div className="nav-top-inner">
+          <Link href="/services#track" className="nav-track-btn" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            <span>{trackCtaLabels[language]}</span>
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M5 12h14M13 6l6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+          <Link href="/" className="nav-top-logo" aria-label="Go to homepage">
+            <Image
+              src="/safelines_logo-removebg-preview.png"
+              alt="Safelines logo"
+              width={120}
+              height={40}
+              className="nav-top-logo-img"
+              priority
+              quality={90}
+            />
+          </Link>
+        </div>
+      </div>
       <nav className="nav-container" dir="rtl">
         <div className="nav-left">
           <div className="nav-social">
@@ -190,20 +247,6 @@ const Navbar = React.memo(function Navbar() {
             </Link>
           </li>
         </ul>
-        <div className="nav-right">
-          <Link href="/" className="nav-logo" aria-label="Go to homepage">
-            <Image 
-              src="/safelines_logo-removebg-preview.png" 
-              alt="Safelines logo" 
-              width={96}
-              height={32}
-              className="nav-logo-img"
-              priority
-              quality={90}
-              style={{ width: 'auto', height: 'auto' }}
-            />
-          </Link>
-        </div>
       </nav>
       {open && (
         <div className="nav-mobile" role="dialog" aria-modal="true" onClick={() => setOpen(false)}>

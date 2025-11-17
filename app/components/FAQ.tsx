@@ -4,12 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import Blob from './Blob';
 import { useLanguage } from '../contexts/LanguageContext';
+import { COMPANY_EMAIL } from '../lib/constants';
 
 export default function FAQSection() {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const [openId, setOpenId] = React.useState<string | null>(null);
-  const [emailHref, setEmailHref] = React.useState('mailto:safelines.cc.co@gmail.com');
+  const [emailHref, setEmailHref] = React.useState(`mailto:${COMPANY_EMAIL}`);
   
   // Set the email link to use MAPI on Windows
   React.useEffect(() => {
@@ -19,7 +20,7 @@ export default function FAQSection() {
       
       if (isWindows) {
         // Use MAPI protocol for Windows (Outlook registers this)
-        setEmailHref('mapi:mailto:safelines.cc.co@gmail.com');
+        setEmailHref(`mapi:mailto:${COMPANY_EMAIL}`);
       }
     }
   }, []);

@@ -8,7 +8,8 @@
     "start": "next start -p 3000",
     "lint": "next lint",
     "seed": "tsx scripts/seed-db.ts",
-    "create-indexes": "tsx scripts/create-indexes.ts"
+    "create-indexes": "tsx scripts/create-indexes.ts",
+    "upload:banners": "tsx scripts/upload-banner-images.ts"
   },
   "dependencies": {
     "gsap": "^3.13.0",

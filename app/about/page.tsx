@@ -19,48 +19,11 @@ if (typeof window !== 'undefined') {
 
 export default function AboutPage() {
   const { language, t } = useLanguage();
-  const headlineRef = useRef<HTMLHeadingElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
   
   const isRTL = language === 'ar';
 
   useEffect(() => {
-    // Cinematic Headline Animation
-    const headline = headlineRef.current;
-    if (headline) {
-      gsap.set(headline, { opacity: 0, scale: 0.8, y: 50 });
-      const tl = gsap.timeline({ delay: 0.3 });
-      tl.to(headline, {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        duration: 1.2,
-        ease: 'expo.out',
-      });
-
-      // Split text animation for headline
-      const text = headline.textContent || '';
-      const words = text.split(' ');
-      headline.innerHTML = words
-        .map(
-          (word) =>
-            `<span class="about-word" style="display: inline-block; overflow: hidden;"><span style="display: inline-block;">${word}</span></span>`
-        )
-        .join(' ');
-
-      const wordSpans = headline.querySelectorAll('.about-word span');
-      gsap.set(wordSpans, { y: '100%', opacity: 0 });
-
-      gsap.to(wordSpans, {
-        y: '0%',
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.05,
-        delay: 0.5,
-        ease: 'power3.out',
-      });
-    }
-
     // Team Member Cards - Rotating Flip Animation
     const teamCards = document.querySelectorAll('.about-team-card');
     teamCards.forEach((card, index) => {
@@ -271,7 +234,7 @@ export default function AboutPage() {
         <div className="about-parallax-shape about-shape-2" />
         <div className="container">
           <div className="about-hero-content">
-            <h1 ref={headlineRef} className="about-hero-title" dir={isRTL ? 'rtl' : 'ltr'}>
+            <h1 className="about-hero-title" dir={isRTL ? 'rtl' : 'ltr'}>
               {t.about.hero.title}
             </h1>
             <p className="about-hero-subtitle" dir={isRTL ? 'rtl' : 'ltr'}>

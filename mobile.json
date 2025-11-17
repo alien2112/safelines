@@ -4693,8 +4693,8 @@
                 "width": 388,
                 "height": 20
               },
-              "snippet": "<a href=\"mailto:safelines.cc.co@gmail.com\" class=\"footer-contact-item\" style=\"translate: none; rotate: none; scale: none;\">",
-              "nodeLabel": "safelines.cc.co@gmail.com"
+              "snippet": "<a href=\"mailto:info@safelinescc.sa\" class=\"footer-contact-item\" style=\"translate: none; rotate: none; scale: none;\">",
+              "nodeLabel": "info@safelinescc.sa"
             },
             "subItems": {
               "type": "subitems",
@@ -5241,7 +5241,7 @@
                 "width": 118,
                 "height": 46
               },
-              "snippet": "<a class=\"mail-pill\" href=\"mapi:mailto:safelines.cc.co@gmail.com\" aria-label=\"Email\" dir=\"ltr\">",
+              "snippet": "<a class=\"mail-pill\" href=\"mapi:mailto:info@safelinescc.sa\" aria-label=\"Email\" dir=\"ltr\">",
               "nodeLabel": "MAIL"
             },
             "subItems": {

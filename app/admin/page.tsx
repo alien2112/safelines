@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -14,7 +14,7 @@ type ImageFile = {
 	filename: string;
 	uploadDate: string;
 	contentType?: string;
-	metadata?: { section?: string };
+	metadata?: { section?: string; order?: number };
 };
 
 type BlogPost = {
@@ -823,18 +823,30 @@ function ImagesPanel() {
 	const [activeSection, setActiveSection] = useState<ImageSectionType>("making-easy");
 	const [files, setFiles] = useState<ImageFile[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
 	const panelRef = useRef<HTMLDivElement>(null);
+
+	const sortFilesByOrder = useCallback((items: ImageFile[]) => {
+		return [...items].sort((a, b) => {
+			const orderA = typeof a.metadata?.order === "number" ? a.metadata.order : new Date(a.uploadDate).getTime();
+			const orderB = typeof b.metadata?.order === "number" ? b.metadata.order : new Date(b.uploadDate).getTime();
+			return orderA - orderB;
+		});
+	}, []);
+
+	const orderedFiles = useMemo(() => sortFilesByOrder(files), [files, sortFilesByOrder]);
+	const isHeroSection = activeSection === "hero-home" || activeSection === "hero-about";
 
 	const refresh = React.useCallback(async () => {
 		setIsLoading(true);
 		try {
 			const res = await fetch(`/api/images?section=${activeSection}&noCache=1`, { cache: "no-store" });
 			const data = await res.json();
-			setFiles(data);
+			setFiles(sortFilesByOrder(data));
 		} finally {
 			setIsLoading(false);
 		}
-	}, [activeSection]);
+	}, [activeSection, sortFilesByOrder]);
 
 	useEffect(() => {
 		refresh();
@@ -867,6 +879,43 @@ function ImagesPanel() {
 		await fetch(`/api/images/${id}`, { method: "DELETE" });
 		await refresh();
 	}
+
+	const handleReorder = useCallback(async (currentIndex: number, direction: "up" | "down") => {
+		if (!isHeroSection) return;
+		const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+		if (targetIndex < 0 || targetIndex >= orderedFiles.length) return;
+		const reordered = [...orderedFiles];
+		const [moved] = reordered.splice(currentIndex, 1);
+		reordered.splice(targetIndex, 0, moved);
+
+		const updates = reordered.map((file, index) => ({
+			id: file._id,
+			order: (index + 1) * 100,
+		}));
+
+		setFiles(
+			reordered.map((file, index) => ({
+				...file,
+				metadata: { ...file.metadata, order: updates[index].order },
+			}))
+		);
+
+		setIsUpdatingOrder(true);
+		try {
+			await Promise.all(
+				updates.map((item) =>
+					fetch(`/api/images/${item.id}`, {
+						method: "PATCH",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ order: item.order }),
+					})
+				)
+			);
+		} finally {
+			setIsUpdatingOrder(false);
+			await refresh();
+		}
+	}, [isHeroSection, orderedFiles, refresh]);
 
 	return (
 		<div className="admin-panel" ref={panelRef}>
@@ -914,27 +963,69 @@ function ImagesPanel() {
 				<div className="admin-panel-card">
 					<h3>{t.admin.images.imagesInSection}</h3>
 					<div className="divider" />
+					{isHeroSection && (
+						<div className="admin-slider-hint">
+							<strong>{language === 'ar' ? 'تحكم في عرض السلايدر' : 'Control the hero slider'}</strong>
+							<span>{language === 'ar'
+								? 'ارفع أكثر من صورة ثم استخدم أزرار التحريك للأعلى/للأسفل لضبط ترتيب الشرائح في الصفحة.'
+								: 'Upload multiple photos, then use the move up/down controls to fine-tune the order shown on the site.'}</span>
+						</div>
+					)}
 					<div className="admin-list">
-						{files.map((f) => (
+						{orderedFiles.map((f, index) => (
 							<div key={f._id} className="admin-list-item">
 								<img className="admin-list-thumb" src={`/api/images/${f._id}?v=${f.uploadDate ? new Date(f.uploadDate).getTime() : f._id}`} alt={f.filename} />
 								<div className="admin-list-meta">
 									<div className="admin-list-fn">{f.filename}</div>
 									<div className="admin-list-date">{new Date(f.uploadDate).toLocaleString()}</div>
+									{isHeroSection && (
+										<div className="admin-slider-order">
+											<span className="admin-slider-order-pill">
+												{language === 'ar' ? `الشريحة ${index + 1}` : `Slide ${index + 1}`}
+											</span>
+											<small>
+												{language === 'ar' ? 'الترتيب:' : 'Order:'} {typeof f.metadata?.order === 'number' ? f.metadata.order : '—'}
+											</small>
+										</div>
+									)}
 								</div>
-								<button 
-									className="btn ghost danger" 
-									data-action="delete"
-									aria-label={`${t.admin.images.delete} ${f.filename}`} 
-									onClick={() => onDelete(f._id)}
-									onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
-									onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
-								>
-									{t.admin.images.delete}
-								</button>
+								<div className="admin-list-actions">
+									{isHeroSection && orderedFiles.length > 1 && (
+										<div className="admin-slider-order-actions">
+											<button
+												type="button"
+												className="btn ghost"
+												disabled={index === 0 || isUpdatingOrder}
+												onClick={() => handleReorder(index, "up")}
+												aria-label={language === 'ar' ? 'تحريك الشريحة لأعلى' : 'Move slide up'}
+											>
+												↑
+											</button>
+											<button
+												type="button"
+												className="btn ghost"
+												disabled={index === orderedFiles.length - 1 || isUpdatingOrder}
+												onClick={() => handleReorder(index, "down")}
+												aria-label={language === 'ar' ? 'تحريك الشريحة لأسفل' : 'Move slide down'}
+											>
+												↓
+											</button>
+										</div>
+									)}
+									<button 
+										className="btn ghost danger" 
+										data-action="delete"
+										aria-label={`${t.admin.images.delete} ${f.filename}`} 
+										onClick={() => onDelete(f._id)}
+										onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.02, y: -2, duration: 0.3, ease: "power2.out" })}
+										onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, y: 0, duration: 0.3, ease: "power2.out" })}
+									>
+										{t.admin.images.delete}
+									</button>
+								</div>
 							</div>
 						))}
-						{files.length === 0 && !isLoading && <div className="muted">{t.admin.images.noImagesYet}</div>}
+						{orderedFiles.length === 0 && !isLoading && <div className="muted">{t.admin.images.noImagesYet}</div>}
 					</div>
 				</div>
 			</div>

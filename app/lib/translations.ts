@@ -71,6 +71,7 @@ export interface Translations {
         title: string;
         description: string;
         details: string;
+        lines?: string[];
       };
       website: {
         title: string;
@@ -458,18 +459,12 @@ export interface Translations {
       title: string;
       subtitle: string;
       socials: string;
-      discord: {
+      cards: Array<{
+        id: string;
         title: string;
         description: string;
-        members: string;
-        community: string;
-      };
-      twitter: {
-        title: string;
-        description: string;
-        followers: string;
-        community: string;
-      };
+        stats: string[];
+      }>;
     };
   };
 }
@@ -592,6 +587,14 @@ export const translations: Record<Language, Translations> = {
           title: 'Address',
           description: 'Jeddah - Al-Baghdadiyah Al-Gharbiyah - Al-Madina Street',
           details: 'Peace Business Center - 4th Floor - Office 402',
+          lines: [
+            'Jeddah',
+            'Al-Baghdadiyah Al-Gharbiyah',
+            'Al-Madina Street',
+            'Peace Business Center',
+            '4th Floor',
+            'Office 402',
+          ],
         },
         website: {
           title: 'Website',
@@ -790,7 +793,7 @@ export const translations: Record<Language, Translations> = {
     home: {
       hero: {
         tag: 'SAFE LINES CUSTOMS CLEARANCE',
-        title: 'Unveiling a world of opportunities',
+        title: 'With us, your business has meaning',
         cta: 'Book A Free Call Now',
         trust: 'we have your trust',
       },
@@ -1096,18 +1099,44 @@ export const translations: Record<Language, Translations> = {
         title: 'Check our community',
         subtitle: 'Participate in our Instagram group to network with other individuals. Here, you\'re invited to inquire, discuss, and open support requests.',
         socials: 'Socials :',
-        discord: {
-          title: 'Instagram',
-          description: 'Join our Instagram and connect with social media creators, enthusiasts, share ideas, and grow together.',
-          members: '15k members',
-          community: 'Community',
-        },
-        twitter: {
-          title: 'Twitter',
-          description: 'Join our Twitter, where we share our updates and also lot of guides, tips with guests who already excelled.',
-          followers: '25k followers',
-          community: 'Community',
-        },
+        cards: [
+          {
+            id: 'instagram',
+            title: 'Instagram',
+            description: 'Join our Instagram and connect with social media creators, enthusiasts, share ideas, and grow together.',
+            stats: ['15k members', 'Community'],
+          },
+          {
+            id: 'twitter',
+            title: 'X (Twitter)',
+            description: 'Join us on X (Twitter) for timely updates, expert guides, and conversations with seasoned logistics partners.',
+            stats: ['25k followers', 'Community'],
+          },
+          {
+            id: 'tiktok',
+            title: 'TikTok',
+            description: 'Follow us on TikTok for daily behind-the-scenes clips, customs tips, and quick logistics explainers.',
+            stats: ['40k avg views', 'Highlights'],
+          },
+          {
+            id: 'facebook',
+            title: 'Facebook',
+            description: 'Become part of our Facebook group to ask questions, collaborate on shipments, and receive peer support.',
+            stats: ['10k members', 'Discussions'],
+          },
+          {
+            id: 'snapchat',
+            title: 'Snapchat',
+            description: 'Add us on Snapchat for instant updates, flash announcements, and on-the-ground shipping stories.',
+            stats: ['8k friends', 'Stories'],
+          },
+          {
+            id: 'whatsapp',
+            title: 'WhatsApp',
+            description: 'Chat with our team on WhatsApp for quick shipping questions, rate checks, and live updates.',
+            stats: ['Direct support', '24/7'],
+          },
+        ],
       },
     },
   },
@@ -1124,11 +1153,11 @@ export const translations: Record<Language, Translations> = {
     },
     about: {
       hero: {
-        title: 'الخطوط الآمنة للتخليص الجمركي',
+        title: 'شركة الخطوط الآمنة للتخليص الجمركي',
         subtitle: 'تأسست في مدينة جدة برؤية طموحة ورائدة في مجال التخليص الجمركي والنقل داخل المملكة، قدمت الشركة خدمات متميزة لعدد من الشركات والمنشآت في مختلف القطاعات.',
       },
       mission: {
-        title: 'مهمتنا',
+        title: 'رسالتنا',
         text: 'هي أن نكون أحد دعائم التنمية الوطنية والإقليمية من خلال الخدمات اللوجستية التي نقدمها لتساهم في نهضة هذه البلاد وتقدمها. تقديم الحلول اللوجستية الأفضل في مجالي التخليص الجمركي والنقل لنكون نحن وشركاء النجاح في مصاف الشركات الشرق الأوسط.',
       },
       vision: {
@@ -1228,6 +1257,14 @@ export const translations: Record<Language, Translations> = {
           title: 'العنوان',
           description: 'جدة - البغدادية الغربية - شارع المدن',
           details: 'مركز السلام للأعمال - الدور ٤ - مكتب ٤٠٢',
+          lines: [
+            'جدة',
+            'البغدادية الغربية',
+            'شارع المدن',
+            'مركز السلام للأعمال',
+            'الدور ٤',
+            'مكتب ٤٠٢',
+          ],
         },
         website: {
           title: 'الموقع الإلكتروني',
@@ -1394,7 +1431,7 @@ export const translations: Record<Language, Translations> = {
     jobs: {
       hero: {
         title: 'انضم إلى فريقنا',
-        subtitle: 'استكشف فرص وظيفية مثيرة مع الخطوط الآمنة للتخليص الجمركي. نحن نبحث عن أفراد موهوبين لمساعدتنا على النمو والتميز.',
+        subtitle: 'استكشف فرص وظيفية مثيرة مع شركة الخطوط الآمنة للتخليص الجمركي. نحن نبحث عن أفراد موهوبين لمساعدتنا على النمو والتميز.',
       },
       noJobs: {
         title: 'لا توجد وظائف شاغرة',
@@ -1425,8 +1462,8 @@ export const translations: Record<Language, Translations> = {
     },
     home: {
       hero: {
-        tag: 'الخطوط الآمنة للتخليص الجمركي',
-        title: 'كشف عالم من الفرص',
+        tag: 'شركة الخطوط الآمنة للتخليص الجمركي',
+        title: 'معنا لتجارتك معني',
         cta: 'احجز مكالمة مجانية الآن',
         trust: 'نحن نمتلك ثقتك',
       },
@@ -1654,7 +1691,7 @@ export const translations: Record<Language, Translations> = {
       },
       footer: {
         brand: {
-          tagline: 'الخطوط الآمنة للتخليص الجمركي',
+          tagline: 'شركة الخطوط الآمنة للتخليص الجمركي',
           description: 'شريكك الموثوق في خدمات التخليص الجمركي واللوجستيات في جميع أنحاء المملكة.',
         },
         quickLinks: {
@@ -1670,7 +1707,7 @@ export const translations: Record<Language, Translations> = {
           title: 'تابعنا',
         },
         copyright: {
-          text: '© 2024 الخطوط الآمنة للتخليص الجمركي. جميع الحقوق محفوظة.',
+          text: '© 2024 شركة الخطوط الآمنة للتخليص الجمركي. جميع الحقوق محفوظة.',
           rights: 'جميع الحقوق محفوظة.',
           designer: 'صمم بواسطة',
           designerName: 'رواد الرقمية',
@@ -1688,7 +1725,7 @@ export const translations: Record<Language, Translations> = {
       testimonials: {
         tag: 'العملاء',
         title: 'شركاء النجاح',
-        subtitle: 'تعليقات حقيقية من الشركات والأفراد الذين يعتمدون على خدماتنا في التخليص الجمركي واللوجستيات لتشغيل أعمالهم',
+        subtitle: 'تقييم وآراء عملاؤنا ما بعد الخدمة المقدمة لهم',
         totalReviews: 'أكثر من 15,725+ شخص قدموا لنا مراجعة',
         items: [
           {
@@ -1732,18 +1769,44 @@ export const translations: Record<Language, Translations> = {
         title: 'تحقق من مجتمعنا',
         subtitle: 'شارك في مجموعة Instagram الخاصة بنا للتواصل مع أفراد آخرين. هنا، أنت مدعو للاستفسار والمناقشة وفتح طلبات الدعم.',
         socials: 'وسائل التواصل:',
-        discord: {
-          title: 'Instagram',
-          description: 'انضم إلى Instagram الخاص بنا وتواصل مع منشئي وسائل التواصل الاجتماعي والهواة، وشارك الأفكار، ونم معًا.',
-          members: '15k عضو',
-          community: 'المجتمع',
-        },
-        twitter: {
-          title: 'Twitter',
-          description: 'انضم إلى Twitter الخاص بنا، حيث نشارك تحديثاتنا وأيضًا الكثير من الأدلة والنصائح مع الضيوف الذين برعوا بالفعل.',
-          followers: '25k متابع',
-          community: 'المجتمع',
-        },
+        cards: [
+          {
+            id: 'instagram',
+            title: 'Instagram',
+            description: 'انضم إلى Instagram الخاص بنا وتواصل مع منشئي وسائل التواصل الاجتماعي والهواة، وشارك الأفكار، ونم معًا.',
+            stats: ['15k عضو', 'المجتمع'],
+          },
+          {
+            id: 'twitter',
+            title: 'إكس (تويتر)',
+            description: 'انضم إلينا على منصة إكس (تويتر) لمتابعة تحديثاتنا، والأدلة المتخصصة، والنقاشات مع شركائنا في المجال.',
+            stats: ['25k متابع', 'المجتمع'],
+          },
+          {
+            id: 'tiktok',
+            title: 'TikTok',
+            description: 'تابعنا على TikTok لمشاهدة مقاطع من خلف الكواليس، ونصائح التخليص الجمركي، وملخصات سريعة.',
+            stats: ['40k مشاهدة شهرية', 'أبرز اللقطات'],
+          },
+          {
+            id: 'facebook',
+            title: 'Facebook',
+            description: 'كن جزءًا من مجموعة Facebook الخاصة بنا لطرح الأسئلة، والتعاون في الشحنات، والحصول على دعم الأقران.',
+            stats: ['10k عضو', 'النقاشات'],
+          },
+          {
+            id: 'snapchat',
+            title: 'Snapchat',
+            description: 'أضفنا على Snapchat للحصول على تحديثات فورية، وإعلانات عاجلة، وقصص ميدانية عن الشحن.',
+            stats: ['8k أصدقاء', 'القصص'],
+          },
+          {
+            id: 'whatsapp',
+            title: 'واتساب',
+            description: 'تواصل معنا عبر واتساب للحصول على إجابات سريعة حول الشحن واستفسارات الأسعار والتحديثات اللحظية.',
+            stats: ['دعم مباشر', 'متاح 24/7'],
+          },
+        ],
       },
     },
   },

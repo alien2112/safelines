@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { getBucket } from "../../../lib/gridfs";
+import { getDb } from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import crypto from "crypto";
 
@@ -51,6 +52,51 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 		});
 	} catch {
 		return new Response("Bad id", { status: 400 });
+	}
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params;
+	let payload: { order?: number } = {};
+	try {
+		payload = await req.json();
+	} catch {
+		return new Response(JSON.stringify({ message: "Invalid JSON body" }), {
+			status: 400,
+			headers: { "content-type": "application/json" },
+		});
+	}
+
+	if (typeof payload.order !== "number" || Number.isNaN(payload.order)) {
+		return new Response(JSON.stringify({ message: "order must be a number" }), {
+			status: 400,
+			headers: { "content-type": "application/json" },
+		});
+	}
+
+	const db = await getDb();
+	try {
+		const result = await db.collection("images.files").updateOne(
+			{ _id: new ObjectId(id) },
+			{ $set: { "metadata.order": payload.order } }
+		);
+
+		if (result.matchedCount === 0) {
+			return new Response(JSON.stringify({ message: "Image not found" }), {
+				status: 404,
+				headers: { "content-type": "application/json" },
+			});
+		}
+
+		return new Response(JSON.stringify({ order: payload.order }), {
+			status: 200,
+			headers: { "content-type": "application/json" },
+		});
+	} catch {
+		return new Response(JSON.stringify({ message: "Bad id" }), {
+			status: 400,
+			headers: { "content-type": "application/json" },
+		});
 	}
 }
 
